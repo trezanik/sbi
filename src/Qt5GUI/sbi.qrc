@@ -1,0 +1,97 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="sbi">../../resources/icons/sbi.ico</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file alias="about">../../resources/images/about.png</file>
+        <file alias="app_image">../../resources/images/trezanik.png</file>
+        <file alias="address-book">../../resources/images/address-book.png</file>
+        <file alias="quit">../../resources/images/quit.png</file>
+        <file alias="send">../../resources/images/send.png</file>
+        <file alias="toolbar">../../resources/images/novacoin-16.png</file>
+        <file alias="connect_0">../../resources/images/connect0_16.png</file>
+        <file alias="connect_1">../../resources/images/connect1_16.png</file>
+        <file alias="connect_2">../../resources/images/connect2_16.png</file>
+        <file alias="connect_3">../../resources/images/connect3_16.png</file>
+        <file alias="connect_4">../../resources/images/connect4_16.png</file>
+        <file alias="transaction_0">../../resources/images/transaction0.png</file>
+        <file alias="transaction_confirmed">../../resources/images/transaction2.png</file>
+        <file alias="transaction_conflicted">../../resources/images/transaction_conflicted.png</file>
+        <file alias="transaction_1">../../resources/images/clock1.png</file>
+        <file alias="transaction_2">../../resources/images/clock2.png</file>
+        <file alias="transaction_3">../../resources/images/clock3.png</file>
+        <file alias="transaction_4">../../resources/images/clock4.png</file>
+        <file alias="transaction_5">../../resources/images/clock5.png</file>
+        <file alias="options">../../resources/images/configure.png</file>
+        <file alias="receiving_addresses">../../resources/images/receive.png</file>
+        <file alias="editpaste">../../resources/images/editpaste.png</file>
+        <file alias="editcopy">../../resources/images/editcopy.png</file>
+        <file alias="add">../../resources/images/add.png</file>
+        <file alias="sbi_testnet">../../resources/images/novacoin-80.png</file>
+        <file alias="toolbar_testnet">../../resources/images/novacoin-16.png</file>
+        <file alias="edit">../../resources/images/edit.png</file>
+        <file alias="history">../../resources/images/history.png</file>
+        <file alias="overview">../../resources/images/overview.png</file>
+        <file alias="export">../../resources/images/export.png</file>
+        <file alias="synced">../../resources/images/synced.png</file>
+        <file alias="remove">../../resources/images/remove.png</file>
+        <file alias="tx_mined">../../resources/images/tx_mined.png</file>
+        <file alias="tx_input">../../resources/images/tx_input.png</file>
+        <file alias="tx_output">../../resources/images/tx_output.png</file>
+        <file alias="tx_inout">../../resources/images/tx_inout.png</file>
+        <file alias="lock_closed">../../resources/images/lock_closed.png</file>
+        <file alias="lock_open">../../resources/images/lock_open.png</file>
+        <file alias="key">../../resources/images/key.png</file>
+        <file alias="filesave">../../resources/images/filesave.png</file>
+        <file alias="qrcode">../../resources/images/qrcode.png</file>
+        <file alias="debugwindow">../../resources/images/debugwindow.png</file>
+        <file alias="staking_off">../../resources/images/staking_off.png</file>
+        <file alias="staking_on">../../resources/images/staking_on.png</file>
+    </qresource>
+    <qresource prefix="/movies">
+        <file alias="update_spinner">../../resources/movies/update_spinner.mng</file>
+    </qresource>
+    <qresource prefix="/translations">
+    <!--
+        <file alias="ar">locale/sbi_ar.qm</file>
+        <file alias="ca_ES">locale/sbi_ca_ES.qm</file>
+        <file alias="cs">locale/sbi_cs.qm</file>
+        <file alias="da">locale/sbi_da.qm</file>
+        <file alias="de">locale/sbi_de.qm</file>
+        <file alias="el_GR">locale/sbi_el_GR.qm</file>
+        <file alias="en">locale/sbi_en.qm</file>
+        <file alias="eo">locale/sbi_eo.qm</file>
+        <file alias="es_CL">locale/sbi_es_CL.qm</file>
+        <file alias="es_DO">locale/sbi_es_DO.qm</file>
+        <file alias="es">locale/sbi_es.qm</file>
+        <file alias="fa">locale/sbi_fa.qm</file>
+        <file alias="fi">locale/sbi_fi.qm</file>
+        <file alias="fr_CA">locale/sbi_fr_CA.qm</file>
+        <file alias="fr">locale/sbi_fr.qm</file>
+        <file alias="gl">locale/sbi_gl.qm</file>
+        <file alias="he">locale/sbi_he.qm</file>
+        <file alias="hr">locale/sbi_hr.qm</file>
+        <file alias="hu">locale/sbi_hu.qm</file>
+        <file alias="it">locale/sbi_it.qm</file>
+        <file alias="ja">locale/sbi_ja.qm</file>
+        <file alias="ka">locale/sbi_ka.qm</file>
+        <file alias="ko_KR">locale/sbi_ko_KR.qm</file>
+        <file alias="lt">locale/sbi_lt.qm</file>
+        <file alias="nb">locale/sbi_nb.qm</file>
+        <file alias="nl">locale/sbi_nl.qm</file>
+        <file alias="pam">locale/sbi_pam.qm</file>
+        <file alias="pl">locale/sbi_pl.qm</file>
+        <file alias="pt_BR">locale/sbi_pt_BR.qm</file>
+        <file alias="pt_PT">locale/sbi_pt_PT.qm</file>
+        <file alias="ro_RO">locale/sbi_ro_RO.qm</file>
+        <file alias="ru">locale/sbi_ru.qm</file>
+        <file alias="sk">locale/sbi_sk.qm</file>
+        <file alias="sl_SI">locale/sbi_sl_SI.qm</file>
+        <file alias="sv">locale/sbi_sv.qm</file>
+        <file alias="tr">locale/sbi_tr.qm</file>
+        <file alias="uk">locale/sbi_uk.qm</file>
+        <file alias="zh_CN">locale/sbi_zh_CN.qm</file>
+        <file alias="zh_TW">locale/sbi_zh_TW.qm</file>
+        -->
+    </qresource>
+</RCC>

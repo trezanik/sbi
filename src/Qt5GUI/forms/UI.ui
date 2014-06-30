@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>820</width>
+    <height>554</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="10,0">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,4">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="button_home">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>&amp;Home Screen</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTreeWidget" name="tree_interfaces">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
+            <property name="uniformRowHeights">
+             <bool>true</bool>
+            </property>
+            <column>
+             <property name="text">
+              <string>Interfaces</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QStackedWidget" name="stacked_widget">
+          <widget class="QWidget" name="page">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+             <horstretch>1</horstretch>
+             <verstretch>1</verstretch>
+            </sizepolicy>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <property name="spacing">
+             <number>6</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item>
+               <widget class="QTextEdit" name="text_display"/>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_2"/>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>820</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_SBI">
+    <property name="title">
+     <string>&amp;SBI</string>
+    </property>
+    <addaction name="action_Preferences"/>
+    <addaction name="separator"/>
+    <addaction name="actionE_xit"/>
+   </widget>
+   <widget class="QMenu" name="menu_Modules">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>&amp;Modules</string>
+    </property>
+    <addaction name="action_ModuleLoad"/>
+    <addaction name="action_ModuleUnload"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="action_About"/>
+    <addaction name="actionAbout_Qt"/>
+    <addaction name="separator"/>
+    <addaction name="action_Documentation"/>
+   </widget>
+   <widget class="QMenu" name="menu_Interfaces">
+    <property name="title">
+     <string>&amp;Interfaces</string>
+    </property>
+    <addaction name="action_InterfaceLoad"/>
+    <addaction name="action_InterfaceUnload"/>
+   </widget>
+   <addaction name="menu_SBI"/>
+   <addaction name="menu_Interfaces"/>
+   <addaction name="menu_Modules"/>
+   <addaction name="menu_Help"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionE_xit">
+   <property name="text">
+    <string>E&amp;xit</string>
+   </property>
+  </action>
+  <action name="action_ModuleLoad">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Load..</string>
+   </property>
+  </action>
+  <action name="action_ModuleUnload">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Unload..</string>
+   </property>
+  </action>
+  <action name="action_About">
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About &amp;Qt</string>
+   </property>
+  </action>
+  <action name="action_Documentation">
+   <property name="text">
+    <string>&amp;Documentation</string>
+   </property>
+  </action>
+  <action name="action_InterfaceLoad">
+   <property name="text">
+    <string>&amp;Load..</string>
+   </property>
+  </action>
+  <action name="action_InterfaceUnload">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Unload..</string>
+   </property>
+  </action>
+  <action name="action_Preferences">
+   <property name="text">
+    <string>&amp;Preferences</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

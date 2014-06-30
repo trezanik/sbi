@@ -1,0 +1,51 @@
+Social Bot Interface by Trezanik
+
+For documentation, see the relevant file/subfolder in the 'documentation' folder.
+Doxygen provides the source code documentation.
+
+Folder Structure:
++ sbi
+    + bin			# compiled binaries
+        + Win32				# [Windows x86] platform
+            + Debug       		# debug build
+            + Release    		# release build
+        + linux-x86_64			# [Linux x64] platform
+            + 
+    + cbuild			# custom linux/unix compliation Ruby script
+        - cbuild.rb			# build script core
+        - sbi.rb			# build script
+        - policy-include_required_headers.rb	# policy script
+        - policy-remove_unused_headers.rb	# policy script
+    + documentation
+        + doxygen			# contains the doxygen source code documentation
+            - gen_doxygen.cmd		# [Windows] Generates the doxygen documentation
+            - gen_doxygen.sh		# [Linux/Unix] Generates the doxygen documentation
+            - view_doxygen.cmd		# [Windows] Uses the default web browser to open doxygen index
+            - custom.css		# Modified doxygen stylesheet
+            - sbi.doxygen		# Doxygen configuration for this project
+        - building.css				# build instructions stylesheet
+        - building-Qt_Creator.html		# Qt Creator build instructions
+        - building-Visual_Studio_2013.html	# Visual Studio 2013 build instructions
+        - doxygen.html				# doxygen HTML index (uses iframe)
+    + lib			# built libraries and exports
+    + resources			# application resources
+        + icons
+        + images
+        + movies
+        + src
+        - sbi.rc		# visual studio resource script
+    + src			# application source code
+	+ api				# application api
+	+ irc				# IRC interface
+	+ Qt5GUI			# GUI
+	+ sbi				# application core
+	+ twitter			# Twitter interface
+    + third-party		# third-party dependencies/projects
+        + copy_boost.cmd		# copies boost headers + libraries into folder
+        + copy_json-spirit.cmd		# copies json-spirit headers + libraries into folder
+        + copy_libconfig.cmd		# copies libconfig headers + libraries into folder
+        + copy_openssl.cmd		# copies openssl headers + libraries into folder
+    + vs2012			# Visual Studio 2012 project files
+    + vs2013			# Visual Studio 2013 project files
+    - LICENCE			# Project/Source licence
+    - README			# This readme

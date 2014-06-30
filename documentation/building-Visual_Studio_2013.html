@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Building the Social Bot Interface with Visual Studio 2013</title>
+<link href="building.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<h1>Building the Social Bot Interface with Visual Studio 2013</h1>
+
+<h4>Index</h4>
+<ul>
+	<li><a href="#pre-reqs">Pre-requisites</a></li>
+	<li><a href="#third-party">Third-party Projects</a></li>
+	<li><a href="#building">Building the Project</a></li>
+</ul>
+
+<h4>Document Specifics</h4>
+<table>
+<thead>
+<tr>
+<td>Text</td>
+<td>Meaning</td>
+<td>Example</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$(ProjectRoot)</code></td>
+<td>The folder where the root of the project resides</td>
+<td><code>C:\Projects\sbi</code></td>
+</tr>
+<tr>
+<td><code>$(Qt5)</code></td>
+<td>The folder where Qt5 was installed</td>
+<td><code>C:\Projects\Qt</code></td>
+</tr>
+<tr>
+<td><code>$(Platform)</code></td>
+<td>The platform being compiled for</td>
+<td><code>Win32</code>, <code>Win64</code></td>
+</tr>
+<tr>
+<td><code>$(Configuration)</code></td>
+<td>The configuration being used</td>
+<td><code>Debug</code>, <code>Release</code></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="pre-reqs">Pre-requisites</h2>
+<p>The following steps are assumed to have been completed or catered for in advance of progressing through this document:</p>
+<ul>
+	<li>Visual Studio 2013 (Express or other version) installed</li>
+	<li>Qt 5.3 (or newer) installed in the same folder as where $(ProjectRoot) resides</li>
+	<li>You are using the default Qt5GUI library for the UI; if using a custom library, you're pretty much on your own!</li>
+</ul>
+<p><strong>Warning:</strong> The Qt installation must reside in <code>$(ProjectRoot)\..\Qt</code> (so the include directory is <code>$(ProjectRoot)\..\Qt\5.3\msvc2013\include</code>); if you want to use a different path, ensure the <code>GlobalProperties.props</code> file in the <strong>vs2013</strong> directory is updated to use the correct Qt path.</p>
+
+<h2 id="third-party">Third-party Projects</h2>
+<h3>Our Method</h3>
+<p>I like a clean and clear directory layout (projects or not); a well organized filesystem makes things easy to find, maintain, and automate.</p>
+<p>Because our project is designed to be cross-platform, we need to cater for all types of systems, and supporting native build tools will increase the chances of developers contributing. Consistency is therefore critical, but because of the nature of open-source projects, similar things can be designed and laid out very differently. This is why I utilize a custom method, so there will be the least number of surprises once you've understood why I'm doing what I'm doing!</p>
+<p>For Windows, there are libraries that have no installation (json-spirit, libconfig), so we have random files laid out wherever they were downloaded to. The official location for these folders in our project, is that of the parent directory. For example:</p>
+<pre>
+C:\BuildEnv
+          \ boost
+          \ json-spirit
+          \ libconfig
+          \ openssl
+          \ Qt
+          \ sbi (our project)
+</pre>
+<p>Each of these third-party projects have a subfolder specifying just the version number of the project. In this way, we can retain old versions for testing, while upgrading to new ones without wiping out anything else. So for OpenSSL at the time of writing, it's: <code>C:\BuildEnv\openssl\1.0.1h</code></p>
+<p>This folder structure can be your choice (you could have them on another disk/network share, for example), but if you're modifying our defaults you'll have to update the 'copy' batch files.</p>
+<p>These batch files reside in <code>$(ProjectRoot)\third-party</code>, and there's one for each third-party project. They will need to be run before attempting to compile, as these are dependencies to the SBI code. When executed, the following steps are taken:</p>
+<ol>
+<li>The header files for the project will be copied into <code>$(ProjectRoot)\third-party\$(Project)\$(Project)</code>. The Visual Studio inclusion path is set to <code>$(ProjectRoot)\third-party\$(Project)</code>, so all include directives are: <code>&lt;Project/header&gt;</code>.</p>
+<li>The library files for the project will be copied into <code>$(ProjectRoot)\third-party\$(Project)\lib</code>, and where applicable, into a <strong>Debug</strong> or <strong>Release</strong> folder beyond that.</p>
+</ol>
+<p>A huge benefit of this method on Windows -> Visual Studio: we can have our property sheet configured for these directories, and on version changes, we don't need to modify ANY of the SBI project files; just edit and run the batch file to bring the third-party project up to the latest files, and rebuild.</p>
+<p>The batch files supplied are designed to work with:</p>
+<ul>
+<li><code>Boost 1.55.0</code> - <a href="http://www.boost.org/users/download/">http://www.boost.org/users/download/</a></li>
+<li><code>json-spirit 4.05</code> - <a href="https://github.com/sirikata/json-spirit">https://github.com/sirikata/json-spirit</a></li>
+<li><code>OpenSSL 1.0.1h</code> - <a href="http://www.openssl.org/source/">http://www.openssl.org/source/</a></li>
+<li><code>libconfig 1.4.9</code> - <a href="http://www.hyperrealm.com/libconfig/">http://www.hyperrealm.com/libconfig/</a></li>
+<strike><li><code>Qt 5.3</code> - <a href="http://qt-project.org/downloads">http://qt-project.org/downloads</a></li></strike>
+</ul>
+<p>As long as the third party project makes no drastic changes to their layout or design, updating the batch files to a newer version should be as simple as setting the version variable.</p>
+
+<h2 id="building">Building the Project</h2>
+<h4>Custom Steps</h4>
+<p>As Visual Studio does not have the same capabilities (or rather, proprietary features) of Qt Creator, there are a few manual steps to take before attempting to compile the project:</p>
+<ol>
+	<li>Navigate to <code>$(ProjectRoot)\src\Qt5GUI</code></li>
+	<li>Execute <strong>manual_generate_formcode.cmd</strong></li>
+	<li>Execute <strong>manual_generate_resources.cmd</strong></li>
+</ol>
+<h3>Form Code Generation</h3>
+<p><strong>manual_generate_formcode.cmd</strong> will analyze each of the Qt <code>.ui</code> files in the <strong>forms</strong> directory, and create the associated <code>ui_FILENAME.h</code> and <code>moc_FILENAME.cc</code> files in the <strong>generated</strong> folder.</p>
+<p>These generated files are already in the Visual Studio project - it will need amending if any files are added or removed however.</p>
+<p>Any changes to the forms (including the addition or removal) or the associated code using them will require the script to be run again. This is to satisfy the meta-object compilation steps specific to Qt.</p>
+<h3>Resource Generation</h3>
+<p><strong>manual_generate_resources.cmd</strong> will parse the <strong>sbi.qrc</strong> file, which is a pointer to all the resource files (icons, images, etc.), and create a <code>qrc_sbi.cc</code> file in the <strong>generated</strong> folder.</p>
+<p>Again, any changes to the actual files themselves (which reside in <code>$(ProjectRoot)\resources</code>) will require this script to be run again.</p>
+</div>
+<h3>Additional</h3>
+<p>Both of these scripts can be updated by hand to perform additional functionality or alter paths as you may desire.</p>
+<p><em>Optional:</em> These scripts can be added to the pre-build steps in the project, saving ever having to run them manually. It will not resolve the requirement to add new/remove old files however.</p>
+<h3>Build</h3>
+<p>The rest is simple; so long as you've handled any pathing changes you've made, simply select <strong>Build -> Build Solution</strong> from the menu, and the application should compile.</p>
+<p>Compiled binaries are in the <code>$(ProjectRoot)\bin\$(Platform)\$(Configuration)</code> directory, while created library files are in <code>$(ProjectRoot)\lib\$(Platform)\$(Configuration)</code>.</p>
+</body>
+</html>
