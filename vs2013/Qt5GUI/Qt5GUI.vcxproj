@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E4CEFE0E-CA96-4390-B3C4-B7D3F55A76B8}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Qt5GUI</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\GlobalProperties.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\GlobalProperties.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>$(Qt5-x86)/lib;$(libconfig)/lib/$(Configuration);$(ProjectRoot)/lib/$(Platform)/$(Configuration);$(Qt5)/lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
+    <SourcePath>$(ProjectRoot)/src;$(VC_SourcePath);</SourcePath>
+    <IncludePath>$(ProjectRoot)/src;$(libconfig);$(Qt5-x86)/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <OutDir>$(ProjectRoot)/bin/$(Platform)/$(Configuration)/</OutDir>
+    <IntDir>$(Configuration)/</IntDir>
+    <TargetName>libui-qt5</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;QT5GUI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libapi.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(ProjectRoot)/lib/$(Platform)/$(Configuration)/$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;QT5GUI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\Qt5GUI\AboutDialog.h" />
+    <ClInclude Include="..\..\src\Qt5GUI\InterfacesLoadDialog.h" />
+    <ClInclude Include="..\..\src\Qt5GUI\InterfacesUnloadDialog.h" />
+    <ClInclude Include="..\..\src\Qt5GUI\library.h" />
+    <ClInclude Include="..\..\src\Qt5GUI\ModulesLoadDialog.h" />
+    <ClInclude Include="..\..\src\Qt5GUI\ModulesUnloadDialog.h" />
+    <ClInclude Include="..\..\src\Qt5GUI\UI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\Qt5GUI\AboutDialog.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\generated\moc_AboutDialog.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\generated\moc_InterfacesLoadDialog.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\generated\moc_InterfacesUnloadDialog.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\generated\moc_ModulesLoadDialog.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\generated\moc_ModulesUnloadDialog.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\generated\moc_UI.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\generated\qrc_sbi.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\InterfacesLoadDialog.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\InterfacesUnloadDialog.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\ModulesLoadDialog.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\ModulesUnloadDialog.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\UI.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\library.cc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

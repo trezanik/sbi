@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sbi", "sbi\sbi.vcxproj", "{FC97D135-7A0A-48F9-9CA7-153166CED19F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{46DDEAD7-A32D-4399-B161-9FC889E6A9A5} = {46DDEAD7-A32D-4399-B161-9FC889E6A9A5}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "api", "api\api.vcxproj", "{46DDEAD7-A32D-4399-B161-9FC889E6A9A5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "irc", "irc\irc.vcxproj", "{28EEEB8A-0F9B-4E5C-93AB-A337AF878AD2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{46DDEAD7-A32D-4399-B161-9FC889E6A9A5} = {46DDEAD7-A32D-4399-B161-9FC889E6A9A5}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{62943638-1A08-414C-BDB4-3F79AF84A049}"
+	ProjectSection(SolutionItems) = preProject
+		..\src\build_config.h = ..\src\build_config.h
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Qt5GUI", "Qt5GUI\Qt5GUI.vcxproj", "{E4CEFE0E-CA96-4390-B3C4-B7D3F55A76B8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{46DDEAD7-A32D-4399-B161-9FC889E6A9A5} = {46DDEAD7-A32D-4399-B161-9FC889E6A9A5}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC97D135-7A0A-48F9-9CA7-153166CED19F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FC97D135-7A0A-48F9-9CA7-153166CED19F}.Debug|Win32.Build.0 = Debug|Win32
+		{FC97D135-7A0A-48F9-9CA7-153166CED19F}.Release|Win32.ActiveCfg = Release|Win32
+		{FC97D135-7A0A-48F9-9CA7-153166CED19F}.Release|Win32.Build.0 = Release|Win32
+		{46DDEAD7-A32D-4399-B161-9FC889E6A9A5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{46DDEAD7-A32D-4399-B161-9FC889E6A9A5}.Debug|Win32.Build.0 = Debug|Win32
+		{46DDEAD7-A32D-4399-B161-9FC889E6A9A5}.Release|Win32.ActiveCfg = Release|Win32
+		{46DDEAD7-A32D-4399-B161-9FC889E6A9A5}.Release|Win32.Build.0 = Release|Win32
+		{28EEEB8A-0F9B-4E5C-93AB-A337AF878AD2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{28EEEB8A-0F9B-4E5C-93AB-A337AF878AD2}.Debug|Win32.Build.0 = Debug|Win32
+		{28EEEB8A-0F9B-4E5C-93AB-A337AF878AD2}.Release|Win32.ActiveCfg = Release|Win32
+		{28EEEB8A-0F9B-4E5C-93AB-A337AF878AD2}.Release|Win32.Build.0 = Release|Win32
+		{E4CEFE0E-CA96-4390-B3C4-B7D3F55A76B8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E4CEFE0E-CA96-4390-B3C4-B7D3F55A76B8}.Debug|Win32.Build.0 = Debug|Win32
+		{E4CEFE0E-CA96-4390-B3C4-B7D3F55A76B8}.Release|Win32.ActiveCfg = Release|Win32
+		{E4CEFE0E-CA96-4390-B3C4-B7D3F55A76B8}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

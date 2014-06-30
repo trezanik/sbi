@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <ProjectRoot>$(SolutionDir)..</ProjectRoot>
+    <OpenSSL>$(ProjectRoot)/third-party/openssl</OpenSSL>
+    <Qt5-x64>$(ProjectRoot)/../Qt/5.3/msvc2013_64</Qt5-x64>
+    <Qt5-x86>$(ProjectRoot)/../Qt/5.3/msvc2013</Qt5-x86>
+    <JSON>$(ProjectRoot)/third-party/json-spirit</JSON>
+    <libconfig>$(ProjectRoot)/third-party/libconfig</libconfig>
+    <Boost>$(ProjectRoot)/third-party/boost</Boost>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ExecutablePath>$(VC_ExecutablePath_x86);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);</ExecutablePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <ForcedIncludeFiles>build_config.h</ForcedIncludeFiles>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="ProjectRoot">
+      <Value>$(ProjectRoot)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="OpenSSL">
+      <Value>$(OpenSSL)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="Qt5-x64">
+      <Value>$(Qt5-x64)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="Qt5-x86">
+      <Value>$(Qt5-x86)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="JSON">
+      <Value>$(JSON)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="libconfig">
+      <Value>$(libconfig)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="Boost">
+      <Value>$(Boost)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

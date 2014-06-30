@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{28EEEB8A-0F9B-4E5C-93AB-A337AF878AD2}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>irc</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\GlobalProperties.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\GlobalProperties.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectRoot)/src;$(Boost);$(OpenSSL)/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <SourcePath>$(ProjectRoot)/src;$(VC_SourcePath);</SourcePath>
+    <OutDir>$(ProjectRoot)/bin/$(Platform)/$(Configuration)/</OutDir>
+    <IntDir>$(Configuration)/</IntDir>
+    <TargetName>libirc</TargetName>
+    <LibraryPath>$(Boost)/lib/$(Configuration);$(ProjectRoot)/lib/$(Platform)/$(Configuration);$(OpenSSL)/out32dll;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;IRC_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(ProjectRoot)/lib/$(Platform)/$(Configuration)/$(TargetName).lib</ImportLibrary>
+      <AdditionalDependencies>WS2_32.lib;libapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IRC_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\irc\interface.cc" />
+    <ClCompile Include="..\..\src\irc\IrcFactory.cc" />
+    <ClCompile Include="..\..\src\irc\IrcChannel.cc" />
+    <ClCompile Include="..\..\src\irc\IrcConnection.cc" />
+    <ClCompile Include="..\..\src\irc\IrcEngine.cc" />
+    <ClCompile Include="..\..\src\irc\IrcNetwork.cc" />
+    <ClCompile Include="..\..\src\irc\IrcObject.cc" />
+    <ClCompile Include="..\..\src\irc\IrcParser.cc" />
+    <ClCompile Include="..\..\src\irc\IrcUser.cc" />
+    <ClCompile Include="..\..\src\irc\nethelper.cc" />
+    <ClCompile Include="..\..\src\irc\IrcPool.cc" />
+    <ClCompile Include="..\..\src\irc\win32.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\irc\config_structs.h" />
+    <ClInclude Include="..\..\src\irc\IrcFactory.h" />
+    <ClInclude Include="..\..\src\irc\IrcChannel.h" />
+    <ClInclude Include="..\..\src\irc\IrcConnection.h" />
+    <ClInclude Include="..\..\src\irc\ircd_bahamut.h" />
+    <ClInclude Include="..\..\src\irc\ircd_ngircd.h" />
+    <ClInclude Include="..\..\src\irc\IrcEngine.h" />
+    <ClInclude Include="..\..\src\irc\IrcListener.h" />
+    <ClInclude Include="..\..\src\irc\IrcNetwork.h" />
+    <ClInclude Include="..\..\src\irc\IrcObject.h" />
+    <ClInclude Include="..\..\src\irc\IrcParser.h" />
+    <ClInclude Include="..\..\src\irc\IrcUser.h" />
+    <ClInclude Include="..\..\src\irc\irc_channel_modes.h" />
+    <ClInclude Include="..\..\src\irc\irc_status.h" />
+    <ClInclude Include="..\..\src\irc\irc_structs.h" />
+    <ClInclude Include="..\..\src\irc\irc_user_modes.h" />
+    <ClInclude Include="..\..\src\irc\live_structs.h" />
+    <ClInclude Include="..\..\src\irc\nethelper.h" />
+    <ClInclude Include="..\..\src\irc\IrcPool.h" />
+    <ClInclude Include="..\..\src\irc\rfc1459.h" />
+    <ClInclude Include="..\..\src\irc\rfc2812.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
