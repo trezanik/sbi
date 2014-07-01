@@ -1,0 +1,384 @@
+.TH "IrcUser" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IrcUser \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <IrcUser\&.h>\fP
+.PP
+Inherits \fBIrcObject\fP, and \fBIrcObject\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBIrcUser\fP (std::shared_ptr< \fBIrcChannel\fP > channel, const char *nickname, const char *ident=nullptr, const char *hostmask=nullptr)"
+.br
+.ti -1c
+.RI "\fB~IrcUser\fP ()"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBCleanup\fP ()"
+.br
+.ti -1c
+.RI "std::string \fBHostmask\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBIdent\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBNickname\fP () const "
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBIrcChannel\fP > \fBOwner\fP ()"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBUpdate\fP (const char *new_nickname, const char *new_ident, const char *new_hostmask, const \fBmode_update\fP *new_modes)"
+.br
+.ti -1c
+.RI "\fBIrcUser\fP (\fBIrcChannel\fP *channel, const char *nickname, const char *ident=nullptr, const char *hostmask=nullptr)"
+.br
+.ti -1c
+.RI "\fB~IrcUser\fP ()"
+.br
+.ti -1c
+.RI "void \fBCleanup\fP ()"
+.br
+.ti -1c
+.RI "std::string \fBHostmask\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBIdent\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBNickname\fP () const "
+.br
+.ti -1c
+.RI "\fBIrcChannel\fP * \fBOwner\fP ()"
+.br
+.ti -1c
+.RI "void \fBUpdate\fP (const char *new_nickname, const char *new_ident, const char *new_hostmask, const \fBmode_update\fP *new_modes)"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNO_CLASS_ASSIGNMENT\fP (\fBIrcUser\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_COPY\fP (\fBIrcUser\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_ASSIGNMENT\fP (\fBIrcUser\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_COPY\fP (\fBIrcUser\fP)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "uint16_t \fB_flags\fP"
+.br
+.ti -1c
+.RI "uint16_t \fB_modes\fP"
+.br
+.ti -1c
+.RI "std::string \fB_nickname\fP"
+.br
+.ti -1c
+.RI "std::string \fB_ident\fP"
+.br
+.ti -1c
+.RI "std::string \fB_hostmask\fP"
+.br
+.ti -1c
+.RI "std::weak_ptr< \fBIrcChannel\fP > \fB_owner\fP"
+.br
+.ti -1c
+.RI "std::recursive_mutex \fB_mutex\fP"
+.br
+.ti -1c
+.RI "\fBIrcChannel\fP * \fB_parent_channel\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBIrcParser\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+An IRC user, used within all IRC channels 
+.PP
+Definition at line 33 of file IrcUser\&.h\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "IrcUser::IrcUser (std::shared_ptr< \fBIrcChannel\fP >channel, const char *nickname, const char *ident = \fCnullptr\fP, const char *hostmask = \fCnullptr\fP)"
+Since we're created by a factory, our debugging macros get in the way of being able to use the default nullptr operations (needed only on servers that don't support supplying the extra host info at the same time)\&. Have retained their default nullptr states for reference\&. 
+.PP
+Definition at line 24 of file IrcUser\&.cc\&.
+.PP
+.nf
+29   : _flags(0), _modes(0), _owner(channel)
+30 {
+31         Update(nickname, ident, hostmask, nullptr);
+32 }
+.fi
+.SS "IrcUser::~IrcUser ()"
+
+.PP
+Definition at line 36 of file IrcUser\&.cc\&.
+.PP
+References Cleanup()\&.
+.PP
+.nf
+37 {
+38         Cleanup();
+39 }
+.fi
+.SS "IrcUser::IrcUser (\fBIrcChannel\fP *channel, const char *nickname, const char *ident = \fCnullptr\fP, const char *hostmask = \fCnullptr\fP)"
+Since we're created by a factory, our debugging macros get in the way of being able to use the default nullptr operations (needed only on servers that don't support supplying the extra host info at the same time)\&. Have retained their default nullptr states for reference\&. 
+.PP
+Definition at line 24 of file bak/IrcUser\&.cc\&.
+.PP
+.nf
+29   : _flags(0), _modes(0), _parent_channel(channel)
+30 {
+31         Update(nickname, ident, hostmask, nullptr);
+32 }
+.fi
+.SS "IrcUser::~IrcUser ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void IrcUser::Cleanup ()"
+Frees the memory, if allocated, for the class members\&. 
+.SS "void IrcUser::Cleanup ()"
+Frees the memory, if allocated, for the class members\&. 
+.PP
+Definition at line 44 of file IrcUser\&.cc\&.
+.PP
+References _hostmask, _ident, _mutex, _nickname, and OK\&.
+.PP
+Referenced by ~IrcUser()\&.
+.PP
+.nf
+45 {
+46         std::lock_guard<std::recursive_mutex>   lock(_mutex);
+47 
+48         /* don't really need to do this manually, but it makes me feel all warm
+49          * and fuzzy inside */
+50         _nickname\&.clear();
+51         _ident\&.clear();
+52         _hostmask\&.clear();
+53 
+54         return EIrcStatus::OK;
+55 }
+.fi
+.SS "std::string IrcUser::Hostmask () const"
+
+.SS "std::string IrcUser::Hostmask () const"
+
+.PP
+Definition at line 60 of file IrcUser\&.cc\&.
+.PP
+References _hostmask, and _mutex\&.
+.PP
+.nf
+61 {
+62         std::lock_guard<std::recursive_mutex>   lock(_mutex);
+63         return _hostmask;
+64 }
+.fi
+.SS "std::string IrcUser::Ident () const"
+
+.SS "std::string IrcUser::Ident () const"
+
+.PP
+Definition at line 69 of file IrcUser\&.cc\&.
+.PP
+References _ident, and _mutex\&.
+.PP
+.nf
+70 {
+71         std::lock_guard<std::recursive_mutex>   lock(_mutex);
+72         return _ident;
+73 }
+.fi
+.SS "std::string IrcUser::Nickname () const"
+
+.SS "std::string IrcUser::Nickname () const"
+
+.PP
+Definition at line 78 of file IrcUser\&.cc\&.
+.PP
+References _mutex, and _nickname\&.
+.PP
+.nf
+79 {
+80         std::lock_guard<std::recursive_mutex>   lock(_mutex);
+81         return _nickname;
+82 }
+.fi
+.SS "IrcUser::NO_CLASS_ASSIGNMENT (\fBIrcUser\fP)\fC [private]\fP"
+
+.SS "IrcUser::NO_CLASS_ASSIGNMENT (\fBIrcUser\fP)\fC [private]\fP"
+
+.SS "IrcUser::NO_CLASS_COPY (\fBIrcUser\fP)\fC [private]\fP"
+
+.SS "IrcUser::NO_CLASS_COPY (\fBIrcUser\fP)\fC [private]\fP"
+
+.SS "\fBIrcChannel\fP* IrcUser::Owner ()"
+
+.SS "\fBIrcChannel\fP * IrcUser::Owner ()"
+
+.PP
+Definition at line 87 of file IrcUser\&.cc\&.
+.PP
+References _mutex, and _owner\&.
+.PP
+.nf
+88 {
+89         std::lock_guard<std::recursive_mutex>   lock(_mutex);
+90         return _owner\&.lock();
+91 }
+.fi
+.SS "void IrcUser::Update (const char *new_nickname, const char *new_ident, const char *new_hostmask, const \fBmode_update\fP *new_modes)"
+Updates the specified user object with the supplied details; NULL values will not replace any existing data\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fInew_nickname\fP (Optional) The new nickname to set 
+.br
+\fInew_ident\fP (Optional) The new ident to set 
+.br
+\fInew_hostmask\fP (Optional) The new hostmask to set 
+.br
+\fInew_modes\fP (Optional) The new user modes to set 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true if the specified user is updated successfully with the new details, otherwise false 
+.RE
+.PP
+
+.SS "void IrcUser::Update (const char *new_nickname, const char *new_ident, const char *new_hostmask, const \fBmode_update\fP *new_modes)"
+Updates the specified user object with the supplied details; NULL values will not replace any existing data\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fInew_nickname\fP (Optional) The new nickname to set 
+.br
+\fInew_ident\fP (Optional) The new ident to set 
+.br
+\fInew_hostmask\fP (Optional) The new hostmask to set 
+.br
+\fInew_modes\fP (Optional) The new user modes to set 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true if the specified user is updated successfully with the new details, otherwise false 
+.RE
+.PP
+
+.PP
+Definition at line 96 of file IrcUser\&.cc\&.
+.PP
+References _hostmask, _ident, _modes, _mutex, _nickname, mode_update::erase_existing, OK, mode_update::to_add, mode_update::to_remove, and UM_None\&.
+.PP
+Referenced by IrcParser::HandleMode(), and IrcParser::HandleNick()\&.
+.PP
+.nf
+102 {
+103         /* just use one lock rather than 4 separate ones; these will all finish
+104          * in an infathomable amount of time anyway */
+105         std::lock_guard<std::recursive_mutex>   lock(_mutex);
+106 
+107         if ( new_nickname != nullptr )
+108                 _nickname = new_nickname;
+109         
+110         if ( new_ident != nullptr )
+111                 _ident = new_ident;
+112         
+113         if ( new_hostmask != nullptr )
+114                 _hostmask = new_hostmask;
+115         
+116         if ( new_modes != nullptr )
+117         {
+118                 if ( new_modes->erase_existing )
+119                         _modes = UM_None;
+120                 if ( new_modes->to_add != UM_None )
+121                         _modes |= new_modes->to_add;
+122                 if ( new_modes->to_remove != UM_None )
+123                         _modes &= ~new_modes->to_remove;
+124         }
+125 
+126         return EIrcStatus::OK;
+127 }
+.fi
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "\fBIrcParser\fP\fC [friend]\fP"
+
+.PP
+Definition at line 36 of file IrcUser\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "uint16_t IrcUser::_flags\fC [private]\fP"
+User flags 
+.PP
+Definition at line 41 of file IrcUser\&.h\&.
+.SS "std::string IrcUser::_hostmask\fC [private]\fP"
+The users hostmask 
+.PP
+Definition at line 45 of file IrcUser\&.h\&.
+.PP
+Referenced by Cleanup(), Hostmask(), and Update()\&.
+.SS "std::string IrcUser::_ident\fC [private]\fP"
+The users ident 
+.PP
+Definition at line 44 of file IrcUser\&.h\&.
+.PP
+Referenced by Cleanup(), Ident(), and Update()\&.
+.SS "uint16_t IrcUser::_modes\fC [private]\fP"
+The users modes in the channel 
+.PP
+Definition at line 42 of file IrcUser\&.h\&.
+.PP
+Referenced by Update()\&.
+.SS "std::recursive_mutex IrcUser::_mutex\fC [mutable]\fP, \fC [private]\fP"
+Synchronization lock; mutable to enable constness for retrieval functions 
+.PP
+Definition at line 52 of file IrcUser\&.h\&.
+.PP
+Referenced by Cleanup(), Hostmask(), Ident(), Nickname(), Owner(), and Update()\&.
+.SS "std::string IrcUser::_nickname\fC [private]\fP"
+The users nickname on the server 
+.PP
+Definition at line 43 of file IrcUser\&.h\&.
+.PP
+Referenced by Cleanup(), Nickname(), and Update()\&.
+.SS "std::weak_ptr<\fBIrcChannel\fP> IrcUser::_owner\fC [private]\fP"
+The channel owning this user\&. Being weak enables the channel to be deleted while this/other users are still being accessed\&. 
+.PP
+Definition at line 49 of file IrcUser\&.h\&.
+.PP
+Referenced by Owner()\&.
+.SS "\fBIrcChannel\fP* IrcUser::_parent_channel\fC [private]\fP"
+The channel owning this user 
+.PP
+Definition at line 45 of file bak/IrcUser\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

@@ -1,0 +1,51 @@
+.TH "E_BUILD_CONFIGURATION" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+E_BUILD_CONFIGURATION \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBType\fP { \fBBC_Debug\fP = 0, \fBBC_Release\fP, \fBBC_Test\fP, \fBBC_Unknown\fP }"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Primarily used to determine if a module was built in debug/release mode, but also handy for if we're doing testing, we can skip loading huge portions of code or even entire libraries\&. 
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBE_BUILD_CONFIGURATION::Type\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIBC_Debug \fP\fP
+Application debugging 
+.TP
+\fB\fIBC_Release \fP\fP
+Application public release 
+.TP
+\fB\fIBC_Test \fP\fP
+Unit/normal testing 
+.TP
+\fB\fIBC_Unknown \fP\fP
+Unknown/unrecognized 
+.PP
+Definition at line 43 of file modules\&.h\&.
+.PP
+.nf
+44         {
+45                 BC_Debug = 0,   
+46                 BC_Release,     
+47                 BC_Test,        
+48                 BC_Unknown      
+49         };
+.fi
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

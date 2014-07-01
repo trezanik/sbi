@@ -1,6 +1,6 @@
 Fixed	Description
 [ ] 	Exclusions for Headers, Sources, Objects
-[ ] 	Fix output with puts.xxx methods in regards to odd extra/no newlines
 [ ]	a task with a modified dependency (linked statically) is not rebuilt (need library checksum in cache)
 [ ]	Add header files to cache, plus relevant rebuilding rules (what about shared headers across tasks??)
-[ ]	Properly generated cbuild.config.h
+[ ]	Enable per-task source-globbing, for those projects with custom files in places
+[ ]	linking failure does not attempt to rebuild the task

@@ -1,0 +1,109 @@
+.TH "modules.h" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+modules.h \- 
+.PP
+Plugins/modules components\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'definitions\&.h'\fP
+.br
+
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBEModuleLoadFailure\fP { \fBEModuleLoadFailure::NoError\fP = 0, \fBEModuleLoadFailure::FileNotFound\fP, \fBEModuleLoadFailure::FileIncompatible\fP, \fBEModuleLoadFailure::CouldNotBeLoadedByOS\fP, \fBEModuleLoadFailure::FailedToInitialize\fP }"
+.br
+.ti -1c
+.RI "enum \fBEBuildConfiguration\fP { \fBEBuildConfiguration::Debug\fP = 0, \fBEBuildConfiguration::Release\fP, \fBEBuildConfiguration::Test\fP, \fBEBuildConfiguration::Unknown\fP }"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBEGIN_NAMESPACE\fP (\fBAPP_NAMESPACE\fP)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Plugins/modules components\&. 
+
+
+.PP
+\fBAuthor:\fP
+.RS 4
+James Warren 
+.RE
+.PP
+
+.PP
+Definition in file \fBmodules\&.h\fP\&.
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBEBuildConfiguration\fP\fC [strong]\fP"
+Primarily used to determine if a module was built in debug/release mode, but also handy for if we're doing testing, we can skip loading huge portions of code or even entire libraries\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIDebug \fP\fP
+Application debugging 
+.TP
+\fB\fIRelease \fP\fP
+Application public release 
+.TP
+\fB\fITest \fP\fP
+Unit/normal testing 
+.TP
+\fB\fIUnknown \fP\fP
+Unknown/unrecognized 
+.PP
+Definition at line 38 of file modules\&.h\&.
+.PP
+.nf
+39 {
+40         Debug = 0,      
+41         Release,        
+42         Test,           
+43         Unknown         
+44 };
+.fi
+.SS "enum \fBEModuleLoadFailure\fP\fC [strong]\fP"
+When loading a module, one of these values will be returned\&. This applies to all GUI and plugin/interface modules\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fINoError \fP\fP
+.TP
+\fB\fIFileNotFound \fP\fP
+.TP
+\fB\fIFileIncompatible \fP\fP
+.TP
+\fB\fICouldNotBeLoadedByOS \fP\fP
+.TP
+\fB\fIFailedToInitialize \fP\fP
+.PP
+Definition at line 22 of file modules\&.h\&.
+.PP
+.nf
+23 {
+24         NoError = 0,
+25         FileNotFound,
+26         FileIncompatible,
+27         CouldNotBeLoadedByOS,
+28         FailedToInitialize
+29 };
+.fi
+.SH "Function Documentation"
+.PP 
+.SS "BEGIN_NAMESPACE (\fBAPP_NAMESPACE\fP)"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

@@ -1,0 +1,186 @@
+.TH "config_profile" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+config_profile \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <config_structs\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBconfig_profile\fP \fBoperator=\fP (\fBconfig_profile\fP *profile)"
+.br
+.ti -1c
+.RI "\fBconfig_profile\fP \fBoperator=\fP (\fBconfig_profile\fP *profile)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBprofile_name\fP"
+.br
+.ti -1c
+.RI "std::string \fBident\fP"
+.br
+.ti -1c
+.RI "std::string \fBreal_name\fP"
+.br
+.ti -1c
+.RI "std::string \fBkick_reason\fP"
+.br
+.ti -1c
+.RI "std::string \fBpart_reason\fP"
+.br
+.ti -1c
+.RI "std::string \fBquit_reason\fP"
+.br
+.ti -1c
+.RI "bool \fBauto_identify\fP"
+.br
+.ti -1c
+.RI "std::string \fBautoident_password\fP"
+.br
+.ti -1c
+.RI "std::string \fBautoident_service\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBmode\fP"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fBnicknames\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds the configuration for an IRC profile\&.
+.PP
+Must reside within a std::shared_ptr\&. 
+.PP
+Definition at line 28 of file config_structs\&.h\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBconfig_profile\fP config_profile::operator= (\fBconfig_profile\fP *profile)\fC [inline]\fP"
+
+.PP
+Definition at line 43 of file config_structs\&.h\&.
+.PP
+References auto_identify, autoident_password, autoident_service, ident, kick_reason, mode, nicknames, part_reason, profile_name, quit_reason, and real_name\&.
+.PP
+.nf
+44         {
+45                 profile_name            = profile->profile_name;
+46                 ident                   = profile->ident;
+47                 real_name               = profile->real_name;
+48                 kick_reason             = profile->kick_reason;
+49                 part_reason             = profile->part_reason;
+50                 quit_reason             = profile->quit_reason;
+51                 auto_identify           = profile->auto_identify;
+52                 autoident_password      = profile->autoident_password;
+53                 autoident_service       = profile->autoident_service;
+54                 mode                    = profile->mode = mode;
+55                 for ( auto n : profile->nicknames )
+56                         nicknames\&.push_back(n);
+57                 return *this;
+58         }
+.fi
+.SS "\fBconfig_profile\fP config_profile::operator= (\fBconfig_profile\fP *profile)\fC [inline]\fP"
+
+.PP
+Definition at line 43 of file bak/config_structs\&.h\&.
+.PP
+References auto_identify, autoident_password, autoident_service, ident, kick_reason, mode, nicknames, part_reason, profile_name, quit_reason, and real_name\&.
+.PP
+.nf
+44         {
+45                 profile_name            = profile->profile_name;
+46                 ident                   = profile->ident;
+47                 real_name               = profile->real_name;
+48                 kick_reason             = profile->kick_reason;
+49                 part_reason             = profile->part_reason;
+50                 quit_reason             = profile->quit_reason;
+51                 auto_identify           = profile->auto_identify;
+52                 autoident_password      = profile->autoident_password;
+53                 autoident_service       = profile->autoident_service;
+54                 mode                    = profile->mode = mode;
+55                 for ( auto n : profile->nicknames )
+56                         nicknames\&.push_back(n);
+57                 return *this;
+58         }
+.fi
+.SH "Member Data Documentation"
+.PP 
+.SS "bool config_profile::auto_identify"
+
+.PP
+Definition at line 36 of file config_structs\&.h\&.
+.PP
+Referenced by IrcParser::HandleNotice(), operator=(), and IrcNetwork::Setup()\&.
+.SS "std::string config_profile::autoident_password"
+
+.PP
+Definition at line 37 of file config_structs\&.h\&.
+.PP
+Referenced by IrcParser::HandleNotice(), operator=(), and IrcNetwork::Setup()\&.
+.SS "std::string config_profile::autoident_service"
+
+.PP
+Definition at line 38 of file config_structs\&.h\&.
+.PP
+Referenced by IrcNetwork::GetAuthService(), IrcParser::HandleNotice(), operator=(), and IrcNetwork::Setup()\&.
+.SS "std::string config_profile::ident"
+
+.PP
+Definition at line 31 of file config_structs\&.h\&.
+.PP
+Referenced by operator=(), IrcConnection::SendInit(), and IrcNetwork::Setup()\&.
+.SS "std::string config_profile::kick_reason"
+
+.PP
+Definition at line 33 of file config_structs\&.h\&.
+.PP
+Referenced by operator=(), and IrcNetwork::Setup()\&.
+.SS "uint16_t config_profile::mode"
+usermode bitmask 
+.PP
+Definition at line 39 of file config_structs\&.h\&.
+.PP
+Referenced by operator=(), IrcConnection::SendInit(), and IrcNetwork::Setup()\&.
+.SS "std::vector< std::string > config_profile::nicknames"
+
+.PP
+Definition at line 40 of file config_structs\&.h\&.
+.PP
+Referenced by IrcConnection::AutoChangeNick(), operator=(), IrcConnection::SendInit(), and IrcNetwork::Setup()\&.
+.SS "std::string config_profile::part_reason"
+
+.PP
+Definition at line 34 of file config_structs\&.h\&.
+.PP
+Referenced by operator=(), and IrcNetwork::Setup()\&.
+.SS "std::string config_profile::profile_name"
+
+.PP
+Definition at line 30 of file config_structs\&.h\&.
+.PP
+Referenced by operator=(), and IrcNetwork::Setup()\&.
+.SS "std::string config_profile::quit_reason"
+
+.PP
+Definition at line 35 of file config_structs\&.h\&.
+.PP
+Referenced by operator=(), and IrcNetwork::Setup()\&.
+.SS "std::string config_profile::real_name"
+
+.PP
+Definition at line 32 of file config_structs\&.h\&.
+.PP
+Referenced by operator=(), IrcConnection::SendInit(), and IrcNetwork::Setup()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

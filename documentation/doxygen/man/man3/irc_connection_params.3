@@ -1,0 +1,104 @@
+.TH "irc_connection_params" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+irc_connection_params \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <IrcConnection\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBdata\fP"
+.br
+.ti -1c
+.RI "std::string \fBconn_str\fP"
+.br
+.ti -1c
+.RI "std::string \fBhost\fP"
+.br
+.ti -1c
+.RI "std::string \fBip_addr\fP"
+.br
+.ti -1c
+.RI "\fBip_address\fP \fBip\fP"
+.br
+.ti -1c
+.RI "\fBsockaddr_union\fP \fBsa\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBport\fP"
+.br
+.ti -1c
+.RI "bool \fBuse_ssl\fP"
+.br
+.ti -1c
+.RI "bool \fBallow_invalid_cert\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This structure holds variables extracted from the xml configuration, ready to be used in a connection attempt\&. This saves needing to process xml on connection (and duplication), needing it only once per connection\&. They also receive dynamic data applicable to a pre-connection, like name resolution\&. 
+.PP
+Definition at line 55 of file IrcConnection\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "bool irc_connection_params::allow_invalid_cert"
+If use_ssl, whether it allows an invalid certificate 
+.PP
+Definition at line 65 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcConnection::Setup()\&.
+.SS "std::string irc_connection_params::conn_str"
+OpenSSL connection string 'host:port' 
+.PP
+Definition at line 58 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcConnection::Setup()\&.
+.SS "std::string irc_connection_params::data"
+Holder for lookup information 
+.PP
+Definition at line 57 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcConnection::Setup()\&.
+.SS "std::string irc_connection_params::host"
+The hostname of the remote server 
+.PP
+Definition at line 59 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcConnection::Setup(), and IrcNetwork::UpdateServerInfo()\&.
+.SS "\fBip_address\fP irc_connection_params::ip"
+An \fBip_address\fP structure, populated through inet_ntop 
+.PP
+Definition at line 61 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcConnection::Setup()\&.
+.SS "std::string irc_connection_params::ip_addr"
+The ip address of the remote server 
+.PP
+Definition at line 60 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcConnection::Setup(), and IrcNetwork::UpdateServerInfo()\&.
+.SS "uint16_t irc_connection_params::port"
+The port to connect to 
+.PP
+Definition at line 63 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcConnection::Setup(), and IrcNetwork::UpdateServerInfo()\&.
+.SS "\fBsockaddr_union\fP irc_connection_params::sa"
+Holds the reverse lookup info 
+.PP
+Definition at line 62 of file IrcConnection\&.h\&.
+.SS "bool irc_connection_params::use_ssl"
+Whether or not to use SSL to connect 
+.PP
+Definition at line 64 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcConnection::Setup()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

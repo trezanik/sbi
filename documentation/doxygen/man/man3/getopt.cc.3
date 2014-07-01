@@ -1,0 +1,164 @@
+.TH "getopt.cc" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+getopt.cc \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <cstring>\fP
+.br
+\fC#include <cstdio>\fP
+.br
+\fC#include 'getopt\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int32_t \fBgetopt\fP (int32_t argc, char **argv, char *opt)"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "int32_t \fBgetopt_ind\fP = 0"
+.br
+.ti -1c
+.RI "char * \fBgetopt_arg\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBAuthor:\fP
+.RS 4
+James Warren 
+.RE
+.PP
+\fBCopyright:\fP
+.RS 4
+James Warren, 2013-2014 
+.RE
+.PP
+\fBLicense:\fP
+.RS 4
+Zlib (see license\&.txt or http://opensource.org/licenses/Zlib) 
+.RE
+.PP
+
+.PP
+Definition in file \fBgetopt\&.cc\fP\&.
+.SH "Function Documentation"
+.PP 
+.SS "int32_t getopt (int32_targc, char **argv, char *opt)"
+Near-identical in functionality to the normal getopt utility function\&. As this does not exist on Windows, this is a custom built-one designed to do the same as on a *nix build\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIargc\fP 
+.br
+\fIargv\fP 
+.br
+\fIopt\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 25 of file getopt\&.cc\&.
+.PP
+References getopt_ind\&.
+.PP
+Referenced by parse_commandline()\&.
+.PP
+.nf
+30 {
+31         static char*    next = nullptr;
+32         char            c;
+33         char*           cp;
+34 
+35         if ( getopt_ind == 0 )
+36                 next = nullptr;
+37 
+38         getopt_arg = nullptr;
+39 
+40         if ( next == nullptr || *next == '\0' )
+41         {
+42                 if ( getopt_ind == 0 )
+43                         getopt_ind++;
+44 
+45                 if ( getopt_ind >= argc ||
+46                      argv[getopt_ind][0] != '-' ||
+47                      argv[getopt_ind][1] == '\0' )
+48                 {
+49                         getopt_arg = nullptr;
+50                         if ( getopt_ind < argc )
+51                                 getopt_arg = argv[getopt_ind];
+52                         return EOF;
+53                 }
+54 
+55                 if ( strcmp(argv[getopt_ind], "--") == 0 )
+56                 {
+57                         getopt_ind++;
+58                         getopt_arg = nullptr;
+59                         if ( getopt_ind < argc )
+60                                 getopt_arg = argv[getopt_ind];
+61                         return EOF;
+62                 }
+63 
+64                 next = argv[getopt_ind];
+65                 next++;     /* skip past '-' */
+66                 getopt_ind++;
+67         }
+68 
+69         c = *next++;
+70         cp = strchr(opt, c);
+71 
+72         if ( cp == nullptr || c == ':' )
+73                 return c;
+74 
+75         cp++;
+76 
+77         if ( *cp == ':' )
+78         {
+79                 if ( *next != '\0' )
+80                 {
+81                         getopt_arg = next;
+82                         next = nullptr;
+83                 }
+84                 else if ( getopt_ind < argc )
+85                 {
+86                         getopt_arg = argv[getopt_ind];
+87                         getopt_ind++;
+88                 }
+89                 else
+90                 {
+91                         return *next;
+92                 }
+93         }
+94 
+95         return c;
+96 }
+.fi
+.SH "Variable Documentation"
+.PP 
+.SS "char* getopt_arg"
+argument pointer 
+.PP
+Definition at line 20 of file getopt\&.cc\&.
+.SS "int32_t getopt_ind = 0"
+argv index 
+.PP
+Definition at line 19 of file getopt\&.cc\&.
+.PP
+Referenced by getopt()\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

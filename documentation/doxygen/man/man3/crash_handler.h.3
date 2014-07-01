@@ -1,0 +1,116 @@
+.TH "crash_handler.h" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+crash_handler.h \- 
+.PP
+Application crash handling\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'types\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int32_t \fBwrite_dump\fP (unsigned long code, struct _EXCEPTION_POINTERS *ep)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Application crash handling\&. 
+
+
+.PP
+\fBAuthor:\fP
+.RS 4
+James Warren 
+.RE
+.PP
+
+.PP
+Definition in file \fBcrash_handler\&.h\fP\&.
+.SH "Function Documentation"
+.PP 
+.SS "int32_t write_dump (unsigned longcode, struct _EXCEPTION_POINTERS *ep)"
+Called when an exception is raised within a __try/__catch block\&. Uses the inbuilt Windows API functions to get the parameters - calling code should never need to be modified\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcode\fP The error code raised; acquired in __catch 
+.br
+\fIep\fP The exception pointers; acquired in __catch 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Always returns EXCEPTION_EXECUTE_HANDLER so the system can process it
+.RE
+.PP
+\fBTodo\fP
+.RS 4
+use WindowsErrorReporting (http://msdn.microsoft.com/en-us/library/windows/desktop/dd408167%28v=vs.85%29.aspx) (requires Windows 7 or newer) 
+.RE
+.PP
+
+.PP
+Definition at line 30 of file crash_handler\&.cc\&.
+.PP
+.nf
+34 {
+35         wchar_t         dump_path[MAX_PATH];
+36         HANDLE          file_handle;
+37         MINIDUMP_TYPE   dumptype = MiniDumpWithFullMemory;//MiniDumpWithDataSegs;
+38         MINIDUMP_EXCEPTION_INFORMATION  ex_info;
+39 
+40         UNREFERENCED_PARAMETER(code);
+41 
+42         // output to executables current directory
+43         GetCurrentDirectory(_countof(dump_path), dump_path);
+44 
+45         wcscat_s(dump_path, _countof(dump_path), L"\\crash_dump\&.dmp");
+46 
+47 #if _DEBUG
+48         /* Don't attempt to print the exception code - it is completely incorrect
+49          * no matter how you format it\&. Dump information is correct though\&.\&. */
+50         wprintf(L"A critical exception has occurred\&. The dump file is being written to '%s' for analysis\&.", dump_path);
+51 #endif
+52 
+53         file_handle = CreateFile(dump_path, 
+54                                  GENERIC_READ|GENERIC_WRITE,
+55                                  0, NULL,
+56                                  CREATE_ALWAYS,
+57                                  FILE_ATTRIBUTE_NORMAL,
+58                                  NULL);
+59 
+60         if ( file_handle == INVALID_HANDLE_VALUE )
+61         {
+62                 // notify
+63                 return EXCEPTION_EXECUTE_HANDLER;
+64         }
+65 
+66         ex_info\&.ClientPointers           = false;
+67         ex_info\&.ExceptionPointers        = ep;
+68         ex_info\&.ThreadId         = GetCurrentThreadId();
+69 
+70         if ( !MiniDumpWriteDump(GetCurrentProcess(),
+71                 GetCurrentProcessId(),
+72                 file_handle, dumptype, &ex_info, NULL, NULL) )
+73         {
+74                 // notify
+75         }
+76         else
+77         {
+78                 // log
+79         }
+80 
+81         CloseHandle(file_handle);
+82         return EXCEPTION_EXECUTE_HANDLER;
+83 }
+.fi
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

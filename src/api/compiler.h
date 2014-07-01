@@ -9,7 +9,38 @@
 
 
 #if defined(_MSC_VER) && defined(__GNUC__)
-#       error "Multiple compiler definitions detected"
+#	error "Multiple compiler definitions detected (_MSC_VER, __GNUC__)"
+#endif
+#if defined(_MSC_VER) && defined(__clang__)
+#	error "Multiple compiler definitions detected (_MSC_VER, __clang__)"
+#endif
+// We do NOT check __GNUC__ && __clang__, as clang defines the GNUC macros
+
+
+
+/*----------------------------------------------------------------------------
+ * clang-specific (Due to GNUC defines, always do clang checks first)
+ *---------------------------------------------------------------------------*/
+
+#if defined(__clang__)
+#	define IS_CLANG	1
+#endif
+
+#if IS_CLANG
+#	define CLANG_IS_V2		(__clang_major__ == 3)
+#	define CLANG_IS_V3		(__clang_major__ == 3)
+#	define CLANG_IS_V2_OR_LATER	(__clang_major__ >= 2)
+#	define CLANG_IS_V3_OR_LATER	(__clang_major__ >= 3)
+
+#	define CLANG_VER_IS_OR_LATER_THAN(maj,min) \
+        __clang_major__ > maj || \
+            (__clang_major__ == maj && (__clang_minor__ > min) || \
+                (__clang_minor__ == min))
+
+#	define CLANG_VER_IS_OR_LATER_THAN_PATCH(maj,min,patch) \
+        __clang_major__ > maj || \
+            (__clang_major__ == maj && (__clang_minor__ > min) || \
+                (__clang_minor__ == min && __clang_patchlevel__ > patch))
 #endif
 
 
@@ -18,8 +49,8 @@
  * GCC-specific
  *---------------------------------------------------------------------------*/
 
-#if defined(__GNUC__)
-#       define IS_GCC           1
+#if defined(__GNUC__) && !defined(__clang__)
+#	define IS_GCC	1
 #endif
 
 #if IS_GCC
@@ -106,6 +137,10 @@
 		 * of error for the older compilers:
 		 * http://blogs.msdn.com/b/abhinaba/archive/2008/10/27/c-c-compile-time-asserts.aspx
 		 */
+#		if defined(USING_BOOST)
+#			include <boost/static_assert.hpp>
+#			define static_assert	BOOST_STATIC_ASSERT_MSG
+#		endif
 #if 0
 		namespace ct_assert
 		{

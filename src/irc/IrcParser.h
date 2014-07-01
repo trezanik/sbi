@@ -24,7 +24,7 @@
 #endif
 
 #if defined(__linux__) || defined(BSD)
-#	include "sync_event.h"
+#	include <api/sync_event.h>
 #endif
 
 

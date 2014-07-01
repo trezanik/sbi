@@ -1,0 +1,109 @@
+.TH "thread_info" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+thread_info \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Runtime\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBthread_info\fP &ti) const "
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBthread_info\fP *ti) const "
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBHANDLE\fP \fBthread_handle\fP"
+.br
+.ti -1c
+.RI "uint32_t \fBthread\fP"
+.br
+.ti -1c
+.RI "std::string \fBcalled_from_function\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds the details of each thread we manually create (not those that the 3rd party or system create); used for clean synchronization on shutdown\&.
+.PP
+On Linux/Unix, these hold posix thread details; on Windows, it's the HANDLEs and IDs\&.
+.PP
+We make sure the thread id has the same name to avoid if preprocessor spam in function calls, since Win32's thread handles are unique\&.
+.PP
+\fBTodo\fP
+.RS 4
+Add a sync event for each, so we can reset after setting _quitting?
+.RE
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+Runtime::CreateThread, E_THREAD_TYPE 
+.RE
+.PP
+
+.PP
+Definition at line 58 of file Runtime\&.h\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "bool thread_info::operator== (const \fBthread_info\fP &ti) const\fC [inline]\fP"
+
+.PP
+Definition at line 69 of file Runtime\&.h\&.
+.PP
+References called_from_function, and thread\&.
+.PP
+.nf
+70         {
+71                 if ( thread == ti\&.thread 
+72                     && called_from_function\&.compare(ti\&.called_from_function) == 0 )
+73                     return true;
+74                 return false;
+75         }
+.fi
+.SS "bool thread_info::operator== (const \fBthread_info\fP *ti) const\fC [inline]\fP"
+
+.PP
+Definition at line 76 of file Runtime\&.h\&.
+.PP
+References called_from_function, and thread\&.
+.PP
+.nf
+77         {
+78                 if ( thread == ti->thread 
+79                     && called_from_function\&.compare(ti->called_from_function) == 0 )
+80                     return true;
+81                 return false;
+82         }
+.fi
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string thread_info::called_from_function"
+
+.PP
+Definition at line 66 of file Runtime\&.h\&.
+.PP
+Referenced by operator==()\&.
+.SS "uint32_t thread_info::thread"
+
+.PP
+Definition at line 62 of file Runtime\&.h\&.
+.PP
+Referenced by operator==()\&.
+.SS "\fBHANDLE\fP thread_info::thread_handle"
+
+.PP
+Definition at line 61 of file Runtime\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

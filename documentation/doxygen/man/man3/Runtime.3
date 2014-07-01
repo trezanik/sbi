@@ -1,0 +1,566 @@
+.TH "Runtime" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Runtime \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Runtime\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBConfiguration\fP * \fBConfig\fP () const "
+.br
+.ti -1c
+.RI "void \fBDoShutdown\fP ()"
+.br
+.ti -1c
+.RI "void * \fBGetObjectFromModule\fP (const char *module_name)"
+.br
+.ti -1c
+.RI "bool \fBIsQuitting\fP ()"
+.br
+.ti -1c
+.RI "\fBLog\fP * \fBLogger\fP () const "
+.br
+.ti -1c
+.RI "void \fBReport\fP (const char *text_buffer, const char *title) const "
+.br
+.ti -1c
+.RI "void \fBThreadStopping\fP (uint32_t thread_id, const char *function)"
+.br
+.ti -1c
+.RI "void \fBWaitThenKillThread\fP (uint32_t thread_id, uint32_t timeout_ms=1000)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBRuntime\fP & \fBInstance\fP ()"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNO_CLASS_ASSIGNMENT\fP (\fBRuntime\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_COPY\fP (\fBRuntime\fP)"
+.br
+.ti -1c
+.RI "\fBRuntime\fP ()"
+.br
+.ti -1c
+.RI "\fB~Runtime\fP ()"
+.br
+.ti -1c
+.RI "\fBruntime_object_accessor\fP * \fBFindModule\fP (\fBruntime_object_accessor\fP *search)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fB_quitting\fP"
+.br
+.ti -1c
+.RI "std::vector< \fBthread_info\fP > \fB_manual_threads\fP"
+.br
+.ti -1c
+.RI "std::set
+.br
+< \fBruntime_object_accessor\fP * > \fB_runtime_objects\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Dedicated class for storing all 'global' variables\&. Meyers Singleton, so no memory leaks\&.
+.PP
+Globally accessible to any file including \fBruntime\&.h\fP, but only \fBapp_init()\fP and app_free() have the ability to create and destroy the class, and access any other internals\&.
+.PP
+The classes returned are all created on the stack as static variables in their respective functions\&. This has much less overhead than having them as std::unique_ptr's that are allocated on the heap, and we can access the raw pointer directly\&.
+.PP
+While this is a technical misuse of a Singleton, since there can only ever be one runtime (which we can then use to interface with the host OS and also maintains if the app is quitting, for example), it seems somewhat appropriate and can easily be replaced, the way it has been designed\&.
+.PP
+Yes, this can be implemented in other ways - but this is clear and concise, without \fItoo\fP many of the issues commonly associated with bad singleton use\&. 
+.PP
+Definition at line 121 of file Runtime\&.h\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Runtime::Runtime ()\fC [private]\fP"
+
+.PP
+Definition at line 36 of file Runtime\&.cc\&.
+.PP
+.nf
+37 {
+38 }
+.fi
+.SS "Runtime::~Runtime ()\fC [private]\fP"
+
+.PP
+Definition at line 42 of file Runtime\&.cc\&.
+.PP
+.nf
+43 {
+44 }
+.fi
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBConfiguration\fP * Runtime::Config () const"
+Gets the configuration\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A pointer to the static instance within the runtime\&. 
+.RE
+.PP
+
+.PP
+Definition at line 49 of file Runtime\&.cc\&.
+.PP
+Referenced by app_exec(), app_init(), and spawn_interface()\&.
+.PP
+.nf
+50 {
+51         static Configuration    config;
+52         return &config;
+53 }
+.fi
+.SS "void Runtime::DoShutdown ()"
+
+.PP
+\fBTodo\fP
+.RS 4
+how can we force objects to quit since we have no knowledge of what modules they are? Current proposal: have them export a 'quit' function that can be called from here now, that way they're all done and clean\&.\&.\&. similar to the functionality behind the get() getter 
+.RE
+.PP
+
+.PP
+Definition at line 74 of file Runtime\&.cc\&.
+.PP
+References _manual_threads, _quitting, and WaitThenKillThread()\&.
+.PP
+.nf
+75 {
+76         /* some, not all, threads query with the runtime if the app is quitting
+77          * when synchronized, so they can quit cleanly (otherwise, the only way
+78          * to stop the thread is to kill it)\&. */
+79         _quitting = true;
+80 
+87         // parser thread explicity waits for _quitting to be set
+88         //Irc()->Parser()->TriggerSync();
+89 
+90         // stop any existing threads still running
+91         while ( !_manual_threads\&.empty() )
+92                 WaitThenKillThread(_manual_threads[0]\&.thread);
+93 }
+.fi
+.SS "\fBruntime_object_accessor\fP * Runtime::FindModule (\fBruntime_object_accessor\fP *search)\fC [private]\fP"
+
+.PP
+Definition at line 58 of file Runtime\&.cc\&.
+.PP
+References _runtime_objects, and runtime_object_accessor::name\&.
+.PP
+Referenced by GetObjectFromModule()\&.
+.PP
+.nf
+61 {
+62         for ( auto iter : _runtime_objects )
+63         {
+64                 if ( strcmp((*iter)\&.name, search->name) == 0 )
+65                         return iter;
+66         }
+67         
+68         return nullptr;
+69 }
+.fi
+.SS "void * Runtime::GetObjectFromModule (const char *module_name)"
+Loads an interface from a module name (e\&.g\&. 'libirc' will return a pointer to the IRC interface returned within the library)\&.
+.PP
+\fBTodo\fP
+.RS 4
+Need a proper data type so we're not blindly casting 
+.RE
+.PP
+
+.PP
+Definition at line 98 of file Runtime\&.cc\&.
+.PP
+References _runtime_objects, CONSTRUCT, FindModule(), runtime_object_accessor::get, get_function_address(), MALLOC, MAX_LEN_GENERIC, mb_to_utf8(), runtime_object_accessor::name, and strlcpy()\&.
+.PP
+Referenced by IrcObject::IrcObject()\&.
+.PP
+.nf
+101 {
+102         bool                            could_not_load = true;
+103         runtime_object_accessor         search;
+104         runtime_object_accessor*        retval;
+105 
+106         strlcpy(search\&.name, module_name, sizeof(search\&.name));
+107         
+108         if (( retval = FindModule(&search)) == nullptr )
+109         {
+110                 // not found, try to load the module
+111 
+112 #if _WIN32
+113                 wchar_t w_module_name[MAX_LEN_GENERIC];
+114                 HANDLE  mod = NULL;
+115                 
+116                 if ( mb_to_utf8(w_module_name, module_name, _countof(w_module_name)) )
+117                         mod = LoadLibrary(w_module_name);
+118 
+119                 if ( mod != NULL )
+120                         could_not_load = false;
+121 #else
+122 #endif
+123 
+124                 // if we couldn't load it, we'll have to abort
+125                 if ( could_not_load )
+126                 {
+127                         throw std::runtime_error("Failed to load required module");
+128                 }
+129 
+130                 retval = (runtime_object_accessor*)MALLOC(sizeof(runtime_object_accessor));
+131                 CONSTRUCT(retval, runtime_object_accessor);
+132 
+133 #if _WIN32
+134                 retval->get     = (getter)get_function_address("instance", w_module_name);
+135 #else
+136 #endif
+137 
+138                 if ( retval->get == nullptr )
+139                 {
+140                         throw std::runtime_error("Module did not export the required instance function");
+141                 }
+142 
+143                 // add the loaded module to the set
+144                 _runtime_objects\&.insert(retval);
+145         }
+146 
+147         return retval->get(nullptr);
+148 }
+.fi
+.SS "static \fBRuntime\fP& Runtime::Instance ()\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Definition at line 155 of file Runtime\&.h\&.
+.PP
+.nf
+156         {
+157                 static Runtime  rtime;
+158                 return rtime;
+159         }
+.fi
+.SS "bool Runtime::IsQuitting ()\fC [inline]\fP"
+Gets whether \fBDoShutdown()\fP has been called; mostly used for threads and other sync objects to know when they should close down, or stop\&. 
+.PP
+Definition at line 195 of file Runtime\&.h\&.
+.PP
+Referenced by IrcParser::RunParser()\&.
+.PP
+.nf
+196         {
+197                 return _quitting;
+198         }
+.fi
+.SS "class \fBLog\fP * Runtime::Logger () const"
+Gets the logging class\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A pointer to the static instance within the runtime\&. 
+.RE
+.PP
+
+.PP
+Definition at line 154 of file Runtime\&.cc\&.
+.PP
+Referenced by app_exec(), app_init(), app_stop(), Configuration::Dump(), and main()\&.
+.PP
+.nf
+155 {
+156         static class Log        log;
+157         return &log;
+158 }
+.fi
+.SS "Runtime::NO_CLASS_ASSIGNMENT (\fBRuntime\fP)\fC [private]\fP"
+only this function can expose created classes and only this function can access internals when shutting down 
+.SS "Runtime::NO_CLASS_COPY (\fBRuntime\fP)\fC [private]\fP"
+
+.SS "void Runtime::Report (const char *text_buffer, const char *title) const"
+Brings up a notification dialog for the windowing system the operating system provides\&.
+.PP
+On Windows, this calls MessageBox(), which steals focus and blocks the thread that triggered the execution\&. As such, should only be used when the application pause/user notification is essential, or if an error occurs that will trigger the app to be aborted anyway\&.
+.PP
+Currently no implementation on Linux/FreeBSD - investigating the best way to report a simple GUI message without having to connect to X, create atoms, etc\&. (and we're not using a framework for something so simple either - we're anti-bloat!)
+.PP
+\fBTodo\fP
+.RS 4
+Linux/Unix implementation 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fItext_buffer\fP The main body of the string to display 
+.br
+\fItitle\fP The window title text 
+.RE
+.PP
+
+.PP
+Definition at line 176 of file Runtime\&.cc\&.
+.PP
+References mb_to_utf8()\&.
+.PP
+Referenced by ObjectPool< IrcUser >::ReportReferencedObject()\&.
+.PP
+.nf
+180 {
+181 #if defined(_WIN32)
+182         wchar_t         w_text[4096];
+183         wchar_t         w_title[1024];
+184         mb_to_utf8(w_text, text_buffer, _countof(w_text));
+185         mb_to_utf8(w_title, title, _countof(w_title));
+186         ::MessageBox(GetDesktopWindow(), w_text, w_title, MB_OK);
+187 #else
+188 #endif
+189 }
+.fi
+.SS "void Runtime::ThreadStopping (uint32_tthread_id, const char *function)"
+Causes the runtime to amend its _manual_threads storage - expected to be called BY the thread function, but can be executed externally if you're aware of abnormal/alternative termination\&.
+.PP
+Usually executed after breaking out of a loop, e\&.g\&. on Windows: 
+.PP
+.nf
+} // end loop/sync
+
+runtime\&.ThreadStopping(GetCurrentThreadId(), __FUNCTION__);
+
+.fi
+.PP
+.PP
+While not mandatory to be called, on app closure the runtime will try to wait for all known threads to finish, then terminate them if they are taking too long\&. If the system responds to the handles in an unexpected way, this could cause a crash if this function has not been processed\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIthread_id\fP The ID of the executing thread that's stopping 
+.br
+\fIfunction\fP The name of the thread function itself 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+CreateThread 
+.RE
+.PP
+
+.PP
+Definition at line 194 of file Runtime\&.cc\&.
+.PP
+References _manual_threads, fg_red(), Info, and LOG\&.
+.PP
+Referenced by IrcConnection::EstablishConnection(), and IrcParser::RunParser()\&.
+.PP
+.nf
+198 {
+199         bool    found = false;
+200 
+201         // search for the thread id
+202         for ( auto t : _manual_threads )
+203         {
+204                 if ( t\&.thread == thread_id )
+205                 {
+206                         LOG(ELogLevel::Info) << "Thread id " << thread_id << " (" << function << ") is ending execution\n";
+207 
+208                         _manual_threads\&.erase(std::find(_manual_threads\&.begin(), _manual_threads\&.end(), t));
+209                         found = true;
+210                         break;
+211                 }
+212         }
+213 
+214         if ( !found )
+215         {
+216                 std::cerr << fg_red << "The supplied thread id (" << thread_id << ") was not found in the list\n";
+217         }
+218 }
+.fi
+.SS "void Runtime::WaitThenKillThread (uint32_tthread_id, uint32_ttimeout_ms = \fC1000\fP)"
+Locates the supplied thread_id in the stored thread list, and if found, waits timeout_ms for it to finish before terminating it by force\&.
+.PP
+Should only be called after performing an action that would cause the thread to actually start its own cleanup routine, or just plain stop\&.
+.PP
+Primarily used for ensuring the \fBIrcConnection\fP class doesn't get deleted while its thread is still running, but can/will expand into other uses too\&.
+.PP
+When this function returns, the supplied thread_id is guaranteed to not exist (assuming it was spawned by our CreateThread); if it does not exist to begin with, the function returns immediately\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIthread_id\fP The ID of the thread to wait for 
+.br
+\fItimeout_ms\fP The time to wait in milliseconds before killing 
+.RE
+.PP
+
+.PP
+Definition at line 223 of file Runtime\&.cc\&.
+.PP
+References _manual_threads, END_NAMESPACE, fg_red(), fg_yellow(), LOG, and Warn\&.
+.PP
+Referenced by IrcConnection::Cleanup(), and DoShutdown()\&.
+.PP
+.nf
+227 {
+228         thread_info*    ti = nullptr;
+229         bool            killed = false;
+230         bool            success = true;
+231 
+232         for ( auto t : _manual_threads )
+233         {
+234 #if defined(_WIN32)
+235                 if ( t\&.thread == thread_id )
+236                 {
+237                         ti = &t;
+238 
+239                         if ( t\&.thread_handle != nullptr && t\&.thread_handle != INVALID_HANDLE_VALUE )
+240                         {
+241                                 DWORD   exit_code = 0;
+242                                 DWORD   wait_ret;
+243 
+244                                 wait_ret = WaitForSingleObject(t\&.thread_handle, timeout_ms);
+245 
+246                                 if ( wait_ret != WAIT_OBJECT_0 || wait_ret != WAIT_TIMEOUT )
+247                                 {
+248                                         if ( GetLastError() == ERROR_INVALID_HANDLE )
+249                                         {
+250                                                 std::cerr << fg_red << "The thread handle " << t\&.thread_handle << " was reported as invalid by the system\n";
+251                                                 // exit loop, just remove the thread_info
+252                                                 success = false;
+253                                                 break;
+254                                         }
+255                                 }
+256 
+257                                 if ( !GetExitCodeThread(t\&.thread_handle, &exit_code) || exit_code == STILL_ACTIVE )
+258                                 {
+259                                         // tried to let the thread go peacefully - kill it
+260                                         if ( TerminateThread(t\&.thread_handle, EXIT_FAILURE) )
+261                                         {
+262                                                 killed = true;
+263                                                 std::cerr << fg_yellow << "Thread id " << thread_id << " has been forcibly killed after timing out\n";
+264                                         }
+265                                         else
+266                                         {
+267                                                 success = false;
+268                                                 std::cerr << fg_red << "Failed to terminate thread id " << thread_id << "; Win32 error " << GetLastError() << "\n";
+269                                         }
+270                                 }
+271 
+272                                 CloseHandle(t\&.thread_handle);
+273                         }
+274 
+275 #else
+276 
+277                 if ( t\&.thread == thread_id )
+278                 {
+279                         int32_t         rc;
+280                         timespec        wait_time;
+281 
+282                         ti = &t;
+283 
+284                         wait_time\&.tv_nsec = (timeout_ms % 1000) * 1000000;
+285 
+286                         rc = pthread_timedjoin_np(t\&.thread, nullptr, &wait_time);
+287 
+288                         if ( rc == ETIMEDOUT )
+289                         {
+290                                 /* tried to let the thread go peacefully - stop it */
+291                                 pthread_cancel(t\&.thread);
+292                                 /* wait again */
+293                                 rc = pthread_timedjoin_np(t\&.thread, nullptr, &wait_time);
+294 
+295                                 if ( rc == ETIMEDOUT )
+296                                 {
+297                                         std::cerr << fg_yellow << "Thread " << t\&.thread << " has been forcibly killed after failing to finish on request\n";
+298 
+299                                         /* Just kill it and live with any resource leaks */
+300                                         pthread_kill(t\&.thread, SIGKILL);
+301                                         killed = true;
+302                                 }
+303                                 else if ( rc != 0 )
+304                                 {
+305                                         std::cerr << fg_red << "Received errno " << rc << " after waiting for thread " << t\&.thread << " to finish\n";
+306                                 }
+307                         }
+308 #endif  // _WIN32
+309 
+310                         break;
+311                 }
+312 
+313         }
+314 
+315         /* the executing thread MUST call ThreadStopping(), in which case this
+316          * thread_info will have already be removed from the list, so there's
+317          * nothing to do\&.
+318          * If we had to kill it however, the function would never have been
+319          * called, so we need to remove it manually + notify */
+320         if ( ti != nullptr && killed )
+321         {
+322                 LOG(ELogLevel::Warn) << "Thread id " << thread_id << " has been killed\n";
+323                 _manual_threads\&.erase(std::find(_manual_threads\&.begin(), _manual_threads\&.end(), ti));
+324         }
+325         else if ( ti != nullptr && !success )
+326         {
+327                 // not killed, waiting failed, error reported - just remove it
+328                 _manual_threads\&.erase(std::find(_manual_threads\&.begin(), _manual_threads\&.end(), ti));
+329         }
+330         else
+331         {
+332                 /* if the thread_info still exists, we've been told a lie, or
+333                 * the thread function never called ThreadStopping */
+334 
+335                 for ( auto t : _manual_threads )
+336                 {
+337                         if ( t\&.thread == thread_id )
+338                         {
+339                                 std::cerr << fg_red << "Thread id " << thread_id <<
+340                                         " still exists after a successful wait for the thread to finish;"
+341                                         " was Runtime::ThreadStopping() not executed or did the system lie?";
+342 
+343                                 // best to remove it anyway
+344                                 _manual_threads\&.erase(std::find(_manual_threads\&.begin(), _manual_threads\&.end(), t));
+345                                 break;
+346                         }
+347                 }
+348         }
+349 }
+.fi
+.SH "Member Data Documentation"
+.PP 
+.SS "std::vector<\fBthread_info\fP> Runtime::_manual_threads\fC [private]\fP"
+
+.PP
+Definition at line 137 of file Runtime\&.h\&.
+.PP
+Referenced by DoShutdown(), ThreadStopping(), and WaitThenKillThread()\&.
+.SS "bool Runtime::_quitting\fC [private]\fP"
+
+.PP
+Definition at line 135 of file Runtime\&.h\&.
+.PP
+Referenced by DoShutdown()\&.
+.SS "std::set<\fBruntime_object_accessor\fP*> Runtime::_runtime_objects\fC [private]\fP"
+
+.PP
+Definition at line 146 of file Runtime\&.h\&.
+.PP
+Referenced by FindModule(), and GetObjectFromModule()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

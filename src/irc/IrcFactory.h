@@ -20,6 +20,7 @@ class IrcUser;
 class IrcChannel;
 class IrcConnection;
 class IrcNetwork;
+class IrcEngine;
 class IrcObject;
 
 

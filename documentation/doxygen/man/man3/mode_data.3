@@ -1,0 +1,53 @@
+.TH "mode_data" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+mode_data \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <irc_structs\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBis_enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBhas_data\fP"
+.br
+.ti -1c
+.RI "char \fBmode\fP"
+.br
+.ti -1c
+.RI "std::string \fBdata\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Additional structure required to parse modes\&. Each mode received in a message is split into multiple structures, and then sent through processing\&. Doing it this way allows plugins to get any data they're monitoring with minimal hassle and virtually no work to do\&. 
+.PP
+Definition at line 126 of file irc_structs\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string mode_data::data"
+data associated with the mode - can be a nick, hostmask, etc\&. 
+.PP
+Definition at line 131 of file irc_structs\&.h\&.
+.SS "bool mode_data::has_data"
+whether there should be data with this mode 
+.PP
+Definition at line 129 of file irc_structs\&.h\&.
+.SS "bool mode_data::is_enabled"
+enabling mode (+) or disabling (-) 
+.PP
+Definition at line 128 of file irc_structs\&.h\&.
+.SS "char mode_data::mode"
+the mode itself (m, v, q, o, etc\&.) 
+.PP
+Definition at line 130 of file irc_structs\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

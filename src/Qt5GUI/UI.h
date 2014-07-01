@@ -77,8 +77,8 @@ public:
 	 * Creates the windows show for the initial user interface, containing the
 	 * application window, menu and status bars.
 	 *
-	 * @return Returns true if everything is created without fault, otherwise
-	 * false is returned
+     * @return Returns EGuiStatus::Ok if everything is created without fault,
+     * otherwise the applicable status is returned
 	 */
 	APP_NAMESPACE::GUI_NAMESPACE::EGuiStatus
 	CreateDefaultWindows();

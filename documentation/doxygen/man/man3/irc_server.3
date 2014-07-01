@@ -1,0 +1,208 @@
+.TH "irc_server" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+irc_server \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <live_structs\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBhost\fP"
+.br
+.ti -1c
+.RI "std::string \fBip_address\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBport\fP"
+.br
+.ti -1c
+.RI "std::string \fBchan_mode_chars\fP"
+.br
+.ti -1c
+.RI "std::string \fBchan_mode_symbols\fP"
+.br
+.ti -1c
+.RI "std::string \fBchan_types\fP"
+.br
+.ti -1c
+.RI "std::string \fBsupported_modes_A\fP"
+.br
+.ti -1c
+.RI "std::string \fBsupported_modes_B\fP"
+.br
+.ti -1c
+.RI "std::string \fBsupported_modes_C\fP"
+.br
+.ti -1c
+.RI "std::string \fBsupported_modes_D\fP"
+.br
+.ti -1c
+.RI "std::string \fBnetwork\fP"
+.br
+.ti -1c
+.RI "std::string \fBserver\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBmax_len_away\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBmax_len_channel\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBmax_len_kickmsg\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBmax_len_nick\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBmax_len_topic\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBmax_num_modes\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBmax_num_channels\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The structure containing the dynamic server 'options' and data, as received 
+.PP
+Definition at line 48 of file live_structs\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string irc_server::chan_mode_chars"
+server character modes - +a, +v, +h, etc\&. 
+.PP
+Definition at line 53 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005(), IrcParser::Handle353(), and IrcParser::ModeHasArgument()\&.
+.SS "std::string irc_server::chan_mode_symbols"
+server symbol modes - &, @, +, etc\&. 
+.PP
+Definition at line 54 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005(), and IrcParser::Handle353()\&.
+.SS "std::string irc_server::chan_types"
+channel prefixes 
+.PP
+Definition at line 55 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005(), and IrcParser::HasChannelPrefix()\&.
+.SS "std::string irc_server::host"
+the hostname reported by the server 
+.PP
+Definition at line 50 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle002(), and IrcNetwork::UpdateServerInfo()\&.
+.SS "std::string irc_server::ip_address"
+the IP address of the server 
+.PP
+Definition at line 51 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle002(), and IrcNetwork::UpdateServerInfo()\&.
+.SS "uint16_t irc_server::max_len_away"
+maximum length of an away message 
+.PP
+Definition at line 62 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005()\&.
+.SS "uint16_t irc_server::max_len_channel"
+maximum length of a channel name 
+.PP
+Definition at line 63 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005()\&.
+.SS "uint16_t irc_server::max_len_kickmsg"
+maximum length of a kick message 
+.PP
+Definition at line 64 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005()\&.
+.SS "uint16_t irc_server::max_len_nick"
+maximum length of a clients nickname 
+.PP
+Definition at line 65 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005()\&.
+.SS "uint16_t irc_server::max_len_topic"
+maximum length of a channel topic 
+.PP
+Definition at line 66 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005()\&.
+.SS "uint16_t irc_server::max_num_channels"
+
+.PP
+\fBTodo\fP
+.RS 4
+different channel prefixes have different limits 
+.RE
+.PP
+The channel limit
+.PP
+\fBTodo\fP
+.RS 4
+different channel prefixes have different limits 
+.RE
+.PP
+The channel limit 
+.PP
+Definition at line 70 of file live_structs\&.h\&.
+.SS "uint16_t irc_server::max_num_modes"
+maximum number of modes in a single MODE command 
+.PP
+Definition at line 67 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005(), and IrcParser::HandleMode()\&.
+.SS "std::string irc_server::network"
+server reported network name 
+.PP
+Definition at line 60 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005(), and IrcNetwork::Name()\&.
+.SS "uint16_t irc_server::port"
+the port of the server connection 
+.PP
+Definition at line 52 of file live_structs\&.h\&.
+.PP
+Referenced by IrcNetwork::UpdateServerInfo()\&.
+.SS "std::string irc_server::server"
+the server within the network, as reported 
+.PP
+Definition at line 61 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle001(), and IrcNetwork::Server()\&.
+.SS "std::string irc_server::supported_modes_A"
+server supported 'A' modes 
+.PP
+Definition at line 56 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005(), and IrcParser::ModeHasArgument()\&.
+.SS "std::string irc_server::supported_modes_B"
+server supported 'B' modes 
+.PP
+Definition at line 57 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005(), and IrcParser::ModeHasArgument()\&.
+.SS "std::string irc_server::supported_modes_C"
+server supported 'C' modes 
+.PP
+Definition at line 58 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005(), and IrcParser::ModeHasArgument()\&.
+.SS "std::string irc_server::supported_modes_D"
+server supported 'D' modes 
+.PP
+Definition at line 59 of file live_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

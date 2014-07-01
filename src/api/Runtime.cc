@@ -12,9 +12,14 @@
 
 #if defined(_WIN32)
 #	define WIN32_LEAN_AND_MEAN
-#	include <Windows.h>	// MessageBox
+#	include <Windows.h>		// MessageBox
+#else
+    // Quickest, !cheapest! way to get a dialog box using X/Wayland?
+#	include <string.h>
+#	include <signal.h>
+#	include <pthread.h>
 #endif
-// Quickest, !cheapest! way to get a dialog box using X/Wayland?
+
 
 #include "Runtime.h"		// prototypes
 #include "Allocator.h"
@@ -128,6 +133,10 @@ Runtime::GetObjectFromModule(
 		}
 
 		retval = (runtime_object_accessor*)MALLOC(sizeof(runtime_object_accessor));
+        if ( retval == nullptr )
+        {
+            throw std::runtime_error("Memory allocation failed");
+        }
 		CONSTRUCT(retval, runtime_object_accessor);
 
 #if _WIN32
@@ -243,7 +252,7 @@ Runtime::WaitThenKillThread(
 
 				wait_ret = WaitForSingleObject(t.thread_handle, timeout_ms);
 
-				if ( wait_ret != WAIT_OBJECT_0 || wait_ret != WAIT_TIMEOUT )
+                if ( wait_ret != WAIT_OBJECT_0 && wait_ret != WAIT_TIMEOUT )
 				{
 					if ( GetLastError() == ERROR_INVALID_HANDLE )
 					{

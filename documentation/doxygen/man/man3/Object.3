@@ -1,0 +1,23 @@
+.TH "Object" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Object \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <IrcObject\&.h>\fP
+.SH "Detailed Description"
+.PP 
+The base class for all application objects\&.
+.PP
+Uses a custom reference counter to auto-delete the object when nothing is referencing it anymore\&. Done by C++11 atomic operations, which retains the performance\&.
+.PP
+Yes, we could use a shared_ptr for every object - and yes, I initially started designing it that way\&. I very quickly encountered unbreachable hurdles, and started resorting to hacks, until I determined it was quicker, easier, more fun, and less to maintain by doing it our custom way! 
+.PP
+Definition at line 21 of file IrcObject\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

@@ -8,6 +8,11 @@
 
 
 
+#include <api/definitions.h>
+#include <api/types.h>
+
+
+
 BEGIN_NAMESPACE(APP_NAMESPACE)
 
 
@@ -27,6 +32,19 @@ get_current_binary_path(
 	char* buffer,
 	uint32_t buffer_size
 );
+
+
+
+/**
+ *
+ * @param[in] sig
+ */
+SBI_API
+void
+segfault_handler(
+    int32_t sig
+);
+
 
 
 END_NAMESPACE

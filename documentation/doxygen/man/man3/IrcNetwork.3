@@ -1,0 +1,709 @@
+.TH "IrcNetwork" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IrcNetwork \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <IrcNetwork\&.h>\fP
+.PP
+Inherits \fBIrcObject\fP, and \fBIrcObject\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBIrcNetwork\fP (const char *group_name)"
+.br
+.ti -1c
+.RI "\fB~IrcNetwork\fP ()"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBCleanup\fP ()"
+.br
+.ti -1c
+.RI "std::string \fBClientHostmask\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBClientNickname\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBGetAuthService\fP () const "
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBIrcConnection\fP > \fBGetConnection\fP ()"
+.br
+.ti -1c
+.RI "std::string \fBGroupName\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBName\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBServer\fP () const "
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBIrcConnection\fP > \fBSetup\fP (std::shared_ptr< \fBconfig_network\fP > network_config, std::shared_ptr< \fBconfig_profile\fP > profile_config)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBUpdateServerInfo\fP ()"
+.br
+.ti -1c
+.RI "\fBIrcNetwork\fP (const char *group_name)"
+.br
+.ti -1c
+.RI "\fB~IrcNetwork\fP ()"
+.br
+.ti -1c
+.RI "void \fBCleanup\fP ()"
+.br
+.ti -1c
+.RI "std::string \fBClientHostmask\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBClientNickname\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBGetAuthService\fP () const "
+.br
+.ti -1c
+.RI "\fBIrcConnection\fP * \fBGetConnection\fP ()"
+.br
+.ti -1c
+.RI "std::string \fBGroupName\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBName\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBServer\fP () const "
+.br
+.ti -1c
+.RI "\fBIrcConnection\fP * \fBSetup\fP (std::shared_ptr< \fBconfig_network\fP > network_config, std::shared_ptr< \fBconfig_profile\fP > profile_config)"
+.br
+.ti -1c
+.RI "bool \fBUpdateServerInfo\fP ()"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNO_CLASS_ASSIGNMENT\fP (\fBIrcNetwork\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_COPY\fP (\fBIrcNetwork\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_ASSIGNMENT\fP (\fBIrcNetwork\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_COPY\fP (\fBIrcNetwork\fP)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::vector< uint32_t > \fB_cids\fP"
+.br
+.ti -1c
+.RI "\fBconfig_network\fP \fB_network_config\fP"
+.br
+.ti -1c
+.RI "\fBconfig_profile\fP \fB_profile_config\fP"
+.br
+.ti -1c
+.RI "\fBirc_client\fP \fB_client\fP"
+.br
+.ti -1c
+.RI "\fBirc_server\fP \fB_server\fP"
+.br
+.ti -1c
+.RI "std::string \fB_name\fP"
+.br
+.ti -1c
+.RI "std::string \fB_group_name\fP"
+.br
+.ti -1c
+.RI "std::mutex \fB_mutex\fP"
+.br
+.ti -1c
+.RI "\fBIrcConnection\fP * \fB_connection\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBIrcParser\fP"
+.br
+.ti -1c
+.RI "class \fBIrcConnection\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBTodo\fP
+.RS 4
+Think of a method proxy-style to prevent the need for direct variable access via \fBIrcConnection\fP\&. Our existing proxy class doesn't have the ability to handle structs (is more designed for single variables)\&. May be worth just having a base class where you insert a request, and the derived class returns the result\&. Or, simply leave it as friend and save much work at the cost of some imperfect design\&.\&.\&.
+.RE
+.PP
+.PP
+\fBTodo\fP
+.RS 4
+Think of a method proxy-style to prevent the need for direct variable access via \fBIrcConnection\fP\&. Our existing proxy class doesn't have the ability to handle structs (is more designed for single variables)\&. May be worth just having a base class where you insert a request, and the derived class returns the result\&. Or, simply leave it as friend and save much work at the cost of some imperfect design\&.\&.\&.
+.RE
+.PP
+
+.PP
+Definition at line 40 of file IrcNetwork\&.h\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "IrcNetwork::IrcNetwork (const char *group_name)"
+
+.PP
+Definition at line 33 of file IrcNetwork\&.cc\&.
+.PP
+.nf
+36 : _group_name(group_name)
+37 {
+38 }
+.fi
+.SS "IrcNetwork::~IrcNetwork ()"
+
+.PP
+Definition at line 42 of file IrcNetwork\&.cc\&.
+.PP
+References Cleanup()\&.
+.PP
+.nf
+43 {
+44         Cleanup();
+45 }
+.fi
+.SS "IrcNetwork::IrcNetwork (const char *group_name)"
+
+.SS "IrcNetwork::~IrcNetwork ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void IrcNetwork::Cleanup ()"
+
+.SS "void IrcNetwork::Cleanup ()"
+
+.PP
+\fBTodo\fP
+.RS 4
+use updated handling 
+.RE
+.PP
+
+.PP
+Definition at line 50 of file IrcNetwork\&.cc\&.
+.PP
+References _mutex, and OK\&.
+.PP
+Referenced by ~IrcNetwork()\&.
+.PP
+.nf
+51 {
+52         std::lock_guard<std::mutex>     lock(_mutex);
+53 
+54 #if 0   
+55 
+58         if ( _connection != nullptr )
+59         {
+60 
+61                 /* If you do not want the connection to be freed, you MUST call
+62                  * the cleanup function for the connection first, then set this
+63                  * to NULL, so it will not enter this scope on cleanup\&. */
+64                 //runtime\&.Factory()->DeleteIrcObject(_connection);
+65         }
+66 #endif
+67 
+68         return EIrcStatus::OK;
+69 }
+.fi
+.SS "std::string IrcNetwork::ClientHostmask () const"
+Gets the current hostmask we're using\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the current hostmask; this is obtained from the client config 
+.RE
+.PP
+
+.SS "std::string IrcNetwork::ClientHostmask () const"
+Gets the current hostmask we're using\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the current hostmask; this is obtained from the client config 
+.RE
+.PP
+
+.PP
+Definition at line 74 of file IrcNetwork\&.cc\&.
+.PP
+References _client, _mutex, and irc_client::hostmask\&.
+.PP
+.nf
+75 {
+76         std::lock_guard<std::mutex>     lock(_mutex);
+77 
+78         return _client\&.hostmask;
+79 }
+.fi
+.SS "std::string IrcNetwork::ClientNickname () const"
+Gets the current nickname we're using\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the current nickname; this is obtained from the client config 
+.RE
+.PP
+
+.SS "std::string IrcNetwork::ClientNickname () const"
+Gets the current nickname we're using\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the current nickname; this is obtained from the client config 
+.RE
+.PP
+
+.PP
+Definition at line 84 of file IrcNetwork\&.cc\&.
+.PP
+References _client, _mutex, and irc_client::nickname\&.
+.PP
+.nf
+85 {
+86         std::lock_guard<std::mutex>     lock(_mutex);
+87 
+88         return _client\&.nickname;
+89 }
+.fi
+.SS "std::string IrcNetwork::GetAuthService () const"
+Retrieves a copy of the name of the network service used to authenticate users entering their passwords\&.
+.PP
+Stored in the config; is it worth just returning a copy of the entire config structs rather than using functions for each member as needed?
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the network auth service is returned, or an empty object if it's not set yet 
+.RE
+.PP
+
+.SS "std::string IrcNetwork::GetAuthService () const"
+Retrieves a copy of the name of the network service used to authenticate users entering their passwords\&.
+.PP
+Stored in the config; is it worth just returning a copy of the entire config structs rather than using functions for each member as needed?
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the network auth service is returned, or an empty object if it's not set yet 
+.RE
+.PP
+
+.PP
+Definition at line 94 of file IrcNetwork\&.cc\&.
+.PP
+References _profile_config, and config_profile::autoident_service\&.
+.PP
+.nf
+95 {
+96         return _profile_config\&.autoident_service;
+97 }
+.fi
+.SS "\fBIrcConnection\fP * IrcNetwork::GetConnection ()"
+Retrieves this networks connection\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A pointer to the connection is returned\&. If \fBSetup()\fP has not been called successfully, this will be a nullptr; otherwise, a valid pointer will be returned\&. 
+.RE
+.PP
+
+.PP
+\fBTodo\fP
+.RS 4
+use updated handling 
+.RE
+.PP
+
+.PP
+Definition at line 102 of file IrcNetwork\&.cc\&.
+.PP
+References _connection\&.
+.PP
+.nf
+103 {
+104 #if 0   
+105         if ( _connection == nullptr )
+106                 return nullptr;
+107 
+108         return _connection;
+109 #endif
+110         return nullptr;
+111 }
+.fi
+.SS "\fBIrcConnection\fP* IrcNetwork::GetConnection ()"
+Retrieves this networks connection\&.
+.PP
+\fBWarning:\fP
+.RS 4
+Increments the reference counter for the connection; it must be dereferenced when you're finished with it!
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A pointer to the connection is returned\&. If \fBSetup()\fP has not been called successfully, this will be a nullptr; otherwise, a valid pointer will be returned\&. 
+.RE
+.PP
+
+.SS "std::string IrcNetwork::GroupName () const"
+Retrieves a copy of the name of the network as assigned by the user (this is the name that appears in the Connections dialog, with the servers as child tree items)\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the name is returned, which is assigned in the constructor 
+.RE
+.PP
+
+.PP
+Definition at line 116 of file IrcNetwork\&.cc\&.
+.PP
+References _group_name, and _mutex\&.
+.PP
+.nf
+117 {
+118         std::lock_guard<std::mutex>     lock(_mutex);
+119 
+120         return _group_name;
+121 }
+.fi
+.SS "std::string IrcNetwork::GroupName () const"
+Retrieves a copy of the name of the network as assigned by the user (this is the name that appears in the Connections dialog, with the servers as child tree items)\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the name is returned, which is assigned in the constructor 
+.RE
+.PP
+
+.SS "std::string IrcNetwork::Name () const"
+Retrieves a copy of the name of the network, e\&.g\&. 'Rizon'
+.PP
+Set in the 005 received from the server, in 'NETWORK=xxx'\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the network name is returned, or an empty object if it's not set yet 
+.RE
+.PP
+
+.PP
+Definition at line 127 of file IrcNetwork\&.cc\&.
+.PP
+References _mutex, _server, and irc_server::network\&.
+.PP
+.nf
+128 {
+129         std::lock_guard<std::mutex>     lock(_mutex);
+130 
+131         return _server\&.network;
+132 }
+.fi
+.SS "std::string IrcNetwork::Name () const"
+Retrieves a copy of the name of the network, e\&.g\&. 'Rizon'
+.PP
+Set in the 005 received from the server, in 'NETWORK=xxx'\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the network name is returned, or an empty object if it's not set yet 
+.RE
+.PP
+
+.SS "IrcNetwork::NO_CLASS_ASSIGNMENT (\fBIrcNetwork\fP)\fC [private]\fP"
+
+.SS "IrcNetwork::NO_CLASS_ASSIGNMENT (\fBIrcNetwork\fP)\fC [private]\fP"
+
+.SS "IrcNetwork::NO_CLASS_COPY (\fBIrcNetwork\fP)\fC [private]\fP"
+
+.SS "IrcNetwork::NO_CLASS_COPY (\fBIrcNetwork\fP)\fC [private]\fP"
+
+.SS "std::string IrcNetwork::Server () const"
+Retrieves a copy of the networks hostname, \fIset by itself\fP
+.PP
+This is the string contained as the prefix of all messages (i\&.e\&. ':ircd\&.trezanik\&.org CAP * ACK :multi-prefix')\&.
+.PP
+For example, while the connection server parameters set 'irc\&.rizon\&.net' as the host we connected to, this parameter would show 'irc\&.shakeababy\&.net' if it was the actual server we ended at\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the network hostname is returned, or an empty object if it's not set yet 
+.RE
+.PP
+
+.PP
+Definition at line 137 of file IrcNetwork\&.cc\&.
+.PP
+References _mutex, _server, and irc_server::server\&.
+.PP
+.nf
+138 {
+139         std::lock_guard<std::mutex>     lock(_mutex);
+140 
+141         return _server\&.server;
+142 }
+.fi
+.SS "std::string IrcNetwork::Server () const"
+Retrieves a copy of the networks hostname, \fIset by itself\fP
+.PP
+This is the string contained as the prefix of all messages (i\&.e\&. ':ircd\&.trezanik\&.org CAP * ACK :multi-prefix')\&.
+.PP
+For example, while the connection server parameters set 'irc\&.rizon\&.net' as the host we connected to, this parameter would show 'irc\&.shakeababy\&.net' if it was the actual server we ended at\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the network hostname is returned, or an empty object if it's not set yet 
+.RE
+.PP
+
+.SS "\fBIrcConnection\fP * IrcNetwork::Setup (std::shared_ptr< \fBconfig_network\fP >network_config, std::shared_ptr< \fBconfig_profile\fP >profile_config)"
+Sets up and creates the connection to use for this network\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fInetwork_config\fP A pointer to a valid \fBconfig_network\fP struct 
+.br
+\fIprofile_config\fP A pointer to a valid \fBconfig_profile\fP struct 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Returns a pre-referenced \fBIrcConnection\fP on success, or a nullptr on failure\&. 
+.RE
+.PP
+
+.PP
+\fBTodo\fP
+.RS 4
+use updated handling 
+.RE
+.PP
+
+.PP
+Definition at line 147 of file IrcNetwork\&.cc\&.
+.PP
+References IrcObject::_irc_engine, _network_config, _profile_config, config_network::allow_invalid_cert, config_network::auto_connect, config_network::auto_exec_commands, config_profile::auto_identify, config_network::auto_join_channels, config_profile::autoident_password, config_profile::autoident_service, config_network::channels, config_network::commands, IrcEngine::CreateConnection(), fg_red(), config_profile::ident, config_profile::kick_reason, config_profile::mode, config_network::network_name, config_profile::nicknames, OK, config_profile::part_reason, config_profile::profile_name, config_network::profile_name, config_profile::quit_reason, config_profile::real_name, and config_network::servers\&.
+.PP
+.nf
+151 {
+152         if ( network_config == nullptr )
+153                 goto no_network;
+154         if ( profile_config == nullptr )
+155                 goto no_profile;
+156 
+157         /* copies are made of the xml configuration so that the physical file
+158          * can be modified without affecting an active connection\&.
+159          * Vectors are copied just by assignment, so this all looks clean! */
+160 
+161         _network_config\&.allow_invalid_cert       = network_config->allow_invalid_cert;
+162         _network_config\&.auto_connect             = network_config->auto_connect;
+163         _network_config\&.auto_exec_commands       = network_config->auto_exec_commands;
+164         _network_config\&.auto_join_channels       = network_config->auto_join_channels;
+165         _network_config\&.network_name             = network_config->network_name;
+166         _network_config\&.profile_name             = network_config->profile_name;
+167         _network_config\&.channels         = network_config->channels;
+168         _network_config\&.commands         = network_config->commands;
+169         _network_config\&.servers                  = network_config->servers;
+170 
+171         _profile_config\&.auto_identify            = profile_config->auto_identify;
+172         _profile_config\&.mode                     = profile_config->mode;
+173         _profile_config\&.profile_name             = profile_config->profile_name;
+174         _profile_config\&.autoident_password       = profile_config->autoident_password;
+175         _profile_config\&.autoident_service        = profile_config->autoident_service;
+176         _profile_config\&.kick_reason              = profile_config->kick_reason;
+177         _profile_config\&.part_reason              = profile_config->part_reason;
+178         _profile_config\&.quit_reason              = profile_config->quit_reason;
+179         _profile_config\&.ident                    = profile_config->ident;
+180         _profile_config\&.real_name                = profile_config->real_name;
+181         _profile_config\&.nicknames                = profile_config->nicknames;
+182 
+183         if ( _irc_engine->CreateConnection(this->GroupName()\&.c_str()) == EIrcStatus::OK )
+184         {
+185         }
+186 
+187         return nullptr;
+188 #if 0   
+189         return _connection;
+190 #endif
+191 
+192 no_network:
+193         std::cerr << fg_red << "The supplied network configuration was a nullptr\n";
+194         return nullptr;
+195 no_profile:
+196         std::cerr << fg_red << "The supplied profile configuration was a nullptr\n";
+197         return nullptr;
+198 }
+.fi
+.SS "\fBIrcConnection\fP* IrcNetwork::Setup (std::shared_ptr< \fBconfig_network\fP >network_config, std::shared_ptr< \fBconfig_profile\fP >profile_config)"
+Sets up and creates the connection to use for this network\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fInetwork_config\fP A pointer to a valid \fBconfig_network\fP struct 
+.br
+\fIprofile_config\fP A pointer to a valid \fBconfig_profile\fP struct 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Returns a pre-referenced \fBIrcConnection\fP on success, or a nullptr on failure\&. 
+.RE
+.PP
+
+.SS "bool IrcNetwork::UpdateServerInfo ()"
+Checks the contents of the connections connection parameters, and if the servers hostname/ip address are available, copies the data into the \fBirc_server\fP struct\&. The other fields are not touched, as they are read only when we are negotiating with the IRC server; the data is not available before then\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns the relevant EIrcStatus on error 
+.PP
+Returns \fBEIrcStatus::OK\fP when the \fBirc_server\fP struct is in sync with that of the connections \fBirc_connection_params\fP 
+.RE
+.PP
+
+.PP
+\fBTodo\fP
+.RS 4
+use updated handling 
+.RE
+.PP
+
+.PP
+Definition at line 203 of file IrcNetwork\&.cc\&.
+.PP
+References _connection, _mutex, IrcConnection::_params, _server, fg_red(), irc_server::host, irc_connection_params::host, irc_connection_params::ip_addr, irc_server::ip_address, MissingParameter, OK, irc_server::port, and irc_connection_params::port\&.
+.PP
+Referenced by IrcConnection::Setup()\&.
+.PP
+.nf
+204 {
+205         std::lock_guard<std::mutex>     lock(_mutex);
+206 
+207 #if 0   
+208         std::shared_ptr<IrcConnection>  connection = _irc_engine->Pools()->GetConnection(0);
+209 
+210         if ( _connection == nullptr )
+211                 goto connection_null;
+212 
+213         if ( !_connection->_params\&.host\&.empty() )
+214         {
+215                 _server\&.host = _connection->_params\&.host;
+216         }
+217         else
+218         {
+219                 _server\&.host\&.clear();
+220         }
+221 
+222         if ( !_connection->_params\&.ip_addr\&.empty() )
+223                 _server\&.ip_address = _connection->_params\&.ip_addr;
+224         else
+225                 _server\&.ip_address\&.clear();
+226 
+227         _server\&.port = _connection->_params\&.port;
+228 #endif
+229 
+230         return EIrcStatus::OK;
+231 
+232 connection_null:
+233         std::cerr << fg_red << "The connection is a nullptr\n";
+234         return EIrcStatus::MissingParameter;
+235 }
+.fi
+.SS "bool IrcNetwork::UpdateServerInfo ()"
+Checks the contents of the connections connection parameters, and if the servers hostname/ip address are available, copies the data into the \fBirc_server\fP struct\&. The other fields are not touched, as they are read only when we are negotiating with the IRC server; the data is not available before then\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns false on allocation failure or if the connection is a nullptr 
+.PP
+Returns true when the \fBirc_server\fP struct is in sync with that of the connections \fBirc_connection_params\fP 
+.RE
+.PP
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "\fBIrcConnection\fP\fC [friend]\fP"
+
+.PP
+Definition at line 45 of file IrcNetwork\&.h\&.
+.SS "\fBIrcParser\fP\fC [friend]\fP"
+
+.PP
+Definition at line 43 of file IrcNetwork\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::vector<uint32_t> IrcNetwork::_cids\fC [private]\fP"
+Connections owned by this network 
+.PP
+Definition at line 50 of file IrcNetwork\&.h\&.
+.SS "\fBirc_client\fP IrcNetwork::_client\fC [private]\fP"
+The current client configuration 
+.PP
+Definition at line 54 of file IrcNetwork\&.h\&.
+.PP
+Referenced by ClientHostmask(), ClientNickname(), IrcParser::Handle001(), IrcParser::HandleJoin(), IrcParser::HandleKick(), IrcParser::HandleKill(), IrcParser::HandleMode(), IrcParser::HandleNick(), IrcParser::HandleNotice(), IrcParser::HandlePart(), IrcParser::HandleQuit(), and IrcConnection::SendInit()\&.
+.SS "\fBIrcConnection\fP* IrcNetwork::_connection\fC [private]\fP"
+This networks connection 
+.PP
+Definition at line 49 of file bak/IrcNetwork\&.h\&.
+.PP
+Referenced by GetConnection(), and UpdateServerInfo()\&.
+.SS "std::string IrcNetwork::_group_name\fC [private]\fP"
+A name for this network for identification 
+.PP
+Definition at line 59 of file IrcNetwork\&.h\&.
+.PP
+Referenced by GroupName()\&.
+.SS "std::mutex IrcNetwork::_mutex\fC [mutable]\fP, \fC [private]\fP"
+Synchronization lock; mutable to enable constness for retrieval functions 
+.PP
+Definition at line 61 of file IrcNetwork\&.h\&.
+.PP
+Referenced by Cleanup(), ClientHostmask(), ClientNickname(), GroupName(), Name(), Server(), and UpdateServerInfo()\&.
+.SS "std::string IrcNetwork::_name\fC [private]\fP"
+Network name, as returned by the server 
+.PP
+Definition at line 57 of file IrcNetwork\&.h\&.
+.SS "\fBconfig_network\fP IrcNetwork::_network_config\fC [private]\fP"
+Copied network configuration 
+.PP
+Definition at line 52 of file IrcNetwork\&.h\&.
+.PP
+Referenced by IrcParser::HandleNotice(), Setup(), and IrcConnection::Setup()\&.
+.SS "\fBconfig_profile\fP IrcNetwork::_profile_config\fC [private]\fP"
+Copied profile configuration 
+.PP
+Definition at line 53 of file IrcNetwork\&.h\&.
+.PP
+Referenced by GetAuthService(), IrcParser::HandleNotice(), IrcConnection::SendInit(), and Setup()\&.
+.SS "\fBirc_server\fP IrcNetwork::_server\fC [private]\fP"
+The current server data 
+.PP
+Definition at line 55 of file IrcNetwork\&.h\&.
+.PP
+Referenced by IrcParser::Handle001(), IrcParser::Handle002(), IrcParser::Handle005(), IrcParser::Handle353(), IrcParser::HandleMode(), IrcParser::HasChannelPrefix(), IrcParser::ModeHasArgument(), Name(), Server(), and UpdateServerInfo()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

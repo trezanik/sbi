@@ -127,6 +127,9 @@
 #else
 #	define SBI_API
 #	define SBI_IRC_API
+#	define SBI_REDDIT_API
 #	define SBI_TWITTER_API
 #	define SBI_QT5GUI_API
+#	define SBI_ALWAYS_EXPORT
+#	define SBI_ALWAYS_IMPORT
 #endif

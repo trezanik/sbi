@@ -1,0 +1,460 @@
+.TH "Log" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Log \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Log\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBAppend\fP (const \fBCHARSTRINGTYPE\fP &append_string)"
+.br
+.ti -1c
+.RI "void \fBClose\fP ()"
+.br
+.ti -1c
+.RI "void \fBFlush\fP ()"
+.br
+.ti -1c
+.RI "\fBCHARSTREAMTYPE\fP & \fBLogWithLevel\fP (\fBELogLevel\fP log_level, const char *file=nullptr, const char *function=nullptr, const uint32_t line=0)"
+.br
+.ti -1c
+.RI "\fBELogLevel\fP \fBLogLevel\fP ()"
+.br
+.ti -1c
+.RI "bool \fBOpen\fP (char *filename)"
+.br
+.ti -1c
+.RI "void \fBSetLogLevel\fP (\fBELogLevel\fP loglevel)"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNO_CLASS_ASSIGNMENT\fP (\fBLog\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_COPY\fP (\fBLog\fP)"
+.br
+.ti -1c
+.RI "\fBLog\fP ()"
+.br
+.ti -1c
+.RI "\fB~Log\fP ()"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBCHARSTREAMTYPE\fP \fB_next_log\fP"
+.br
+.ti -1c
+.RI "\fBCHARSTREAMTYPE\fP \fB_null_log\fP"
+.br
+.ti -1c
+.RI "FILE * \fB_file\fP"
+.br
+.ti -1c
+.RI "\fBELogLevel\fP \fB_log_level\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBRuntime\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBTodo\fP
+.RS 4
+consider using a ChainOfResponsibility style for this; will enable us to have a single \fBLOG()\fP line of code, with all errors always being output to cerr, but only certain things going to a physical file\&. The complications will be multi-line and immediate or delayed flush\&.\&.\&.
+.RE
+.PP
+
+.PP
+Definition at line 42 of file Log\&.h\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Log::Log ()\fC [private]\fP"
+
+.PP
+Definition at line 33 of file Log\&.cc\&.
+.PP
+References _log_level, and Warn\&.
+.PP
+.nf
+34 {
+35          // operations append to the stream, and don't replace it
+36          //_next_log\&.setstate(std::ios_base::app);
+37          // logging at debug level by default 
+38         _log_level = ELogLevel::Warn;
+39 }
+.fi
+.SS "Log::~Log ()\fC [private]\fP"
+
+.PP
+Definition at line 43 of file Log\&.cc\&.
+.PP
+References _file, and Close()\&.
+.PP
+.nf
+44 {
+45         // if it hasn't already been closed, do it
+46         if ( _file != nullptr )
+47                 Close();
+48 }
+.fi
+.SH "Member Function Documentation"
+.PP 
+.SS "void Log::Append (const \fBCHARSTRINGTYPE\fP &append_string)"
+Used for inserting data when desiring a custom layout going to the log file\&. This bypasses any LogLevel, file/line info, and accesses the stream directly\&.
+.PP
+It's usage should be limited to formatting within the file, such as printing out a list of memory addresses with text - having a file + line for each at the start would be detrimental to legibility\&.
+.PP
+Use LogWithLevel(\&.\&.\&.) to get a similar result, and should be preferred where possible\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIappend_string\fP The string to append to the stream 
+.RE
+.PP
+
+.PP
+Definition at line 53 of file Log\&.cc\&.
+.PP
+References _next_log, Flush(), and STREAM_FLUSH_THRESHOLD\&.
+.PP
+Referenced by Configuration::Dump()\&.
+.PP
+.nf
+56 {
+57         _next_log << append_string;
+58 
+59         if ( _next_log\&.gcount() > STREAM_FLUSH_THRESHOLD )
+60                 Flush();
+61 }
+.fi
+.SS "void Log::Close ()"
+Closes the file previously opened by \fBOpen()\fP, if any\&. Will \fBFlush()\fP before the file is closed, with a notification suffix line\&.
+.PP
+Will cause _file to be a nullptr after execution\&. 
+.PP
+Definition at line 66 of file Log\&.cc\&.
+.PP
+References _file, Flush(), Force, and LogWithLevel()\&.
+.PP
+Referenced by main(), and ~Log()\&.
+.PP
+.nf
+67 {
+68         if ( _file != nullptr )
+69         {
+70                 // don't print file/line info, call direct
+71                 LogWithLevel(ELogLevel::Force) << "*** Log file closed ***\n";
+72                 Flush();
+73 
+74                 fclose(_file);
+75                 _file = nullptr;
+76         }
+77 }
+.fi
+.SS "void Log::Flush ()"
+Forces the current contents of the logging stream to be written to file, if it's open\&.
+.PP
+If the file is not open, the stream is reset, just like if there was data to write\&. 
+.PP
+\fBTodo\fP
+.RS 4
+temp; implement with chain of responsibility instead 
+.RE
+.PP
+
+.PP
+Definition at line 82 of file Log\&.cc\&.
+.PP
+References _file, _next_log, fg_red(), and RESET_STREAM\&.
+.PP
+Referenced by app_exec(), app_stop(), Append(), Close(), and LogWithLevel()\&.
+.PP
+.nf
+83 {
+84         if ( _file == nullptr )
+85         {
+86                 // don't keep the data
+87                 RESET_STREAM(_next_log);
+88                 return;
+89         }
+90 
+91         CHARSTRINGTYPE  writing = _next_log\&.str();
+92         size_t          written;
+93         int32_t         flush_res;
+94 
+95         if ( writing\&.empty() )
+96                 return;
+97 
+98         written = fwrite(writing\&.c_str(), sizeof(CHARTYPE), writing\&.length(), _file);
+99 
+100         if ( (flush_res = fflush(_file)) != 0 )
+101         {
+102                 char    errmsg[256];
+103 
+104                 strerror_s(errmsg, sizeof(errmsg), ferror(_file));
+105                 std::cerr << fg_red << "fflush failed; " << errmsg << "\n";
+106         }
+107 
+108         // also output to console
+110         std::cout << writing\&.c_str();
+111 
+112         RESET_STREAM(_next_log);
+113 }
+.fi
+.SS "\fBELogLevel\fP Log::LogLevel ()\fC [inline]\fP"
+Retrieves the logging level currently set\&.
+.PP
+\fBReturns:\fP
+.RS 4
+The logging level, as an ELogLevel, currently set 
+.RE
+.PP
+
+.PP
+Definition at line 164 of file Log\&.h\&.
+.PP
+.nf
+165         {
+166                 return _log_level;
+167         }
+.fi
+.SS "\fBCHARSTREAMTYPE\fP & Log::LogWithLevel (\fBELogLevel\fPlog_level, const char *file = \fCnullptr\fP, const char *function = \fCnullptr\fP, const uint32_tline = \fC0\fP)"
+Writes to the logging stream, preparing for the input from a runtime file\&. Returns the actual stream, so game code can perform logging in a single, non-descriptive line: 
+.PP
+.nf
+LOG(ELogLevel::Warn) << "This operation should have succeeded: ") << info_detail;
+
+.fi
+.PP
+.PP
+Newlines are not automatically added (since the caller has the stream on return), so must be provided\&.
+.PP
+If the logging level would not write the supplied data, it is redirected to a unused stream\&.
+.PP
+While all other parameters are optional, if you supply a filename, then the function + line are mandatory to be supplied\&. This is why, amongst clarity, the \fBLOG()\fP macro should be used for all output, unless you need fine grained control\&.
+.PP
+The file and function parameters are always passed in as ANSI-style strings due to the way they're provided by the compiler\&. They are converted, if need be, at runtime\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIlog_level\fP The criticality level at which the incoming entry is deemed 
+.br
+\fIfile\fP Optional pointer to the filename this log entry will contain 
+.br
+\fIfunction\fP Optional pointer to the function this log entry will contain 
+.br
+\fIline\fP Optional line number of the filename this log entry will contain 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A reference to the logging stream 
+.RE
+.PP
+
+.PP
+\fBTodo\fP
+.RS 4
+provide a utility function for time acquisition, this gets so nasty inline 
+.RE
+.PP
+
+.PP
+Definition at line 118 of file Log\&.cc\&.
+.PP
+References _log_level, _next_log, _null_log, Debug, Error, Flush(), Force, Info, PATH_CHAR, STREAM_FLUSH_THRESHOLD, and Warn\&.
+.PP
+Referenced by Close(), and Open()\&.
+.PP
+.nf
+124 {
+125         if ( log_level != ELogLevel::Force && log_level > _log_level )
+126         {
+127                 /* ugly, ugly, nasty hack\&. Returns another stringstream that is
+128                  * used temporarily, and cleared at every opportunity\&. */
+129                 _null_log\&.clear();
+130                 return _null_log;
+131         }
+132 
+133         // force log flushing if too much data is buffered
+134         if ( _next_log\&.gcount() > STREAM_FLUSH_THRESHOLD )
+135                 Flush();
+136 
+137         if ( file != nullptr )
+138         {       
+140                 time_t          cur_time = time(NULL);
+141                 tm              tms;
+142 #if _WIN32
+143                 localtime_s(&tms, &cur_time);
+144 #else
+145                 localtime_r(&cur_time, &tms);
+146 #endif
+147                 const char*     p;
+148                 char            cur_datetime[32];
+149                 
+150                 // requires C++11 (always multibyte)
+151                 // ISO 8601 : %F %T
+152                 std::strftime(cur_datetime, sizeof(cur_datetime), "%F %T", &tms);
+153 
+154                 _next_log << cur_datetime << "\t";
+155 
+156                 switch ( log_level )
+157                 {
+158                 case ELogLevel::Debug:  _next_log << "[DEBUG]    "; break;
+159                 case ELogLevel::Error:  _next_log << "[ERROR]    "; break;
+160                 case ELogLevel::Warn:   _next_log << "[WARNING]  "; break;
+161                 case ELogLevel::Info:   _next_log << "[INFO]     "; break;
+162                 case ELogLevel::Force:  _next_log << "[FORCED]   "; break;
+163                 default:
+164                         // no custom text by default
+165                         break;
+166                 }
+167 
+168                 // we don't want the full path that some compilers set
+169                 if ( (p = strrchr(file, PATH_CHAR)) != nullptr )
+170                         file = (p + 1);
+171 
+172                 _next_log << function << " (" << file << ":" << line << "): ";
+173         }
+174 
+175         return _next_log;
+176 }
+.fi
+.SS "Log::NO_CLASS_ASSIGNMENT (\fBLog\fP)\fC [private]\fP"
+
+.SS "Log::NO_CLASS_COPY (\fBLog\fP)\fC [private]\fP"
+
+.SS "bool Log::Open (char *filename)"
+Opens the file name specified for writing, erasing any prior data in the log file\&. This is opened in such a way that other processes may not write anything to the file, but are free to read it\&.
+.PP
+This is useful for checking for an event at runtime, when we don't want to have to close the application to check, while still stopping another process from being able to wipe our data out\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfilename\fP The name of the file to open 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+true if the file is opened with a restricted share mode 
+.PP
+false if the file could not be opened with the desired share mode 
+.RE
+.PP
+
+.PP
+Definition at line 181 of file Log\&.cc\&.
+.PP
+References _file, fg_red(), Force, and LogWithLevel()\&.
+.PP
+Referenced by app_init()\&.
+.PP
+.nf
+184 {
+185         /* allow others to open the log file at runtime, but not for writing\&.
+186          * This is implementation and operating system dependant as to what
+187          * action is taken, if errors are forwarded (e\&.g\&. cpp streams setting
+188          * errno, and win32 being able to use GetLastError()), and what errors
+189          * we can actually retrieve (beyond just knowing an error occurred)\&.
+190          * Until there is a standard for doing this, back to the nice C-style
+191          * methods here */
+192 #if defined(_WIN32)
+193         if ( (_file = _fsopen(filename, "wb", _SH_DENYWR)) == nullptr )
+194         {
+195                 std::cerr << fg_red << "Failed to open log file:\n\n" << filename << "\n\nerrno = " << errno << "\n";
+196                 return false;
+197         }
+198 #else
+199         int     fd;
+200         if ( (fd = open(LOG_NAME, O_WRONLY | O_CREAT, O_NOATIME | S_IRWXU | S_IRGRP | S_IROTH)) == -1 )
+201         {
+202                 std::cerr << fg_red << "Could not open the log file " << LOG_NAME << "; errno " << errno << "\n";
+203                 return false;
+204         }
+205 
+206         if ( (_file = fdopen(fd, "w")) == nullptr )
+207         {
+208                 std::cerr << fg_red << "fdopen failed on the file descriptor for " << LOG_NAME << "; errno " << errno << "\n";
+209                 return false;
+210         }
+211 #endif
+212 
+213         // Default log message (verifies path used); don't print file/line info, call direct
+214         LogWithLevel(ELogLevel::Force) << "*** Log File '" << filename << "' opened ***\n";
+215 
+216         return true;
+217 }
+.fi
+.SS "void Log::SetLogLevel (\fBELogLevel\fPloglevel)\fC [inline]\fP"
+Changes what level of events will be logged, and those that will be sent to /dev/null\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIloglevel\fP The new log level to use 
+.RE
+.PP
+
+.PP
+Definition at line 196 of file Log\&.h\&.
+.PP
+Referenced by app_init()\&.
+.PP
+.nf
+199         {
+200                 _log_level = loglevel;
+201         }
+.fi
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class \fBRuntime\fP\fC [friend]\fP"
+
+.PP
+Definition at line 45 of file Log\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "FILE* Log::_file\fC [private]\fP"
+we need error handling beyond that of 'an error occurred' so we need to call into the platforms APIs to retain control; hence the usage of the C-style FILE and not a std::ofstream 
+.PP
+Definition at line 67 of file Log\&.h\&.
+.PP
+Referenced by Close(), Flush(), Open(), and ~Log()\&.
+.SS "\fBELogLevel\fP Log::_log_level\fC [private]\fP"
+The active logging level; log requests with a lower rating will not log those with higher levels unless set here\&. 
+.PP
+Definition at line 71 of file Log\&.h\&.
+.PP
+Referenced by Log(), and LogWithLevel()\&.
+.SS "\fBCHARSTREAMTYPE\fP Log::_next_log\fC [private]\fP"
+This holds all of the data written into the stream inbetween calls to the \fIflush\fP function, which actually writes out to file 
+.PP
+Definition at line 57 of file Log\&.h\&.
+.PP
+Referenced by Append(), Flush(), and LogWithLevel()\&.
+.SS "\fBCHARSTREAMTYPE\fP Log::_null_log\fC [private]\fP"
+A stream to hold logging events that don't reach the required level to be put to the normal stream\&. Nasty hack, as all the data is still written to the stream, where it then gets wiped straight away\&. 
+.PP
+Definition at line 62 of file Log\&.h\&.
+.PP
+Referenced by LogWithLevel()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

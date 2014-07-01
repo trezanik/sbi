@@ -1,0 +1,327 @@
+.TH "utils_win.h" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+utils_win.h \- 
+.PP
+Windows-specific utility functions\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'char_helper\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBfile_version_info\fP"
+.br
+.ti -1c
+.RI "struct \fBModuleInformation\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBSBI_API\fP bool \fBpath_exists\fP (const wchar_t *path)"
+.br
+.ti -1c
+.RI "\fBSBI_API\fP wchar_t * \fBerror_code_as_string\fP (uint64_t code)"
+.br
+.ti -1c
+.RI "\fBSBI_API\fP uint32_t \fBget_current_binary_path\fP (wchar_t *buffer, uint32_t buffer_size)"
+.br
+.ti -1c
+.RI "\fBSBI_API\fP void * \fBget_function_address\fP (const char *func_name, const wchar_t *module_name)"
+.br
+.ti -1c
+.RI "\fBSBI_API\fP bool \fBmb_to_utf8\fP (wchar_t *dest, const char *src, const uint32_t dest_size)"
+.br
+.ti -1c
+.RI "\fBSBI_API\fP uint32_t \fBwcs_format\fP (wchar_t *dest, uint32_t dest_size, wchar_t *format,\&.\&.\&.)"
+.br
+.ti -1c
+.RI "\fBSBI_API\fP bool \fBwide_to_mb\fP (char *dest, const wchar_t *src, const uint32_t dest_size)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Windows-specific utility functions\&. 
+
+
+.PP
+\fBAuthor:\fP
+.RS 4
+James Warren 
+.RE
+.PP
+
+.PP
+Definition in file \fButils_win\&.h\fP\&.
+.SH "Function Documentation"
+.PP 
+.SS "\fBSBI_API\fP wchar_t* error_code_as_string (uint64_tcode)"
+
+.PP
+Definition at line 40 of file utils_win\&.cc\&.
+.PP
+.nf
+43 {
+44         static wchar_t  error_str[512];
+45 
+46         error_str[0] = '\0';
+47 
+48         if ( !FormatMessage(
+49                 FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+50                 nullptr,
+51                 (DWORD)code,
+52                 0,
+53                 error_str,
+54                 _countof(error_str),
+55                 nullptr)
+56         )
+57         {
+58                 // always return a string, some callers expect it :)
+59                 wcscpy_s(error_str, _countof(error_str), L"(unknown error code)");
+60                 return &error_str[0];
+61         }
+62 
+63 
+64         wchar_t*        p;
+65 
+66         // some of the messages helpfully come with newlines at the end\&.\&.
+67         while ( (p = wcsrchr(error_str, '\r')) != nullptr )
+68                 *p = '\0';
+69         while ( (p = wcsrchr(error_str, '\n')) != nullptr )
+70                 *p = '\0';
+71 
+72         return &error_str[0];
+73 }
+.fi
+.SS "\fBSBI_API\fP uint32_t get_current_binary_path (wchar_t *buffer, uint32_tbuffer_size)"
+Retrieves the current path for the executing binary, storing the result in the supplied \fIbuffer\fP\&. Comes with the trailing backward-slash\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIbuffer\fP The preallocated buffer to store the result in 
+.br
+\fIbuffer_size\fP The size of the preallocated buffer 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Returns the amount of characters written to buffer if successful 
+.PP
+On failure, 0 is returned 
+.RE
+.PP
+
+.PP
+Definition at line 78 of file utils_win\&.cc\&.
+.PP
+References PATH_CHAR\&.
+.PP
+.nf
+82 {
+83         wchar_t*        r;
+84         uint32_t        res = 0;
+85 
+86         if ( buffer_size < 2 )
+87                 return 0;
+88 
+89         if ( (res = GetModuleFileName(nullptr, buffer, buffer_size)) == 0
+90             || res == buffer_size )     // http://msdn\&.microsoft\&.com/en-us/library/windows/desktop/ms683197(v=vs\&.85)\&.aspx @ WinXP return value
+91         {
+92                 //generate_error_str_arg(EC_ApiFunctionFailed, 0, "Failed to fully retrieve the current binarys module path");
+93                 return 0;
+94         }
+95 
+96         // find the last trailing path separator
+97         if ( (r = wcsrchr(buffer, PATH_CHAR)) == nullptr )
+98         {
+99                 //generate_error_str_arg(EC_ApiFunctionFailed, 0, "The buffer for the current path contained no path separators");
+100                 return 0;
+101         }
+102 
+103         // nul out the character after it, ready for appending
+104         *++r = '\0';
+105 
+106         // return number of characters written, after taking into account the new nul
+107         return (r - &buffer[0]);
+108 }
+.fi
+.SS "\fBSBI_API\fP void* get_function_address (const char *func_name, const wchar_t *module_name)"
+
+.PP
+Definition at line 166 of file utils_win\&.cc\&.
+.PP
+Referenced by Runtime::GetObjectFromModule()\&.
+.PP
+.nf
+170 {
+171         HMODULE         module = NULL;
+172         void*           func_address;
+173 
+174         if ( func_name == nullptr )
+175                 return nullptr;
+176         if ( module_name == nullptr )
+177                 return nullptr;
+178 
+179         module = GetModuleHandle(module_name);
+180 
+181         if ( module == NULL )
+182         {
+183                 return nullptr;
+184         }
+185 
+186         func_address = GetProcAddress(module, func_name);
+187 
+188         return func_address;
+189 }
+.fi
+.SS "\fBSBI_API\fP bool mb_to_utf8 (wchar_t *dest, const char *src, const uint32_tdest_size)"
+Uses MultiByteToWideChar to convert the input multi-byte string into UTF8
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdest\fP The destination buffer 
+.br
+\fIdest\fP The string to copy 
+.br
+\fIdest\fP The size of the destination buffer, in characters 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+true is returned if the conversion occurs without errors, otherwise returns false\&. 
+.RE
+.PP
+
+.PP
+Definition at line 256 of file utils_win\&.cc\&.
+.PP
+Referenced by Configuration::Dump(), Runtime::GetObjectFromModule(), Configuration::Load(), Configuration::LoadUI(), mbstr_to_chartypestr(), and Runtime::Report()\&.
+.PP
+.nf
+261 {
+262         if ( src == nullptr || dest == nullptr || dest_size < 2 )
+263         {
+264                 return false;
+265         }
+266 
+267         if ( MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, src, -1, dest, dest_size) == 0 )
+268                 return false;
+269 
+270         return true;
+271 }
+.fi
+.SS "\fBSBI_API\fP bool path_exists (const wchar_t *path)"
+
+.PP
+Definition at line 30 of file utils_win\&.cc\&.
+.PP
+Referenced by Configuration::Load()\&.
+.PP
+.nf
+33 {
+34         return (PathFileExists(path) != 0);
+35 }
+.fi
+.SS "\fBSBI_API\fP uint32_t wcs_format (wchar_t *dest, uint32_tdest_size, wchar_t *format, \&.\&.\&.)"
+An exact duplicate of str_format, but using wchar_t instead\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBstr_format\fP 
+.RE
+.PP
+
+.PP
+Definition at line 276 of file utils_win\&.cc\&.
+.PP
+.nf
+282 {
+283         int32_t         res = 0;
+284         va_list         varg;
+285 
+286         if ( destination == nullptr )
+287                 return 0;
+288         if ( format == nullptr )
+289                 return 0;
+290         if ( dest_size <= 1 )
+291                 return 0;
+292 
+293         va_start(varg, format);
+294 
+295 #if MSVC_IS_VS8_OR_LATER
+296 #       pragma warning ( push )
+297 #       pragma warning ( disable : 4996 ) // _vsnwprintf - unsafe function
+298 #endif
+299         /* always leave 1 for the nul terminator - this is the security complaint
+300          * that visual studio will warn us about\&. Since we have coded round it,
+301          * forcing each instance to include '-1' with a min 'dest_size' of 1, this
+302          * is perfectly safe\&. */
+303         res = _vsnwprintf(destination, (dest_size - 1), format, varg);
+304 
+305 #if MSVC_IS_VS8_OR_LATER
+306 #       pragma warning ( pop )
+307 #endif
+308 
+309         va_end(varg);
+310 
+311         if ( res == -1 )
+312         {
+313                 // destination text has been truncated/error
+314                 destination[dest_size - 1] = '\0';
+315                 return 0;
+316         }
+317         else
+318         {
+319                 // to ensure nul-termination
+320                 destination[res] = '\0';
+321         }
+322 
+323         // will be positive as not an error 
+324         return (uint32_t) res;
+325 }
+.fi
+.SS "\fBSBI_API\fP bool wide_to_mb (char *dest, const wchar_t *src, const uint32_tdest_size)"
+Uses WideCharToMultiByte to convert the input wide-character string into a multi-byte one
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdest\fP The destination buffer 
+.br
+\fIdest\fP The string to copy 
+.br
+\fIdest\fP The size of the destination buffer, in characters 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+true is returned if the conversion occurs without errors, otherwise returns false\&. 
+.RE
+.PP
+
+.PP
+Definition at line 330 of file utils_win\&.cc\&.
+.PP
+.nf
+335 {
+336         if ( src == nullptr || dest == nullptr || dest_size < 2 )
+337         {
+338                 return false;
+339         }
+340 
+341         if ( WideCharToMultiByte(CP_ACP, WC_ERR_INVALID_CHARS, src, -1, dest, dest_size, NULL, NULL) == 0 )
+342                 return false;
+343 
+344         return true;
+345 }
+.fi
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

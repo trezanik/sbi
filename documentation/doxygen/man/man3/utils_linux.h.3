@@ -1,0 +1,57 @@
+.TH "utils_linux.h" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+utils_linux.h \- 
+.PP
+Linux-specific utility functions\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBSBI_API\fP uint32_t \fBget_current_binary_path\fP (char *buffer, uint32_t buffer_size)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Linux-specific utility functions\&. 
+
+
+.PP
+\fBAuthor:\fP
+.RS 4
+James Warren 
+.RE
+.PP
+
+.PP
+Definition in file \fButils_linux\&.h\fP\&.
+.SH "Function Documentation"
+.PP 
+.SS "\fBSBI_API\fP uint32_t get_current_binary_path (char *buffer, uint32_tbuffer_size)"
+Retrieves the current path for the executing binary, storing the result in the supplied \fIbuffer\fP\&. Comes with the trailing forward-slash\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIbuffer\fP The preallocated buffer to store the result in 
+.br
+\fIbuffer_size\fP The size of the preallocated buffer 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Returns the amount of characters written to buffer if successful 
+.PP
+On failure, 0 is returned 
+.RE
+.PP
+
+.PP
+Referenced by app_init()\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

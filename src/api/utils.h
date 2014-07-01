@@ -27,8 +27,8 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 
 
 // allows grabbing number of args passed in (build_string) so doesn't need doing manually
-#define BUILD_STRING(...)			build_string(NUM_VA_ARGS_(,##__VA_ARGS__,6,5,4,3,2,1,0), __VA_ARGS__)
-#define NUM_VA_ARGS_(z,a,b,c,d,e,f,cnt,...)	cnt
+#define BUILD_STRING(...)			build_string(NUM_VA_ARGS_(,##__VA_ARGS__,8,7,6,5,4,3,2,1,0), __VA_ARGS__)
+#define NUM_VA_ARGS_(z,a,b,c,d,e,f,g,h,cnt,...)	cnt
 #if 0
 #if IS_VISUAL_STUDIO
 #	define NUM_VA_ARGS(...)		(sizeof((int32_t[]){0, __VA_ARGS__})/sizeof(int32_t)-1)

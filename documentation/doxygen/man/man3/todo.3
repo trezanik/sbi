@@ -1,0 +1,164 @@
+.TH "todo" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+todo \- Todo List 
+
+.IP "\fBMember \fBget_file_version_info\fP (wchar_t *path, \fBfile_version_info\fP *fvi)\fP" 1c
+get file description  
+.IP "\fBMember \fBirc_server::max_num_channels\fP \fP" 1c
+different channel prefixes have different limits 
+.PP
+different channel prefixes have different limits 
+.PP
+different channel prefixes have different limits  
+.IP "\fBMember \fBIrcChannel::AddNamesUser\fP (const char *name, const char *ident, const char *hostmask, const \fBmode_update\fP *modes)\fP" 1c
+we must have a better method than this, this is awful\&. could always get CreateXx to return object, shouldn't affect lifetimes  
+.IP "\fBMember \fBIrcConnection::AddToSendQueue\fP (const char *data)\fP" 1c
+existing functionality is temporary - flood protection! 
+.PP
+existing functionality is temporary - flood protection!  
+.IP "\fBMember \fBIrcConnection::ConnectToServer\fP ()\fP" 1c
+fixme Physically connects to the server set within the connection\&. This is done within , which includes performing a DNS lookup and populating the sockaddr structures\&. This function makes the first real outbound call, and on success, creates a thread to parse any data received\&.
+.PP
+fixme Physically connects to the server set within the connection\&. This is done within , which includes performing a DNS lookup and populating the sockaddr structures\&. This function makes the first real outbound call, and on success, creates a thread to parse any data received\&. 
+.IP "\fBMember \fBIrcConnection::SendInit\fP ()\fP" 1c
+we should wait here, receive the replys, and REQ in response\&.\&.\&. 
+.PP
+we should wait here, receive the replys, and REQ in response\&.\&.\&.  
+.IP "\fBMember \fBIrcConnection::Setup\fP (std::shared_ptr< IrcNetwork > network, std::shared_ptr< config_server > server_config)\fP" 1c
+these should be pre-validated from reading the config; are these extra checks still needed?  
+.IP "\fBMember \fBIrcConnection::Setup\fP (\fBIrcNetwork\fP *network, std::shared_ptr< config_server > server_config)\fP" 1c
+these should be pre-validated from reading the config; are these extra checks still needed?  
+.IP "\fBClass \fBIrcEngine\fP \fP" 1c
+Try to get NotifyNewObject() working again with RTTI/dynamic_cast - when I first created it, it did work, but since pooling + factory creation this no longer works, hence I've had to create NotifyNewConnection(), network, etc\&. These can be deleted if this is fixable! (CRTP looks interesting but unsuitable) 
+.IP "\fBMember \fBIrcEngine::ActiveChannel\fP ()\fP" 1c
+Reference + Dereference needed?  
+.IP "\fBMember \fBIrcEngine::ActiveConnection\fP ()\fP" 1c
+Reference + Dereference needed?  
+.IP "\fBClass \fBIrcListener\fP \fP" 1c
+These functions can probably all be const, implement if good to go
+.PP
+These functions can probably all be const, implement if good to go 
+.IP "\fBClass \fBIrcNetwork\fP \fP" 1c
+Think of a method proxy-style to prevent the need for direct variable access via \fBIrcConnection\fP\&. Our existing proxy class doesn't have the ability to handle structs (is more designed for single variables)\&. May be worth just having a base class where you insert a request, and the derived class returns the result\&. Or, simply leave it as friend and save much work at the cost of some imperfect design\&.\&.\&.
+.PP
+Think of a method proxy-style to prevent the need for direct variable access via \fBIrcConnection\fP\&. Our existing proxy class doesn't have the ability to handle structs (is more designed for single variables)\&. May be worth just having a base class where you insert a request, and the derived class returns the result\&. Or, simply leave it as friend and save much work at the cost of some imperfect design\&.\&.\&. 
+.IP "\fBMember \fBIrcNetwork::Cleanup\fP ()\fP" 1c
+use updated handling 
+.PP
+this is to be called when simply 'cleaning' the network, ready for another call\&. Consider the deletion/nulling of the connection, where to maintian state, etc\&., and update the below comments  
+.IP "\fBMember \fBIrcNetwork::GetConnection\fP ()\fP" 1c
+use updated handling  
+.IP "\fBMember \fBIrcNetwork::Setup\fP (std::shared_ptr< config_network > network_config, std::shared_ptr< config_profile > profile_config)\fP" 1c
+use updated handling  
+.IP "\fBMember \fBIrcNetwork::UpdateServerInfo\fP ()\fP" 1c
+use updated handling  
+.IP "\fBMember \fBIrcParser::Handle002\fP (std::shared_ptr< IrcConnection > connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+We can compare the host with live/config - but is storing necessary?? 
+.PP
+implement LN_002  
+.IP "\fBMember \fBIrcParser::Handle002\fP (\fBIrcConnection\fP *connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+We can compare the host with live/config - but is storing necessary?? 
+.PP
+implement LN_002  
+.IP "\fBMember \fBIrcParser::Handle005\fP (std::shared_ptr< IrcConnection > connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+Use the rest of the RFC definitions on the variables not set by the server\&. Since Handle005 can be called more than once, we don't want to assign anything in there, in case they will be overwritten or otherwise cause issues - hence we apply the defaults once the server has ceased presenting itself to us\&.  
+.IP "\fBMember \fBIrcParser::Handle005\fP (\fBIrcConnection\fP *connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+Use the rest of the RFC definitions on the variables not set by the server\&. Since Handle005 can be called more than once, we don't want to assign anything in there, in case they will be overwritten or otherwise cause issues - hence we apply the defaults once the server has ceased presenting itself to us\&.  
+.IP "\fBMember \fBIrcParser::Handle333\fP (\fBIrcConnection\fP *connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+check - 3 param, 1st = channel used to work fine, now there's an extra nick\&.\&.  
+.IP "\fBMember \fBIrcParser::Handle333\fP (std::shared_ptr< IrcConnection > connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+check - 3 param, 1st = channel used to work fine, now there's an extra nick\&.\&.  
+.IP "\fBMember \fBIrcParser::Handle353\fP (\fBIrcConnection\fP *connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+grab prefix meanings from config\&.xml 
+.PP
+send a 353 for each individual nick, or the whole message?  
+.IP "\fBMember \fBIrcParser::Handle353\fP (std::shared_ptr< IrcConnection > connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+grab prefix meanings from config 
+.PP
+send a 353 for each individual nick, or the whole message?  
+.IP "\fBMember \fBIrcParser::Handle432\fP (\fBIrcConnection\fP *connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+if ( auto_change_nick\&.\&.\&. )  
+.IP "\fBMember \fBIrcParser::Handle432\fP (std::shared_ptr< IrcConnection > connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+if ( auto_change_nick\&.\&.\&. )  
+.IP "\fBMember \fBIrcParser::Handle433\fP (\fBIrcConnection\fP *connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+if ( auto_change_nick\&.\&.\&. )  
+.IP "\fBMember \fBIrcParser::Handle433\fP (std::shared_ptr< IrcConnection > connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+if ( auto_change_nick\&.\&.\&. )  
+.IP "\fBMember \fBIrcParser::HandleJoin\fP (\fBIrcConnection\fP *connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+is there any way to guarantee/ensure this?  
+.IP "\fBMember \fBIrcParser::HandleJoin\fP (std::shared_ptr< IrcConnection > connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+is there any way to guarantee/ensure this?  
+.IP "\fBMember \fBIrcParser::HandleKick\fP (\fBIrcConnection\fP *connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+if ( AutoRejoinOnKick ) 
+.PP
+retain the channel key to rejoin??  
+.IP "\fBMember \fBIrcParser::HandleKick\fP (std::shared_ptr< IrcConnection > connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+if ( AutoRejoinOnKick ) 
+.PP
+retain the channel key to rejoin??  
+.IP "\fBMember \fBIrcParser::HandleMode\fP (\fBIrcConnection\fP *connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+complete me 
+.PP
+; bring these in from configuration  
+.IP "\fBMember \fBIrcParser::HandleMode\fP (std::shared_ptr< IrcConnection > connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+complete me 
+.PP
+; bring these in from configuration 
+.PP
+extract mode mappings  
+.IP "\fBMember \fBIrcParser::HandleNick\fP (\fBIrcConnection\fP *connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+What if we're in no channels, but are querying with a user who changes nick\&.\&.\&.  
+.IP "\fBMember \fBIrcParser::HandleNotice\fP (\fBIrcConnection\fP *connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+complete me  
+.IP "\fBMember \fBIrcParser::HandleNotice\fP (std::shared_ptr< IrcConnection > connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+complete me  
+.IP "\fBMember \fBIrcParser::HandlePart\fP (std::shared_ptr< IrcConnection > connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+Close & delete the channel if not configured to remain open, notify() - special, auto-delete, what?  
+.IP "\fBMember \fBIrcParser::HandlePart\fP (\fBIrcConnection\fP *connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+Close & delete the channel if not configured to remain open, notify() - special, auto-delete, what?  
+.IP "\fBMember \fBIrcParser::HandlePong\fP (\fBIrcConnection\fP *connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+compare recv time with sent time to determine lag  
+.IP "\fBMember \fBIrcParser::HandlePong\fP (std::shared_ptr< IrcConnection > connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+compare recv time with sent time to determine lag  
+.IP "\fBMember \fBIrcParser::HandlePrivmsg\fP (std::shared_ptr< IrcConnection > connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+readd terminating \\001 check; feeling lazy atm 
+.PP
+Same code as privmsg? 
+.PP
+Handle the other CTCPs  
+.IP "\fBMember \fBIrcParser::HandlePrivmsg\fP (\fBIrcConnection\fP *connection, \fBircbuf_data\fP *data, \fBircbuf_sender\fP *sender)\fP" 1c
+readd terminating \\001 check; feeling lazy atm 
+.PP
+Same code as privmsg?  
+.IP "\fBClass \fBLog\fP \fP" 1c
+consider using a ChainOfResponsibility style for this; will enable us to have a single \fBLOG()\fP line of code, with all errors always being output to cerr, but only certain things going to a physical file\&. The complications will be multi-line and immediate or delayed flush\&.\&.\&. 
+.IP "\fBMember \fBLog::Flush\fP ()\fP" 1c
+temp; implement with chain of responsibility instead  
+.IP "\fBMember \fBLog::LogWithLevel\fP (ELogLevel log_level, const char *file=nullptr, const char *function=nullptr, const uint32_t line=0)\fP" 1c
+provide a utility function for time acquisition, this gets so nasty inline  
+.IP "\fBMember \fBObjectPool< T >::Get\fP (IRCPOOL_GET_DECL)\fP" 1c
+implement GrandAlloc dynamic expansion  
+.IP "\fBMember \fBObjectPool< T >::GetObject\fP (IRCPOOL_GET_DECL)\fP" 1c
+implement GrandAlloc dynamic expansion  
+.IP "\fBMember \fBObjectPool< T >::GrandAlloc\fP (uint32_t num_objects)\fP" 1c
+throw nullptr or runtime_error on malloc failure? 
+.PP
+throw nullptr or runtime_error on malloc failure?  
+.IP "\fBFile \fBRuntime\&.h\fP \fP" 1c
+Try to think of a \fIclean\fP way to get Allocator in this file as a unique_ptr, working around the override limitations\&. Currently resides as a static member of the Memory() function as a simple but effective hack\&. Addendum: ditto for Engine, \fBPool\fP, now too!  
+.IP "\fBMember \fBRuntime::DoShutdown\fP ()\fP" 1c
+how can we force objects to quit since we have no knowledge of what modules they are? Current proposal: have them export a 'quit' function that can be called from here now, that way they're all done and clean\&.\&.\&. similar to the functionality behind the get() getter  
+.IP "\fBMember \fBRuntime::GetObjectFromModule\fP (const char *module_name)\fP" 1c
+Need a proper data type so we're not blindly casting  
+.IP "\fBMember \fBRuntime::Report\fP (const char *text_buffer, const char *title) const \fP" 1c
+Linux/Unix implementation  
+.IP "\fBFile \fBTerminal\&.h\fP \fP" 1c
+Win32 code complete, unix/linux needs doing  
+.IP "\fBClass \fBthread_info\fP \fP" 1c
+Add a sync event for each, so we can reset after setting _quitting? 
+.IP "\fBMember \fBwrite_dump\fP (unsigned long code, struct _EXCEPTION_POINTERS *ep)\fP" 1c
+use WindowsErrorReporting (http://msdn.microsoft.com/en-us/library/windows/desktop/dd408167%28v=vs.85%29.aspx) (requires Windows 7 or newer) 
+.PP
+

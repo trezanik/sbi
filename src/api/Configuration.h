@@ -138,10 +138,10 @@ public:
 		proxy()
 		{
 		}
-		operator const T&() const {
+        operator const T&() const {
 			return data;
 		}
-		operator const T&() {
+        operator const T&() {
 			return data;
 		}
 	};
@@ -170,6 +170,7 @@ public:
 #if defined(_WIN32)
 			proxy<HMODULE>			module;
 #else
+            proxy<void*>			module;
 #endif
 			/* exported functions from the GUI library - must be
 			 * present if using a GUI. Assigned and loaded based on

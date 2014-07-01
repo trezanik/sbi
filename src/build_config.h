@@ -7,41 +7,14 @@
 // sets up compiler definitions needed before our own headers; no dependencies
 #include <api/compiler.h>
 
-// enables memory tracking
-//#define USING_MEMORY_DEBUGGING
-
-// does not output memory checking operations to stdout
-#define DISABLE_MEMORY_CHECK_TO_STDOUT
-
-// does not output memory operations to stdout
-#define DISABLE_MEMORY_OP_TO_STDOUT
-
-// enables compile-time assertions for API functions and definitions
-#define USING_API_WARNINGS
-
-// enables detailed reference counting
-#define USING_DETAILED_REFERENCE_COUNTING
-
-// enables the usage of OpenSSL
-#define USING_OPENSSL
-
-// enables the usage of json-spirit
-#define USING_JSON
-
 // uses libconfig as the configuration library
 #define USING_LIBCONFIG
 
-// uses Boost as the TCP/UDP socket library
+// uses Boost as the networking library
 #define USING_BOOST_NET
 
-// uses OpenSSL as the TCP/UDP socket library
-//#define USING_OPENSSL_NET
-
-// uses Qt5 as the GUI library
-#define USING_QT5_GUI
-
-// Windows target version
-#define _WIN32_WINNT	0x0600
+// debug build
+#define _DEBUG 1
 
 /*-----------------------------------------------------------------------------
  * definition conflict checker
@@ -50,3 +23,7 @@
 #if defined(USING_BOOST_NET) && defined(USING_OPENSSL_NET)
 #	error "Boost and OpenSSL Net libraries enabled; only 1 can be used at a time"
 #endif
+#if defined(USING_LIBCONFIG) && defined(USING_JSON_CONFIG)
+#	error "libconfig and JSON config libraries enabled; only 1 can be used at a time"
+#endif
+

@@ -17,6 +17,8 @@
 
 #if defined(_WIN32)
 #	include <Windows.h>	// OS API
+#else
+#	include <sys/time.h>
 #endif
 
 #include "utils.h"		// prototypes
@@ -177,9 +179,9 @@ strlcat(
 	uint32_t dest_size
 )
 {
-	register char*		d = dest;
-	register const char*	s = src;
-	register uint32_t		n = dest_size;
+    char*		d = dest;
+    const char*	s = src;
+    uint32_t		n = dest_size;
 	uint32_t			len;
 
 	// Find the end of dst and adjust bytes left but don't go past end
@@ -217,9 +219,9 @@ strlcpy(
 	uint32_t dest_size
 )
 {
-	register char*		d = dest;
-	register const char*	s = src;
-	register uint32_t		n = dest_size;
+    char*		d = dest;
+    const char*	s = src;
+    uint32_t		n = dest_size;
 
 	// Copy as many bytes as will fit
 	if ( n != 0 && --n != 0 )

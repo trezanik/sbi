@@ -1,4 +1,4 @@
-#if defined(USING_QT5_GUI)
+
 /**
  * @file	UI.cc
  * @author	James Warren
@@ -8,8 +8,8 @@
 
 
 
-#include <QtWidgets/QApplication.h>
-#include <QtWidgets/QMainWindow.h>
+#include <QtWidgets/qapplication.h>
+#include <QtWidgets/qmainwindow.h>
 #include <QtCore/qstring.h>
 
 #if defined(USING_LIBCONFIG)
@@ -25,6 +25,10 @@
 #	if defined(_WIN32)
 #		pragma comment ( lib, "libconfig++.lib" )
 #	endif
+#endif
+
+#if defined(__linux__)
+#	include <sys/stat.h>			// file ops
 #endif
 
 #include <api/definitions.h>
@@ -127,8 +131,6 @@ UI::ApplicationVersion(
 EGuiStatus
 UI::CreateDefaultWindows()
 {
-	int32_t		argc = 0;
-	char**		argv = nullptr;
 	QString		title = "Social Bot Interface";
 	QString		init_out;
 	int32_t		w = ui.main_window.width;
@@ -136,8 +138,23 @@ UI::CreateDefaultWindows()
 	int32_t		x = ui.main_window.x;
 	int32_t		y = ui.main_window.y;
 
-	// create the Qt application (for execution) and the main window
-	_app = new QApplication(argc, argv);
+    // create the Qt application (for execution) and the main window
+#if defined(_WIN32)
+    // on Windows, 0 argc & nullptr argv work fine
+    int32_t		argc = 0;
+    char**		argv = nullptr;
+    _app = new QApplication(argc, argv);
+#else
+    /* on Linux, 0 argc & nullptr argv will cause strlen segfault (and this is
+     * actually standards-compliant); vars must also always exist, so can't let
+     * them be destroyed out of scope, so make them static - see:
+     * http://www.stackoverflow.com/questions/1519885/defining-own-main-functions-arguments-argc-and-argv */
+    static char		argv0[] = "sbi";
+    static char* 	argv[] = { &argv0[0], NULL };
+    static int32_t		argc = sizeof(argv)/sizeof(argv[0]) - 1;
+    _app = new QApplication(argc, argv);
+#endif
+
 	_wnd = new QMainWindow;
 
 	// can use _app->setStyle();
@@ -239,7 +256,8 @@ UI::LoadConfig(
 	mb_to_utf8(w, path, _countof(w));
 	if ( !path_exists(w) )
 #	else
-#		error nix equivalent
+    struct stat sts;
+    if ( stat(path, &sts) == -1 && errno == ENOENT )
 #	endif
 	{
 		// should never happen if we're using the same as Configuration
@@ -396,7 +414,3 @@ UI::Quit() const
 	}
 }
 
-
-
-
-#endif	// USING_QT5_GUI

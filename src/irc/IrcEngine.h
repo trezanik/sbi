@@ -106,7 +106,7 @@ enum E_CONNECTION_STATE
 class SBI_IRC_API IrcEngine
 {
 	// only spawn_interface() is allowed to create this class
-	friend int ::spawn_interface();
+    friend int ::spawn_interface();
 	/* only IrcConnection and IrcParser can execute NotifyListeners(), as
 	 * they are the classes that determine fresh data. Just promise not to
 	 * touch the other private variables..! */

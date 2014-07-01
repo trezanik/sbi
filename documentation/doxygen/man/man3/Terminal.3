@@ -1,0 +1,190 @@
+.TH "Terminal" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Terminal \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Terminal\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTerminal\fP ()"
+.br
+.ti -1c
+.RI "void \fBClear\fP ()"
+.br
+.ti -1c
+.RI "char \fBGetCharacter\fP ()"
+.br
+.ti -1c
+.RI "void \fBSetColor\fP (uint16_t rgb, uint16_t mask)"
+.br
+.ti -1c
+.RI "void \fBSetDefault\fP ()"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBInternalUpdate\fP ()"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBHANDLE\fP \fB_console\fP"
+.br
+.ti -1c
+.RI "DWORD \fB_written\fP"
+.br
+.ti -1c
+.RI "uint32_t \fB_size\fP"
+.br
+.ti -1c
+.RI "uint16_t \fB_default_attrib\fP"
+.br
+.ti -1c
+.RI "CONSOLE_SCREEN_BUFFER_INFO \fB_csbi\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Console/Terminal output support for streaming colours into standard ostreams\&.
+.PP
+Enables changing colours like: 
+.PP
+.nf
+std::cout << fg_white << "White Foreground, " << bg_cyan << "Cyan Background\n";
+
+.fi
+.PP
+.PP
+Significantly more legible than outputting, call colour change function, output again, repeat, etc\&.
+.PP
+Callers within this application should not assume the result of a prior call (i\&.e\&. any colour could be fg/bg) - you should always set the desired colours on invocation\&.
+.PP
+We use \fCSetColor\fP instead of 'real' English as more people tend to understand or expect the US version of the spelling\&.
+.PP
+Since Windows and Linux/Unix command-lines differ so much, each class declaration is contained in its own if preprocessor block\&. 
+.PP
+Definition at line 54 of file Terminal\&.h\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Terminal::Terminal ()\fC [inline]\fP"
+
+.PP
+Definition at line 111 of file Terminal\&.h\&.
+.PP
+.nf
+112         {
+113                 _console = GetStdHandle(STD_OUTPUT_HANDLE);
+114                 GetConsoleScreenBufferInfo(_console, &_csbi);
+115                 _default_attrib = _csbi\&.wAttributes;
+116         }
+.fi
+.SH "Member Function Documentation"
+.PP 
+.SS "void Terminal::Clear ()\fC [inline]\fP"
+
+.PP
+Definition at line 120 of file Terminal\&.h\&.
+.PP
+Referenced by clear()\&.
+.PP
+.nf
+121         {
+122                 COORD   coordScreen = { 0, 0 };
+123 
+124                 InternalUpdate();
+125                 FillConsoleOutputCharacter(_console, ' ', _size,
+126                         coordScreen, &_written);
+127                 InternalUpdate();
+128                 FillConsoleOutputAttribute(_console, _csbi\&.wAttributes,
+129                         _size, coordScreen, &_written);
+130                 SetConsoleCursorPosition(_console, coordScreen);
+131         }
+.fi
+.SS "char Terminal::GetCharacter ()\fC [inline]\fP"
+
+.PP
+Definition at line 135 of file Terminal\&.h\&.
+.PP
+.nf
+136         {
+137                 while ( !_kbhit() )
+138                 {
+139                         return (char)_getch();
+140                 }
+141         }
+.fi
+.SS "void Terminal::InternalUpdate ()\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+Definition at line 104 of file Terminal\&.h\&.
+.PP
+.nf
+105         {
+106                 GetConsoleScreenBufferInfo(_console, &_csbi);
+107                 _size = _csbi\&.dwSize\&.X * _csbi\&.dwSize\&.Y;
+108         }
+.fi
+.SS "void Terminal::SetColor (uint16_trgb, uint16_tmask)\fC [inline]\fP"
+
+.PP
+Definition at line 145 of file Terminal\&.h\&.
+.PP
+Referenced by bg_black(), bg_blue(), bg_cyan(), bg_green(), bg_grey(), bg_magenta(), bg_red(), bg_white(), bg_yellow(), fg_black(), fg_blue(), fg_cyan(), fg_green(), fg_grey(), fg_magenta(), fg_red(), fg_white(), and fg_yellow()\&.
+.PP
+.nf
+149         {
+150                 InternalUpdate();
+151                 _csbi\&.wAttributes &= mask;
+152                 _csbi\&.wAttributes |= rgb;
+153                 SetConsoleTextAttribute(_console, _csbi\&.wAttributes);
+154         }
+.fi
+.SS "void Terminal::SetDefault ()\fC [inline]\fP"
+
+.PP
+Definition at line 158 of file Terminal\&.h\&.
+.PP
+Referenced by bgfg_default()\&.
+.PP
+.nf
+159         {
+160                 _csbi\&.wAttributes = _default_attrib;
+161                 SetConsoleTextAttribute(_console, _csbi\&.wAttributes);
+162         }
+.fi
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBHANDLE\fP Terminal::_console\fC [private]\fP"
+
+.PP
+Definition at line 97 of file Terminal\&.h\&.
+.SS "CONSOLE_SCREEN_BUFFER_INFO Terminal::_csbi\fC [private]\fP"
+
+.PP
+Definition at line 101 of file Terminal\&.h\&.
+.SS "uint16_t Terminal::_default_attrib\fC [private]\fP"
+
+.PP
+Definition at line 100 of file Terminal\&.h\&.
+.SS "uint32_t Terminal::_size\fC [private]\fP"
+
+.PP
+Definition at line 99 of file Terminal\&.h\&.
+.SS "DWORD Terminal::_written\fC [private]\fP"
+
+.PP
+Definition at line 98 of file Terminal\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

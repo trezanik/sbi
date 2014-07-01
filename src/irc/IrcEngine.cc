@@ -9,6 +9,7 @@
 
 #include <iostream>			// std::cerr
 #include <algorithm>			// std::find
+#include <cassert>
 
 #include <api/Terminal.h>
 #include "IrcEngine.h"			// prototypes

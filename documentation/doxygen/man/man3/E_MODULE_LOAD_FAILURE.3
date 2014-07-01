@@ -1,0 +1,50 @@
+.TH "E_MODULE_LOAD_FAILURE" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+E_MODULE_LOAD_FAILURE \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBType\fP { \fBMLF_NoError\fP = 0, \fBMLF_FileNotFound\fP, \fBMLF_FileIncompatible\fP, \fBMLF_CouldNotBeLoadedByOS\fP, \fBMLF_FailedToInitialize\fP }"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+When loading a module, one of these values will be returned\&. This applies to all GUI and plugin/interface modules\&. 
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBE_MODULE_LOAD_FAILURE::Type\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIMLF_NoError \fP\fP
+.TP
+\fB\fIMLF_FileNotFound \fP\fP
+.TP
+\fB\fIMLF_FileIncompatible \fP\fP
+.TP
+\fB\fIMLF_CouldNotBeLoadedByOS \fP\fP
+.TP
+\fB\fIMLF_FailedToInitialize \fP\fP
+.PP
+Definition at line 24 of file modules\&.h\&.
+.PP
+.nf
+25         {
+26                 MLF_NoError = 0,
+27                 MLF_FileNotFound,
+28                 MLF_FileIncompatible,
+29                 MLF_CouldNotBeLoadedByOS,
+30                 MLF_FailedToInitialize
+31         };
+.fi
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

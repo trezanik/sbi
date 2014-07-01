@@ -1,0 +1,215 @@
+.TH "library.cc" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+library.cc \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <api/Runtime\&.h>\fP
+.br
+\fC#include <api/Configuration\&.h>\fP
+.br
+\fC#include 'library\&.h'\fP
+.br
+\fC#include 'UI\&.h'\fP
+.br
+
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBEUIFlags\fP { \fBEUIFlags::Reset\fP, \fBEUIFlags::SaveLastPosition\fP, \fBEUIFlags::SaveLastSize\fP }"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int32_t \fBdestroy_interface\fP ()"
+.br
+.ti -1c
+.RI "int32_t \fBprocess_interface\fP ()"
+.br
+.ti -1c
+.RI "int32_t \fBspawn_interface\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBAuthor:\fP
+.RS 4
+James Warren 
+.RE
+.PP
+\fBCopyright:\fP
+.RS 4
+James Warren, 2013-2014 
+.RE
+.PP
+\fBLicense:\fP
+.RS 4
+Zlib (see license\&.txt or http://opensource.org/licenses/Zlib) 
+.RE
+.PP
+
+.PP
+Definition in file \fBlibrary\&.cc\fP\&.
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBEUIFlags\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIReset \fP\fP
+.TP
+\fB\fISaveLastPosition \fP\fP
+.TP
+\fB\fISaveLastSize \fP\fP
+.PP
+Definition at line 21 of file library\&.cc\&.
+.PP
+.nf
+22 {
+23         Reset,
+24         SaveLastPosition,
+25         SaveLastSize
+26 };
+.fi
+.SH "Function Documentation"
+.PP 
+.SS "int32_t destroy_interface ()"
+Cleans up any resources created by the interface\&. Required to be called when the module unloads\&. 
+.PP
+Definition at line 32 of file library\&.cc\&.
+.PP
+References APP_NAMESPACE, g_ui, GUI_NAMESPACE, irc_engine, and Ok\&.
+.PP
+.nf
+33 {
+34         using namespace APP_NAMESPACE;
+35         using namespace GUI_NAMESPACE;
+36 
+37         int     retval = -1;
+38         int     x;
+39         int     y;
+40         int     w;
+41         int     h;
+42 
+43         /* do not prompt for confirmation of closure; perform this within the 
+44          * main loop itself\&. Assume we're here only when the window has been, or
+45          * is about to be destroyed\&. */
+46 
+47         /* as g_ui still exists, we still have access to the config document to
+48          * make any last-second changes\&. When reset below, that's it no more! */
+49 #if defined(USING_TCONF)
+50         tconf::Document*                pdoc = g_ui->ConfigDocument();
+51         tconf::ConfigurationItem*       ci = pdoc->GetConfigItem("Qt5");
+52         tconf::ConfigurationItem*       ci_child;
+53 
+54         if ( ci == nullptr )
+55                 goto cleanup;
+56 
+57         ci = ci->Find("main_window");
+58 
+59         if ( g_ui->GetWindowParameters(x, y, w, h) )
+60         {
+61                 if ( g_ui->ui\&.flags & UIF_SaveLastPosition )
+62                 {
+63                         ci_child = pdoc->CreateOrGetChildItem(ci, "height");
+64                         ci_child->SetData(std::to_string(h)\&.c_str());
+65                         ci_child = pdoc->CreateOrGetChildItem(ci, "width");
+66                         ci_child->SetData(std::to_string(w)\&.c_str());
+67                 }
+68                 if ( g_ui->ui\&.flags & UIF_SaveLastSize )
+69                 {
+70                         ci_child = pdoc->CreateOrGetChildItem(ci, "x");
+71                         ci_child->SetData(std::to_string(x)\&.c_str());
+72                         ci_child = pdoc->CreateOrGetChildItem(ci, "y");
+73                         ci_child->SetData(std::to_string(y)\&.c_str());
+74                 }
+75 
+76                 // ignore *reporting* any errors saving; the user wants to close
+77                 pdoc->Save();
+78         }
+79 #endif  // USING_TCONF
+80 
+81         retval = 0;
+82 
+83 cleanup:
+84         // free the global pointer - nothing else should have a link here now!
+85         g_ui\&.reset();
+86 
+87         return retval;
+88 }
+.fi
+.SS "int32_t process_interface ()"
+Enters the processing loop for the GUI (like Win32's MessageLoop) - does not return until the \fBUI\fP relinquishes control, usually through closing the window\&.
+.PP
+One of the three exported functions from the library, which are mandatory in order to be loaded by the executable dynamically\&.
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP This function always returns 0 
+.RE
+.PP
+
+.PP
+Definition at line 93 of file library\&.cc\&.
+.PP
+References APP_NAMESPACE, g_ui, and GUI_NAMESPACE\&.
+.PP
+.nf
+94 {
+95         using namespace APP_NAMESPACE;
+96         using namespace GUI_NAMESPACE;
+97 
+98         g_ui->Run();
+99 
+100         return 0;
+101 }
+.fi
+.SS "int32_t spawn_interface ()"
+Creates the instance within the library\&. The interface should use this opportunity to set everything up internally, including creating any threads needed to retain execution\&.
+.PP
+\fBNote:\fP
+.RS 4
+Win32's DllMain can be used in place of this (and \fBdestroy_interface()\fP), but since we want to support all *nixes too, these are the approved + supported methods of initialization and destruction\&. If you really want to do any handling in DllMain, feel free - you're not limited to the functions you can call (since the app has loaded all the DLLs required before now, so there'll be no deadlock risk)\&.
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI\fBEInterfaceStatus::Ok\fP\fP on initialization success 
+.br
+\fI\&.\&.\&.\fP 
+.RE
+.PP
+
+.PP
+Definition at line 106 of file library\&.cc\&.
+.PP
+References APP_NAMESPACE, Runtime::Config(), g_ui, GUI_NAMESPACE, irc_engine, Ok, Configuration::Path(), and runtime\&.
+.PP
+.nf
+107 {
+108         using namespace APP_NAMESPACE;
+109         using namespace GUI_NAMESPACE;
+110 
+111         // move it to the global variable!
+112         g_ui\&.reset(new UI);
+113         g_ui->LoadConfig(runtime\&.Config()->Path());
+114         g_ui->CreateDefaultWindows();
+115 
+116         // all created and setup; show the main window and continue
+117         g_ui->Show();
+118 
+119         return 0;
+120 }
+.fi
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

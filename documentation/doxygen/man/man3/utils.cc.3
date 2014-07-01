@@ -1,0 +1,485 @@
+.TH "utils.cc" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+utils.cc \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <cstring>\fP
+.br
+\fC#include <cstdarg>\fP
+.br
+\fC#include <cstdio>\fP
+.br
+\fC#include <ctype\&.h>\fP
+.br
+\fC#include <cstdlib>\fP
+.br
+\fC#include <Windows\&.h>\fP
+.br
+\fC#include 'utils\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBbuild_string\fP (int16_t num_args,\&.\&.\&.)"
+.br
+.ti -1c
+.RI "uint64_t \fBget_ms_time\fP ()"
+.br
+.ti -1c
+.RI "\fBCHARSTRINGTYPE\fP \fBmbstr_to_chartypestr\fP (std::string &src)"
+.br
+.ti -1c
+.RI "char * \fBskip_whitespace\fP (char *str)"
+.br
+.ti -1c
+.RI "uint32_t \fBstrlcat\fP (char *dest, const char *src, uint32_t dest_size)"
+.br
+.ti -1c
+.RI "uint32_t \fBstrlcpy\fP (char *dest, const char *src, uint32_t dest_size)"
+.br
+.ti -1c
+.RI "uint32_t \fBstr_format\fP (char *destination, uint32_t dest_size, char *format,\&.\&.\&.)"
+.br
+.ti -1c
+.RI "char * \fBstr_token\fP (char *src, const char *delim, char **context)"
+.br
+.ti -1c
+.RI "char * \fBstr_trim\fP (char *src)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBAuthor:\fP
+.RS 4
+James Warren 
+.RE
+.PP
+\fBCopyright:\fP
+.RS 4
+James Warren, 2014 
+.RE
+.PP
+\fBLicense:\fP
+.RS 4
+Zlib (see license\&.txt or http://opensource.org/licenses/Zlib) 
+.RE
+.PP
+
+.PP
+Definition in file \fButils\&.cc\fP\&.
+.SH "Function Documentation"
+.PP 
+.SS "std::string build_string (int16_tnum_args, \&.\&.\&.)"
+Creates a std::string from any supplied parameters\&.
+.PP
+Much easier than putting a bunch of individual line appends or having to stream it; works with input of std::string, char*, etc\&. - anything a normal std::string assignment is capable of\&.
+.PP
+Originally created so we could have a one-liner for std::runtime_error\&.
+.PP
+\fBWarning:\fP
+.RS 4
+Use the BUILD_STRING macro; this handles the automatic argument count, so changes won't result in the counter being incorrect
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fIstd::string\fP 
+.RE
+.PP
+
+.PP
+Definition at line 31 of file utils\&.cc\&.
+.PP
+.nf
+35 {
+36         std::string     ret_str;
+37         va_list         args;
+38 
+39         va_start(args, num_args);
+40 
+41         while ( num_args-- >= 0 )
+42         {
+43                 ret_str\&.append((char*)va_arg(args, char*));
+44         }
+45 
+46         va_end(args);
+47 
+48         return ret_str;
+49 }
+.fi
+.SS "uint64_t get_ms_time ()"
+Gets the current time in milliseconds\&.
+.PP
+Used for timing operations - store the first call to this as a start_time, and then use the second call to determine the duration\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns the number of milliseconds since January 1, 1601 (UTC)\&. 
+.RE
+.PP
+
+.PP
+Definition at line 106 of file utils\&.cc\&.
+.PP
+Referenced by app_exec(), and app_init()\&.
+.PP
+.nf
+107 {
+108 #if defined(_WIN32)
+109         FILETIME        ft;
+110         LARGE_INTEGER   li;
+111 
+112         /* Get the amount of 100 nano seconds intervals elapsed since January 1,
+113          * 1601 (UTC) and copy it to a LARGE_INTEGER structure\&. */
+114         GetSystemTimeAsFileTime(&ft);
+115         li\&.LowPart = ft\&.dwLowDateTime;
+116         li\&.HighPart = ft\&.dwHighDateTime;
+117 
+118         uint64_t        ret = li\&.QuadPart;
+119         ret -= 116444736000000000LL; /* Convert from file time to UNIX epoch time\&. */
+120         ret /= 10000; /* From 100 nano seconds (10^-7) to 1 millisecond (10^-3) intervals */
+121 
+122         return ret;
+123 #else
+124         struct timeval  tv;
+125 
+126         gettimeofday(&tv, NULL);
+127 
+128         uint64_t        ret = tv\&.tv_usec;
+129         /* Convert from micro seconds (10^-6) to milliseconds (10^-3) */
+130         ret /= 1000;
+131 
+132         /* Adds the seconds (10^0) after converting them to milliseconds (10^-3) */
+133         ret += (tv\&.tv_sec * 1000);
+134 
+135         return ret;
+136 #endif
+137 }
+.fi
+.SS "\fBCHARSTRINGTYPE\fP mbstr_to_chartypestr (std::string &src)"
+Takes the input std::string and converts it to the platform type string\&. Just a helper to prevent code/preprocessor spam when dealing with Win32 vs *nix builds\&.
+.PP
+Where CHARSTRINGTYPE == std::string, this function performs no modifications\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns the input string as the platform type specific string, converting where needed\&. 
+.RE
+.PP
+
+.PP
+Definition at line 142 of file utils\&.cc\&.
+.PP
+References mb_to_utf8()\&.
+.PP
+.nf
+145 {
+146 #if defined(_WIN32)
+147         CHARTYPE        x[4096];
+148         CHARSTRINGTYPE  ret;
+149 
+150         mb_to_utf8(x, src\&.c_str(), _countof(x));
+151         ret = x;
+152         return ret;
+153 #else
+154         return src;
+155 #endif
+156 }
+.fi
+.SS "char* skip_whitespace (char *str)"
+
+.PP
+Definition at line 161 of file utils\&.cc\&.
+.PP
+Referenced by str_trim()\&.
+.PP
+.nf
+164 {
+165         while ( isspace(*str) )
+166                 ++str;
+167 
+168         return str;
+169 }
+.fi
+.SS "uint32_t str_format (char *dest, uint32_tdest_size, char *format, \&.\&.\&.)"
+Formats a string into the buffer specified by \fIdest\fP\&.
+.PP
+This function is identical to snprintf, only there is no need to concern with the buffer size\&. Nul-termination is guaranteed if \fIdest_size\fP is at least 1\&. Improper use of format strings can still result in security risks, so always use as much safety as you would to normal statements\&.
+.PP
+char buf[24]; int32_t num = 5; str_format('The integer is: %i; amazing stuff!\\\\n'), num);
+.PP
+In this case, the string is truncated to 'The integer is: 5; amaz'\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdest\fP The buffer to store the formatted string in 
+.br
+\fIdest_size\fP The size of the destination buffer 
+.br
+\fIformat\fP The format of the input string 
+.br
+\fI\&.\&.\&.\fP Variable arguments for the format string 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Returns 0 if any parameter is incorrect, or of not great enough size, or 'format' is null or less than 2 characters in length\&. 
+.PP
+Returns the number of characters (excluding the nul), or -1 (SIZE_MAX) if the text was truncated to fit in the buffer\&. 
+.RE
+.PP
+
+.PP
+Definition at line 252 of file utils\&.cc\&.
+.PP
+Referenced by Configuration::LoadUI(), ObjectPool< IrcUser >::ReportReferencedObject(), IrcConnection::SendAway(), IrcConnection::SendCTCP(), IrcConnection::SendCTCPNotice(), IrcConnection::SendIdentify(), IrcConnection::SendInvite(), IrcConnection::SendJoin(), IrcConnection::SendKick(), IrcConnection::SendMode(), IrcConnection::SendNick(), IrcConnection::SendNotice(), IrcConnection::SendPart(), IrcConnection::SendPrivmsg(), IrcConnection::SendQuit(), IrcConnection::SendTopic(), IrcConnection::SendUser(), and IrcConnection::Setup()\&.
+.PP
+.nf
+258 {
+259         int32_t         res = 0;
+260         va_list         varg;
+261 
+262         if ( destination == nullptr )
+263                 return 0;
+264         if ( format == nullptr )
+265                 return 0;
+266         if ( dest_size <= 1 )
+267                 return 0;
+268 
+269         va_start(varg, format);
+270 
+271 #if MSVC_IS_VS8_OR_LATER
+272 #       pragma warning ( push )
+273 #       pragma warning ( disable : 4996 ) // vsnprintf - unsafe function
+274 #endif
+275         /* always leave 1 for the nul terminator - this is the security complaint
+276          * that visual studio will warn us about\&. Since we have coded round it,
+277          * forcing each instance to include '-1' with a min 'dest_size' of 1, this
+278          * is perfectly safe\&. */
+279         res = vsnprintf(destination, (dest_size - 1), format, varg);
+280 
+281 #if MSVC_IS_VS8_OR_LATER
+282 #       pragma warning ( pop )
+283 #endif
+284 
+285         va_end(varg);
+286 
+287         if ( res == -1 )
+288         {
+289                 // destination text has been truncated/error
+290                 destination[dest_size - 1] = '\0';
+291                 return 0;
+292         }
+293         else
+294         {
+295                 // to ensure nul-termination
+296                 destination[res] = '\0';
+297         }
+298 
+299         // will be positive as not an error 
+300         return (uint32_t) res;
+301 }
+.fi
+.SS "char* str_token (char *src, const char *delim, char **context)"
+Equivalent of strtok_r, cross-platform\&. 
+.PP
+Definition at line 306 of file utils\&.cc\&.
+.PP
+Referenced by IrcConnection::EstablishConnection(), IrcParser::Handle005(), IrcParser::Handle353(), and IrcParser::HandleMode()\&.
+.PP
+.nf
+311 {
+312         char*   ret = nullptr;
+313 
+314         if ( src == nullptr )
+315         {
+316                 src = *context;
+317         }
+318 
+319         // skip leading delimiters
+320         while ( *src && strchr(delim, *src) )
+321         {
+322                 ++src;
+323         }
+324 
+325         if ( *src == '\0' )
+326                 return ret;
+327 
+328         ret = src;
+329 
+330         // break on end of string or upon finding a delimiter
+331         while ( *src && !strchr(delim, *src) )
+332         {
+333                 ++src;
+334         }
+335 
+336         // if a delimiter was found, nul it
+337         if ( *src )
+338         {
+339                 *src++ = '\0';
+340         }
+341 
+342         *context = src;
+343 
+344         return ret;
+345 }
+.fi
+.SS "char* str_trim (char *src)"
+
+.PP
+Definition at line 350 of file utils\&.cc\&.
+.PP
+References skip_whitespace()\&.
+.PP
+.nf
+353 {
+354         size_t  len;
+355         char*   e;
+356 
+357         if ( src == nullptr )
+358                 return nullptr;
+359 
+360         src = skip_whitespace(src);
+361         len = strlen(src);
+362 
+363         if ( !len )
+364                 return src;
+365 
+366         e = src + len - 1;
+367         while ( e >= src && isspace(*e) )
+368                 e--;
+369         *(e + 1) = '\0';
+370 
+371         return src;
+372 }
+.fi
+.SS "uint32_t strlcat (char *dest, const char *src, uint32_tdest_size)"
+Appends \fIsrc\fP into the buffer specified by \fIdest\fP, up to a limit of \fIsize\fP 
+.IP "\(bu" 2
+1\&. nul termination is guaranteed if \fIsize\fP is at least 1 - unlike the OpenBSD version of strlcat, if no nul is found in \fIdest\fP, it is inserted at the final position\&. This is a change for tiny safety sake\&.
+.PP
+.PP
+Is an exact match of the OpenBSD strlcat\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdest\fP The destination buffer 
+.br
+\fIsrc\fP The string to append 
+.br
+\fIdest_size\fP The size of the destination buffer 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The length of the string that was attempted to be created\&. So, strlen of \fIdest\fP + strlen of \fIsrc\fP\&. If this is greater than or equal to \fIsize\fP, truncation has occurred, and should be handled by the caller\&. 
+.RE
+.PP
+
+.PP
+Definition at line 174 of file utils\&.cc\&.
+.PP
+Referenced by IrcConnection::EstablishConnection(), and IrcConnection::SendInit()\&.
+.PP
+.nf
+179 {
+180         register char*          d = dest;
+181         register const char*    s = src;
+182         register uint32_t               n = dest_size;
+183         uint32_t                        len;
+184 
+185         // Find the end of dst and adjust bytes left but don't go past end
+186         while ( *d != '\0' && n-- != 0 )
+187                 d++;
+188 
+189         len = d - dest;
+190         n = dest_size - len;
+191 
+192         if ( n == 0 )
+193                 return (len + strlen(s));
+194 
+195         while ( *s != '\0' )
+196         {
+197                 if ( n != 1 )
+198                 {
+199                         *d++ = *s;
+200                         n--;
+201                 }
+202                 s++;
+203         }
+204 
+205         *d = '\0';
+206 
+207         // count does not include NUL
+208         return (len + (s - src));       
+209 }
+.fi
+.SS "uint32_t strlcpy (char *dest, const char *src, uint32_tdest_size)"
+Copies \fIsrc\fP into the buffer specified by \fIdest\fP, up to a limit of \fIsize\fP 
+.IP "\(bu" 2
+1\&. Always starts copying \fIsrc\fP and overwrites anything previously there\&. nul termination is guaranteed if \fIsize\fP is at least 1\&.
+.PP
+.PP
+Is an exact match of the OpenBSD strlcpy\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdest\fP The destination buffer 
+.br
+\fIsrc\fP The string to copy 
+.br
+\fIdest_size\fP The size of the destination buffer 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The length of the string that was attempted to be created\&. So, strlen of \fIsrc\fP\&. If this is greater than or equal to \fIsize\fP, truncation has occurred, and should be handled by the caller\&. 
+.RE
+.PP
+
+.PP
+Definition at line 214 of file utils\&.cc\&.
+.PP
+Referenced by IrcConnection::EstablishConnection(), ObjectPool< IrcUser >::Get(), ObjectPool< IrcUser >::GetObject(), Runtime::GetObjectFromModule(), IrcParser::Handle005(), host_to_ipv4(), IrcParser::ParseParameters(), IrcConnection::SendInit(), and IrcConnection::SendQuit()\&.
+.PP
+.nf
+219 {
+220         register char*          d = dest;
+221         register const char*    s = src;
+222         register uint32_t               n = dest_size;
+223 
+224         // Copy as many bytes as will fit
+225         if ( n != 0 && --n != 0 )
+226         {
+227                 do
+228                 {
+229                         if ( (*d++ = *s++) == 0 )
+230                                 break;
+231                 } while ( --n != 0 );
+232         }
+233 
+234         // Not enough room in dest, add NUL and traverse rest of src
+235         if ( n == 0 )
+236         {
+237                 if ( dest_size != 0 )
+238                 {
+239                         // nul-terminate dest
+240                         *d = '\0';
+241                 }
+242                 while ( *s++ );
+243         }
+244 
+245         // count does not include NUL
+246         return (s - src - 1);   
+247 }
+.fi
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

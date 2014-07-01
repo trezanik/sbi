@@ -1,0 +1,262 @@
+.TH "IrcListener.h" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IrcListener.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <string>\fP
+.br
+\fC#include <vector>\fP
+.br
+\fC#include <api/definitions\&.h>\fP
+.br
+\fC#include 'irc_structs\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBIrcListener\fP"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBE_IRC_LISTENER_NOTIFICATION\fP { \fBLN_NewData\fP = 0, \fBLN_001\fP, \fBLN_002\fP, \fBLN_003\fP, \fBLN_004\fP, \fBLN_005\fP, \fBLN_331\fP = 331, \fBLN_332\fP = 332, \fBLN_353\fP = 353, \fBLN_366\fP = 366, \fBLN_ConnectionReady\fP = 1000, \fBLN_Cap\fP, \fBLN_Invite\fP, \fBLN_Join\fP, \fBLN_Kick\fP, \fBLN_Kill\fP, \fBLN_Mode\fP, \fBLN_Nick\fP, \fBLN_Notice\fP, \fBLN_Part\fP, \fBLN_Privmsg\fP, \fBLN_Quit\fP, \fBLN_Topic\fP, \fBLN_SentInvite\fP, \fBLN_WeJoined\fP, \fBLN_WeKicked\fP, \fBLN_GotKicked\fP, \fBLN_GotNickChanged\fP, \fBLN_SentPrivmsg\fP, \fBLN_GotUserMode\fP, \fBLN_GotChannelMode\fP, \fBLN_GotKilled\fP, \fBLN_WeParted\fP, \fBLN_WeQuit\fP, \fBLN_MAX\fP, \fBLN_NewData\fP = 0, \fBLN_001\fP, \fBLN_002\fP, \fBLN_003\fP, \fBLN_004\fP, \fBLN_005\fP, \fBLN_331\fP = 331, \fBLN_332\fP = 332, \fBLN_353\fP = 353, \fBLN_366\fP = 366, \fBLN_ConnectionReady\fP = 1000, \fBLN_Cap\fP, \fBLN_Invite\fP, \fBLN_Join\fP, \fBLN_Kick\fP, \fBLN_Kill\fP, \fBLN_Mode\fP, \fBLN_Nick\fP, \fBLN_Notice\fP, \fBLN_Part\fP, \fBLN_Privmsg\fP, \fBLN_Quit\fP, \fBLN_Topic\fP, \fBLN_SentInvite\fP, \fBLN_WeJoined\fP, \fBLN_WeKicked\fP, \fBLN_GotKicked\fP, \fBLN_GotNickChanged\fP, \fBLN_SentPrivmsg\fP, \fBLN_GotUserMode\fP, \fBLN_GotChannelMode\fP, \fBLN_GotKilled\fP, \fBLN_WeParted\fP, \fBLN_WeQuit\fP, \fBLN_MAX\fP }"
+.br
+.in -1c
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBE_IRC_LISTENER_NOTIFICATION\fP"
+Unique types for every IRC message we support\&. The standard codes, 1-999, are used directly, with custom interpretation for text-based messages\&. Positions are not guaranteed to remain the same, so never use codes directly (outside of the 1-999)\&.
+.PP
+If adding a new code, put it here, add a handler function in the \fBIrcListener\fP class below, and add a call to \fBIrcEngine::NotifyListeners\fP, so it can actually be received by classes deriving from \fBIrcListener\fP\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBIrcEngine::NotifyListeners\fP 
+.RE
+.PP
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fILN_NewData \fP\fP
+Data received, not yet parsed 
+.TP
+\fB\fILN_001 \fP\fP
+.TP
+\fB\fILN_002 \fP\fP
+.TP
+\fB\fILN_003 \fP\fP
+.TP
+\fB\fILN_004 \fP\fP
+.TP
+\fB\fILN_005 \fP\fP
+.TP
+\fB\fILN_331 \fP\fP
+.TP
+\fB\fILN_332 \fP\fP
+.TP
+\fB\fILN_353 \fP\fP
+.TP
+\fB\fILN_366 \fP\fP
+.TP
+\fB\fILN_ConnectionReady \fP\fP
+Internal processing of new connection complete 
+.TP
+\fB\fILN_Cap \fP\fP
+.TP
+\fB\fILN_Invite \fP\fP
+.TP
+\fB\fILN_Join \fP\fP
+.TP
+\fB\fILN_Kick \fP\fP
+.TP
+\fB\fILN_Kill \fP\fP
+.TP
+\fB\fILN_Mode \fP\fP
+.TP
+\fB\fILN_Nick \fP\fP
+.TP
+\fB\fILN_Notice \fP\fP
+.TP
+\fB\fILN_Part \fP\fP
+.TP
+\fB\fILN_Privmsg \fP\fP
+.TP
+\fB\fILN_Quit \fP\fP
+.TP
+\fB\fILN_Topic \fP\fP
+.TP
+\fB\fILN_SentInvite \fP\fP
+We sent an invite 
+.TP
+\fB\fILN_WeJoined \fP\fP
+We joined a channel 
+.TP
+\fB\fILN_WeKicked \fP\fP
+We kicked another user 
+.TP
+\fB\fILN_GotKicked \fP\fP
+We got kicked 
+.TP
+\fB\fILN_GotNickChanged \fP\fP
+Our nickname was changed 
+.TP
+\fB\fILN_SentPrivmsg \fP\fP
+We sent a PRIVMSG 
+.TP
+\fB\fILN_GotUserMode \fP\fP
+Our usermodes were modified 
+.TP
+\fB\fILN_GotChannelMode \fP\fP
+Our modes in a channel were modified 
+.TP
+\fB\fILN_GotKilled \fP\fP
+We were killed 
+.TP
+\fB\fILN_WeParted \fP\fP
+We left the channel 
+.TP
+\fB\fILN_WeQuit \fP\fP
+We quit from the server 
+.TP
+\fB\fILN_MAX \fP\fP
+.TP
+\fB\fILN_NewData \fP\fP
+Data received, not yet parsed 
+.TP
+\fB\fILN_001 \fP\fP
+.TP
+\fB\fILN_002 \fP\fP
+.TP
+\fB\fILN_003 \fP\fP
+.TP
+\fB\fILN_004 \fP\fP
+.TP
+\fB\fILN_005 \fP\fP
+.TP
+\fB\fILN_331 \fP\fP
+.TP
+\fB\fILN_332 \fP\fP
+.TP
+\fB\fILN_353 \fP\fP
+.TP
+\fB\fILN_366 \fP\fP
+.TP
+\fB\fILN_ConnectionReady \fP\fP
+Internal processing of new connection complete 
+.TP
+\fB\fILN_Cap \fP\fP
+.TP
+\fB\fILN_Invite \fP\fP
+.TP
+\fB\fILN_Join \fP\fP
+.TP
+\fB\fILN_Kick \fP\fP
+.TP
+\fB\fILN_Kill \fP\fP
+.TP
+\fB\fILN_Mode \fP\fP
+.TP
+\fB\fILN_Nick \fP\fP
+.TP
+\fB\fILN_Notice \fP\fP
+.TP
+\fB\fILN_Part \fP\fP
+.TP
+\fB\fILN_Privmsg \fP\fP
+.TP
+\fB\fILN_Quit \fP\fP
+.TP
+\fB\fILN_Topic \fP\fP
+.TP
+\fB\fILN_SentInvite \fP\fP
+We sent an invite 
+.TP
+\fB\fILN_WeJoined \fP\fP
+We joined a channel 
+.TP
+\fB\fILN_WeKicked \fP\fP
+We kicked another user 
+.TP
+\fB\fILN_GotKicked \fP\fP
+We got kicked 
+.TP
+\fB\fILN_GotNickChanged \fP\fP
+Our nickname was changed 
+.TP
+\fB\fILN_SentPrivmsg \fP\fP
+We sent a PRIVMSG 
+.TP
+\fB\fILN_GotUserMode \fP\fP
+Our usermodes were modified 
+.TP
+\fB\fILN_GotChannelMode \fP\fP
+Our modes in a channel were modified 
+.TP
+\fB\fILN_GotKilled \fP\fP
+We were killed 
+.TP
+\fB\fILN_WeParted \fP\fP
+We left the channel 
+.TP
+\fB\fILN_WeQuit \fP\fP
+We quit from the server 
+.TP
+\fB\fILN_MAX \fP\fP
+.PP
+Definition at line 40 of file IrcListener\&.h\&.
+.PP
+.nf
+41 {
+42         LN_NewData = 0,                 
+43         // real IRC codes (0-999) : add more as we enable features
+44         LN_001,
+45         LN_002,
+46         LN_003,
+47         LN_004,
+48         LN_005,
+49         LN_331 = 331,
+50         LN_332 = 332,
+51         LN_353 = 353,
+52         LN_366 = 366,
+53         // client updates
+54         LN_ConnectionReady = 1000,      
+55         LN_Cap,
+56         LN_Invite,
+57         LN_Join,
+58         LN_Kick,
+59         LN_Kill,
+60         LN_Mode,
+61         LN_Nick,
+62         LN_Notice,
+63         LN_Part,
+64         LN_Privmsg,
+65         LN_Quit,
+66         LN_Topic,
+67         // client send/target
+68         LN_SentInvite,                  
+69         LN_WeJoined,                    
+70         LN_WeKicked,                    
+71         LN_GotKicked,                   
+72         LN_GotNickChanged,              
+73         LN_SentPrivmsg,                 
+74         LN_GotUserMode,                 
+75         LN_GotChannelMode,              
+76         LN_GotKilled,                   
+77         LN_WeParted,                    
+78         LN_WeQuit,                      
+79         // placeholder for invalids
+80         LN_MAX
+81 };
+.fi
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

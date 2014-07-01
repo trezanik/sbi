@@ -1,0 +1,87 @@
+.TH "IrcObject.h" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IrcObject.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <atomic>\fP
+.br
+\fC#include <set>\fP
+.br
+\fC#include <api/char_helper\&.h>\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBdetailed_reference_info\fP"
+.br
+.ti -1c
+.RI "class \fBIrcObject\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBNORMAL_REFERENCE_DECL\fP"
+.br
+.ti -1c
+.RI "#define \fBNORMAL_REFERENCE_INFO\fP"
+.br
+.ti -1c
+.RI "#define \fBDETAILED_REFERENCE_DECL\fP   void* source_object, const char* function, const char* file, const uint32_t line"
+.br
+.ti -1c
+.RI "#define \fBDETAILED_REFERENCE_INFO\fP   this, __FUNCTION__, __FILE__, __LINE__"
+.br
+.ti -1c
+.RI "#define \fBREFERENCE_DECL\fP   \fBNORMAL_REFERENCE_DECL\fP"
+.br
+.ti -1c
+.RI "#define \fBREFERENCE_OBJECT\fP(o)   o->AddReference(\fBNORMAL_REFERENCE_INFO\fP)"
+.br
+.ti -1c
+.RI "#define \fBUNREFERENCE_OBJECT\fP(o)   o->RemoveReference(\fBNORMAL_REFERENCE_INFO\fP)"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define DETAILED_REFERENCE_DECL   void* source_object, const char* function, const char* file, const uint32_t line"
+
+.PP
+Definition at line 26 of file bak/IrcObject\&.h\&.
+.SS "#define DETAILED_REFERENCE_INFO   this, __FUNCTION__, __FILE__, __LINE__"
+
+.PP
+Definition at line 27 of file bak/IrcObject\&.h\&.
+.SS "#define NORMAL_REFERENCE_DECL"
+
+.PP
+Definition at line 24 of file bak/IrcObject\&.h\&.
+.SS "#define NORMAL_REFERENCE_INFO"
+
+.PP
+Definition at line 25 of file bak/IrcObject\&.h\&.
+.SS "#define REFERENCE_DECL   \fBNORMAL_REFERENCE_DECL\fP"
+
+.PP
+Definition at line 45 of file bak/IrcObject\&.h\&.
+.SS "#define REFERENCE_OBJECT(o)   o->AddReference(\fBNORMAL_REFERENCE_INFO\fP)"
+
+.PP
+Definition at line 46 of file bak/IrcObject\&.h\&.
+.PP
+Referenced by IrcEngine::NotifyNewConnection(), and IrcEngine::NotifyNewNetwork()\&.
+.SS "#define UNREFERENCE_OBJECT(o)   o->RemoveReference(\fBNORMAL_REFERENCE_INFO\fP)"
+
+.PP
+Definition at line 47 of file bak/IrcObject\&.h\&.
+.PP
+Referenced by IrcParser::Handle332(), IrcParser::Handle333(), IrcParser::Handle353(), IrcParser::Handle366(), IrcParser::HandleJoin(), IrcParser::HandleKick(), IrcParser::HandleMode(), IrcParser::HandlePart(), IrcParser::HandlePrivmsg(), IrcParser::HandleQuit(), IrcParser::HandleTopic(), IrcEngine::NotifyDeleteConnection(), and IrcEngine::NotifyDeleteNetwork()\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

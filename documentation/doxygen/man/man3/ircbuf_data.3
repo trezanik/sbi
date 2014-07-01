@@ -1,0 +1,52 @@
+.TH "ircbuf_data" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ircbuf_data \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <irc_structs\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBsender\fP"
+.br
+.ti -1c
+.RI "std::string \fBcode\fP"
+.br
+.ti -1c
+.RI "std::string \fBdata\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Used to store the three 'components' of an IRC data message; the sender, the IRC code, and the data associated with it\&. Key to the parsers work\&. 
+.PP
+Definition at line 94 of file irc_structs\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string ircbuf_data::code"
+The IRC message code of the data 
+.PP
+Definition at line 97 of file irc_structs\&.h\&.
+.PP
+Referenced by IrcParser::ExtractIrcBufData(), and IrcParser::ParseNextRecvQueueItem()\&.
+.SS "std::string ircbuf_data::data"
+The actual data itself, of the message 
+.PP
+Definition at line 98 of file irc_structs\&.h\&.
+.PP
+Referenced by IrcParser::ExtractIrcBufData(), IrcParser::Handle001(), IrcParser::Handle002(), IrcParser::Handle003(), IrcParser::Handle004(), IrcParser::Handle005(), IrcParser::Handle332(), IrcParser::Handle333(), IrcParser::Handle353(), IrcParser::Handle366(), IrcParser::Handle432(), IrcParser::Handle433(), IrcParser::HandleCap(), IrcParser::HandleInvite(), IrcParser::HandleJoin(), IrcParser::HandleKick(), IrcParser::HandleKill(), IrcParser::HandleMode(), IrcParser::HandleNick(), IrcParser::HandleNotice(), IrcParser::HandlePart(), IrcParser::HandlePrivmsg(), IrcParser::HandleQuit(), and IrcParser::HandleTopic()\&.
+.SS "std::string ircbuf_data::sender"
+The sender of the data 
+.PP
+Definition at line 96 of file irc_structs\&.h\&.
+.PP
+Referenced by IrcParser::ExtractIrcBufData(), and IrcParser::ParseNextRecvQueueItem()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

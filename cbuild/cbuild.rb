@@ -5,6 +5,7 @@
 #         Project build scripts should be supplied alongside this one         #
 ###############################################################################
 
+require 'fileutils'	# Path creation
 require 'digest'	# file checksums
 
 # suppress warnings. we don't ever really cause any, except redefining constants
@@ -96,7 +97,7 @@ class Project
 	
 	# This class does no compilation, so this is for 'building' the project
 	def build
-		puts.minimal "==> Building Project"
+		puts.minimal "==> Building Project".fg_white
 		
 		@tasks.each do |task|
 			
@@ -259,7 +260,7 @@ class TaskCache
 	end
 	
 	def is_header_uptodate(h)
-		# TODO:: Implement
+		# @TODO:: Implement
 	
 		return false
 	end
@@ -355,6 +356,7 @@ class ProjectTask
 		@source_extensions = []
 		@source_files = []
 		@source_paths = []
+		@forced_inclusions = []
 		# dynamic variables - non-configurable
 		@built = false
 		@object_files = []
@@ -388,6 +390,12 @@ class ProjectTask
 	end
 	def add_dependencies(d)
 		@dependencies.push(*d)
+	end
+	def add_forced_include(i)
+		@forced_inclusions.push(i)
+	end
+	def add_forced_includes(i)
+		@forced_inclusions.push(*i)
 	end
 	def add_linker_flag(f)
 		@linker_flags.push(f)
@@ -438,6 +446,9 @@ class ProjectTask
 	end
 	def remove_dependency(d)
 		@dependencies.delete_if {|dep| dep == d}
+	end
+	def remove_forced_include(i)
+		@forced_inclusions.delete_if {|dep| dep == i}
 	end
 	def remove_linker_flag(f)
 		@linker_flags.delete_if {|flag| flag == f}
@@ -520,6 +531,9 @@ class ProjectTask
 		
 		return false
 	end
+	def needs_build()
+	
+	end
 	
 	
 	def prepare()	
@@ -559,14 +573,16 @@ class ProjectTask
 			
 			# for each source path, find any files matching the extension
 			@source_paths.each do |path|
-				puts "==> Scanning ".fg_white + "#{path}".fg_yellow.bold
-				Dir.glob("#{path}*#{@source_extensions}") do |file|
-					puts.average "  -> Found ".fg_white + "#{file}".fg_cyan.bold
-					@source_files.push(file)
+				@source_extensions.each do |ext|
+					puts.average "==> Scanning ".fg_white + "#{path}".fg_yellow.bold + " for ".fg_white + "#{ext}".fg_yellow.bold
+					Dir.glob("#{path}/*#{ext}") do |file|
+						puts.average "  -> Found ".fg_white + "#{file}".fg_cyan.bold
+						@source_files.push(file)
+					end
 				end
 			end
 			
-			puts ""
+			puts.detailed ""
 		end
 		# generate object file names, now we know each source
 		@source_files.each do |src|
@@ -592,6 +608,7 @@ class ProjectTask
 		puts.detailed "Linker Flags.......: ".fg_white + "#{@linker_flags}"
 		puts.detailed "Link Libraries.....: ".fg_white + "#{@link_libraries}"
 		puts.detailed "Link Library Paths.: ".fg_white + "#{@link_library_paths}"
+		puts.detailed "Forced Includes....: ".fg_white + "#{@forced_inclusions}"
 		puts.detailed "Include Paths......: ".fg_white + "#{@include_paths}"
 		puts.detailed "Source Glob........: ".fg_white + "#{@source_glob}"
 		puts.detailed "Source Extensions..: ".fg_white + "#{@source_extensions}"
@@ -624,9 +641,9 @@ class ProjectTask
 	
 	def compile
 		
-		# TODO:: check for dependencies; if any, they need a cache entry if
-		# we're linking statically to them, and we can rebuild the dependency
-		# or task even if none of the tasks files have changed
+		# @TODO:: check for dependencies; if any, they need a cache entry
+		# if we're linking statically to them, and we can rebuild the 
+		# dependency or task even if none of the tasks files have changed
 		
 		puts.average "\n>>> Processing Task: #{@task_name}\n".fg_white.bold
 		
@@ -643,7 +660,7 @@ class ProjectTask
 			# if source files haven't changed, the object files won't have
 			# either, so no need to recompile
 			unless needs_recompile()
-				# TODO:: needs check for target exists
+				# @TODO:: needs check for target exists
 				@built = true
 				return true
 			end
@@ -669,10 +686,9 @@ class ProjectTask
 		#	puts ">>> Task Dependencies: ".fg_white + "#{@dependencies.join(" ")}"
 		#end
 		
-		# Our own build system - defined so the source code within a project
-		# can '#include "cbuild.config.h"' with guards in case this is not
-		# in usage
-		add_compiler_flag("-DUSING_CBUILD")
+		# Our own build system - defined in case there's anything source
+		# code specific that needs adjustment based on the builder
+		add_compiler_flag("-D_CBUILD")
 		
 		# we don't use cache.recompile_list directly, as the object
 		# files would not be in the same index order in the array
@@ -687,6 +703,9 @@ class ProjectTask
 			# append variable lists that may be empty or nil (note preceeding spaces required!)
 			unless @compiler_flags.empty?
 				@cmd_line << " #{@compiler_flags.join(" ")}"
+			end
+			unless @forced_inclusions.empty?
+				@cmd_line << " -include #{@forced_inclusions.join(" -include ")}"
 			end
 			unless @include_paths.empty?
 				@cmd_line << " -I#{@include_paths.join(" -I")}"
@@ -703,7 +722,7 @@ class ProjectTask
 			puts.detailed "==> Executing...".fg_white
 			output = `#{@cmd_line}`
 			if $? != 0
-				puts "#{$?}".fg_red.bold
+				puts.little "#{$?}".fg_red.bold
 				abort
 			else
 				# Looks bad in larger projects, yet better in smaller
@@ -755,6 +774,7 @@ class ProjectTask
 			# if the target is deleted, we still need a relink
 			if File.exists?(target)
 				# so the project doesn't rescan this task again
+puts.debug "target exists; not building.."
 				@built = true
 				return true
 			end

@@ -1,0 +1,81 @@
+.TH "UI.h" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+UI.h \- 
+.PP
+Qt5GUI root\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <memory>\fP
+.br
+\fC#include <QtCore/qstring\&.h>\fP
+.br
+\fC#include <QtCore/qobject\&.h>\fP
+.br
+\fC#include <api/definitions\&.h>\fP
+.br
+\fC#include <api/types\&.h>\fP
+.br
+\fC#include 'library\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBUI\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBMIN_APP_WINDOW_SIZE\fP   QSize(400,300)"
+.br
+.ti -1c
+.RI "#define \fBAPP_SIZE_INCREMENT\fP   QSize(4,4)"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "std::unique_ptr< \fBUI\fP > \fBg_ui\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Qt5GUI root\&. 
+
+
+.PP
+\fBAuthor:\fP
+.RS 4
+James Warren 
+.RE
+.PP
+
+.PP
+Definition in file \fBUI\&.h\fP\&.
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define APP_SIZE_INCREMENT   QSize(4,4)"
+
+.PP
+Definition at line 29 of file UI\&.h\&.
+.SS "#define MIN_APP_WINDOW_SIZE   QSize(400,300)"
+
+.PP
+Definition at line 28 of file UI\&.h\&.
+.SH "Variable Documentation"
+.PP 
+.SS "std::unique_ptr<\fBUI\fP> g_ui"
+
+.PP
+Referenced by destroy_interface(), process_interface(), and spawn_interface()\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

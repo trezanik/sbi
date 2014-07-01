@@ -1,0 +1,127 @@
+.TH "irc_activity" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+irc_activity \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <irc_structs\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBchannel_name\fP"
+.br
+.ti -1c
+.RI "struct {"
+.br
+.ti -1c
+.RI "   std::string \fBnickname\fP"
+.br
+.ti -1c
+.RI "   std::string \fBident\fP"
+.br
+.ti -1c
+.RI "   std::string \fBhostmask\fP"
+.br
+.ti -1c
+.RI "} \fBinstigator\fP"
+.br
+.ti -1c
+.RI "std::string \fBmessage\fP"
+.br
+.ti -1c
+.RI "std::string \fBdata\fP"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fBmodes\fP"
+.br
+.ti -1c
+.RI "struct {"
+.br
+.ti -1c
+.RI "   std::string \fBnickname\fP"
+.br
+.ti -1c
+.RI "   std::string \fBident\fP"
+.br
+.ti -1c
+.RI "   std::string \fBhostmask\fP"
+.br
+.ti -1c
+.RI "} \fBinstigator\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Contains a variable for every possible IRC message code in one class\&. Not all members are valid at a time; it all depends on the code identified and then processed by the parser\&.
+.PP
+For example; receiving a private message structured as follows:
+.PP
+.PP
+.nf
+:more!qwebirc@4FDB4E94.IP PRIVMSG #chan_name :i manually activated your account
+.fi
+.PP
+.PP
+results in the following populated members:
+.PP
+variable value  instigator\&.nickname more instigator\&.ident qwebirc instigator\&.hostmask 4FDB4E94\&.IP channel_name #chan_name message i manually activated your account All the other members are left in an unset state and should not be used\&. The way the application is structured means that the activity can remain within an \fBIrcConnection\fP, with a reference to the object being returned to whatever listener is active at the time\&. You have the until your own OnXxx function returns to extract any data; then when control has returned from the notification handlers, the parser reactivates, going through the next data in the queue (which then causes new activity details to be set)\&. Explaining this isn't easy, so it's best to check the flow diagrams!
+.PP
+The alternative to this is having a struct for each code type, where they are then populated in the same way\&. This may be easier to understand and document in hindsight, and can reside within a union to save on memory\&. The major drawback is having SO many extra structs (1 for all 999 codes, plus the non numerics - you want to do that?)\&. 
+.PP
+Definition at line 61 of file irc_structs\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string irc_activity::channel_name"
+The channel name this activity resides within 
+.PP
+Definition at line 64 of file irc_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle332(), IrcParser::HandleJoin(), and IrcParser::HandlePrivmsg()\&.
+.SS "std::string irc_activity::data"
+Additional data ( CAP's ACK/NAK, \&.\&.\&. ) 
+.PP
+Definition at line 81 of file irc_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle005(), IrcParser::Handle332(), IrcParser::HandleCap(), and IrcParser::HandlePrivmsg()\&.
+.SS "std::string irc_activity::hostmask"
+
+.PP
+Definition at line 71 of file irc_structs\&.h\&.
+.PP
+Referenced by IrcParser::HandleCap(), IrcParser::HandleJoin(), IrcParser::HandlePrivmsg(), and IrcParser::HandleQuit()\&.
+.SS "std::string irc_activity::ident"
+
+.PP
+Definition at line 70 of file irc_structs\&.h\&.
+.PP
+Referenced by IrcParser::HandleCap(), IrcParser::HandleJoin(), IrcParser::HandlePrivmsg(), and IrcParser::HandleQuit()\&.
+.SS "struct { \&.\&.\&. }   irc_activity::instigator"
+The details of the sender, or instigator of the action (a duplicate of \fBircbuf_sender\fP, but we are trying to limit header inclusions) 
+.SS "struct { \&.\&.\&. }   irc_activity::instigator"
+The details of the sender, or instigator of the action (a duplicate of \fBircbuf_sender\fP, but we are trying to limit header inclusions) 
+.PP
+Referenced by IrcParser::Handle003(), IrcParser::Handle004(), IrcParser::Handle005(), IrcParser::HandleCap(), IrcParser::HandleJoin(), IrcParser::HandlePrivmsg(), and IrcParser::HandleQuit()\&.
+.SS "std::string irc_activity::message"
+Holds NOTICE, PRIVMSG, KICK, KILL, PART, QUIT, etc\&. messages 
+.PP
+Definition at line 78 of file irc_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle001(), IrcParser::Handle002(), IrcParser::Handle003(), IrcParser::Handle004(), IrcParser::Handle005(), IrcParser::HandleCap(), IrcParser::HandlePrivmsg(), and IrcParser::HandleQuit()\&.
+.SS "std::vector< std::string > irc_activity::modes"
+User, channel, server modes 
+.PP
+Definition at line 84 of file irc_structs\&.h\&.
+.SS "std::string irc_activity::nickname"
+A single affected nickname (more than one will be vectorized) 
+.PP
+Definition at line 69 of file irc_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle001(), IrcParser::Handle002(), IrcParser::Handle003(), IrcParser::Handle004(), IrcParser::Handle005(), IrcParser::HandleCap(), IrcParser::HandleJoin(), IrcParser::HandleNick(), IrcParser::HandlePrivmsg(), and IrcParser::HandleQuit()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

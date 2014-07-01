@@ -1,0 +1,3053 @@
+.TH "IrcConnection" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IrcConnection \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <IrcConnection\&.h>\fP
+.PP
+Inherits \fBIrcObject\fP, and \fBIrcObject\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBIrcConnection\fP (std::shared_ptr< \fBIrcNetwork\fP > network)"
+.br
+.ti -1c
+.RI "\fB~IrcConnection\fP ()"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBAddChannel\fP (const char *channel_name)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBAutoChangeNick\fP ()"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBCleanup\fP ()"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBConnectToServer\fP ()"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBDeleteChannel\fP (const char *channel_name)"
+.br
+.ti -1c
+.RI "\fBirc_activity\fP & \fBGetActivity\fP ()"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBIrcChannel\fP > \fBGetChannel\fP (const char *channel_name)"
+.br
+.ti -1c
+.RI "std::string \fBGetCurrentNickname\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBGroupName\fP () const "
+.br
+.ti -1c
+.RI "uint32_t \fBId\fP () const "
+.br
+.ti -1c
+.RI "bool \fBIsActive\fP ()"
+.br
+.ti -1c
+.RI "bool \fBIsConnecting\fP ()"
+.br
+.ti -1c
+.RI "bool \fBIsDisconnected\fP ()"
+.br
+.ti -1c
+.RI "bool \fBIsDisconnecting\fP ()"
+.br
+.ti -1c
+.RI "std::string \fBNetworkName\fP () const "
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBIrcNetwork\fP > \fBOwner\fP ()"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendAway\fP (const char *message=nullptr)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendBack\fP ()"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendCTCP\fP (const char *target, const char *message)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendCTCPNotice\fP (const char *destination, const char *message)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendInit\fP ()"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendInvite\fP (const char *channel_name, const char *nickname)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendJoin\fP (const char *channel_name, const char *channel_key=nullptr)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendKick\fP (const char *channel_name, const char *nickname, const char *msg=nullptr)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendMode\fP (const char *target, const char *mode)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendNick\fP (const char *nickname)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendIdentify\fP (const char *service, const char *pass)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendNotice\fP (const char *target, const char *message)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendPart\fP (const char *channel_name, const char *msg=nullptr)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendPrivmsg\fP (const char *target, const char *privmsg)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendRaw\fP (const char *data)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendQuit\fP (const char *msg=nullptr)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendTopic\fP (const char *channel_name, const char *message=nullptr)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendUser\fP (const char *username, const uint16_t mode=8, const char *realname=nullptr)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSetActiveChannel\fP (const char *channel_name)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSetup\fP (std::shared_ptr< \fBIrcNetwork\fP > network, std::shared_ptr< \fBconfig_server\fP > server_config)"
+.br
+.ti -1c
+.RI "\fBIrcConnection\fP (\fBIrcNetwork\fP *parent_network)"
+.br
+.ti -1c
+.RI "\fB~IrcConnection\fP ()"
+.br
+.ti -1c
+.RI "bool \fBAddChannel\fP (const char *channel_name)"
+.br
+.ti -1c
+.RI "int32_t \fBAutoChangeNick\fP ()"
+.br
+.ti -1c
+.RI "void \fBCleanup\fP ()"
+.br
+.ti -1c
+.RI "int32_t \fBConnectToServer\fP ()"
+.br
+.ti -1c
+.RI "bool \fBDeleteChannel\fP (\fBIrcChannel\fP *channel)"
+.br
+.ti -1c
+.RI "\fBirc_activity\fP & \fBGetActivity\fP ()"
+.br
+.ti -1c
+.RI "\fBIrcChannel\fP * \fBGetChannel\fP (const char *channel_name)"
+.br
+.ti -1c
+.RI "std::string \fBGetCurrentNickname\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBGroupName\fP () const "
+.br
+.ti -1c
+.RI "bool \fBIsActive\fP ()"
+.br
+.ti -1c
+.RI "bool \fBIsConnecting\fP ()"
+.br
+.ti -1c
+.RI "bool \fBIsDisconnected\fP ()"
+.br
+.ti -1c
+.RI "bool \fBIsDisconnecting\fP ()"
+.br
+.ti -1c
+.RI "std::string \fBNetworkName\fP () const "
+.br
+.ti -1c
+.RI "\fBIrcNetwork\fP * \fBOwner\fP ()"
+.br
+.ti -1c
+.RI "void \fBSendAway\fP (const char *message=nullptr)"
+.br
+.ti -1c
+.RI "void \fBSendBack\fP ()"
+.br
+.ti -1c
+.RI "void \fBSendCTCP\fP (const char *target, const char *message)"
+.br
+.ti -1c
+.RI "void \fBSendCTCPNotice\fP (const char *destination, const char *message)"
+.br
+.ti -1c
+.RI "void \fBSendInit\fP ()"
+.br
+.ti -1c
+.RI "void \fBSendInvite\fP (const char *channel_name, const char *nickname)"
+.br
+.ti -1c
+.RI "void \fBSendJoin\fP (const char *channel_name, const char *channel_key=nullptr)"
+.br
+.ti -1c
+.RI "void \fBSendKick\fP (const char *channel_name, const char *nickname, const char *msg=nullptr)"
+.br
+.ti -1c
+.RI "void \fBSendMode\fP (const char *target, const char *mode)"
+.br
+.ti -1c
+.RI "void \fBSendNick\fP (const char *nickname)"
+.br
+.ti -1c
+.RI "void \fBSendIdentify\fP (const char *service, const char *pass)"
+.br
+.ti -1c
+.RI "void \fBSendNotice\fP (const char *target, const char *message)"
+.br
+.ti -1c
+.RI "void \fBSendPart\fP (const char *channel_name, const char *msg=nullptr)"
+.br
+.ti -1c
+.RI "void \fBSendPrivmsg\fP (const char *target, const char *privmsg)"
+.br
+.ti -1c
+.RI "void \fBSendRaw\fP (const char *data)"
+.br
+.ti -1c
+.RI "void \fBSendQuit\fP (const char *msg=nullptr)"
+.br
+.ti -1c
+.RI "void \fBSendTopic\fP (const char *channel_name, const char *message=nullptr)"
+.br
+.ti -1c
+.RI "void \fBSendUser\fP (const char *username, const uint16_t mode=8, const char *realname=nullptr)"
+.br
+.ti -1c
+.RI "void \fBSetActiveChannel\fP (\fBIrcChannel\fP *channel)"
+.br
+.ti -1c
+.RI "bool \fBSetup\fP (\fBIrcNetwork\fP *network, std::shared_ptr< \fBconfig_server\fP > server_config)"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNO_CLASS_ASSIGNMENT\fP (\fBIrcConnection\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_COPY\fP (\fBIrcConnection\fP)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBAddToRecvQueue\fP (const char *data)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBAddToSendQueue\fP (const char *data)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBEraseChannelList\fP ()"
+.br
+.ti -1c
+.RI "uint32_t \fBEstablishConnection\fP ()"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBSendBypass\fP (const char *data_format,\&.\&.\&.)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_ASSIGNMENT\fP (\fBIrcConnection\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_COPY\fP (\fBIrcConnection\fP)"
+.br
+.ti -1c
+.RI "bool \fBAddToRecvQueue\fP (const char *data)"
+.br
+.ti -1c
+.RI "bool \fBAddToSendQueue\fP (const char *data)"
+.br
+.ti -1c
+.RI "void \fBEraseChannelList\fP ()"
+.br
+.ti -1c
+.RI "uint32_t \fBEstablishConnection\fP ()"
+.br
+.ti -1c
+.RI "int32_t \fBSendBypass\fP (const char *data_format,\&.\&.\&.)"
+.br
+.in -1c
+.SS "Static Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static uint32_t __stdcall \fBExecEstablishConnection\fP (void *thisptr)"
+.br
+.ti -1c
+.RI "static uint32_t __stdcall \fBExecEstablishConnection\fP (void *thisptr)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "uint32_t \fB_state\fP"
+.br
+.ti -1c
+.RI "time_t \fB_last_data\fP"
+.br
+.ti -1c
+.RI "time_t \fB_lag_sent\fP"
+.br
+.ti -1c
+.RI "uint64_t \fB_bytes_recv\fP"
+.br
+.ti -1c
+.RI "uint64_t \fB_bytes_sent\fP"
+.br
+.ti -1c
+.RI "std::mutex \fB_mutex\fP"
+.br
+.ti -1c
+.RI "std::queue< std::string > \fB_recv_queue\fP"
+.br
+.ti -1c
+.RI "std::queue< std::string > \fB_send_queue\fP"
+.br
+.ti -1c
+.RI "std::set< std::string > \fB_channel_list\fP"
+.br
+.ti -1c
+.RI "std::weak_ptr< \fBIrcNetwork\fP > \fB_owner\fP"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fB_cap_ack\fP"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fB_cap_nak\fP"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fB_cap_ls\fP"
+.br
+.ti -1c
+.RI "\fBirc_activity\fP \fB_activity\fP"
+.br
+.ti -1c
+.RI "\fBirc_connection_params\fP \fB_params\fP"
+.br
+.ti -1c
+.RI "uint32_t \fB_id\fP"
+.br
+.ti -1c
+.RI "uint32_t \fB_thread\fP"
+.br
+.ti -1c
+.RI "std::set< \fBIrcChannel\fP * > \fB_channel_list\fP"
+.br
+.ti -1c
+.RI "\fBIrcNetwork\fP * \fB_parent_network\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBIrcParser\fP"
+.br
+.ti -1c
+.RI "class \fBIrcNetwork\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Definition at line 76 of file IrcConnection\&.h\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "IrcConnection::IrcConnection (std::shared_ptr< \fBIrcNetwork\fP >network)"
+
+.PP
+Definition at line 62 of file IrcConnection\&.cc\&.
+.PP
+References CS_Disconnected\&.
+.PP
+.nf
+64   : _owner(network)
+65 {
+66 #if defined(USING_OPENSSL_NET)
+67         _socket = nullptr;
+68         _ssl = nullptr;
+69         _ssl_context = nullptr;
+70 #endif
+71         _bytes_recv = 0;
+72         _bytes_sent = 0;
+73         _state = CS_Disconnected;
+74 
+75         _last_data = 0;
+76         _lag_sent = 0;
+77 
+78         _thread = 0;
+79 
+80         // and the parameters
+81 
+82 #if !defined(USING_BOOST_NET)
+83         memset(&_params\&.ip, 0, sizeof(_params\&.ip));
+84         memset(&_params\&.sa, 0, sizeof(_params\&.sa));
+85 #endif
+86 }
+.fi
+.SS "IrcConnection::~IrcConnection ()"
+
+.PP
+Definition at line 90 of file IrcConnection\&.cc\&.
+.PP
+References IrcParser::Cleanup()\&.
+.PP
+.nf
+91 {
+92         Cleanup();
+93 }
+.fi
+.SS "IrcConnection::IrcConnection (\fBIrcNetwork\fP *parent_network)"
+
+.PP
+Definition at line 60 of file bak/IrcConnection\&.cc\&.
+.PP
+References IrcObject::_irc_engine, CS_Disconnected, and IrcEngine::NotifyNewConnection()\&.
+.PP
+.nf
+62   : _parent_network(parent_network)
+63 {
+64 #if defined(USING_OPENSSL)
+65         _socket = nullptr;
+66         _ssl = nullptr;
+67         _ssl_context = nullptr;
+68 #endif
+69         _bytes_recv = 0;
+70         _bytes_sent = 0;
+71         _state = CS_Disconnected;
+72 
+73         _last_data = 0;
+74         _lag_sent = 0;
+75 
+76         _thread = 0;
+77 
+78         // and the parameters
+79 
+80 #if !defined(USING_POCO_NET)
+81         memset(&_params\&.ip, 0, sizeof(_params\&.ip));
+82         memset(&_params\&.sa, 0, sizeof(_params\&.sa));
+83 #endif
+84 
+85         /* must be a better way of doing this\&.\&. (rtti/dynamic_cast does NOT work
+86          * in IrcEngine::NotifyNewObject) */
+87         _irc_engine->NotifyNewConnection(this);
+88 }
+.fi
+.SS "IrcConnection::~IrcConnection ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool IrcConnection::AddChannel (const char *channel_name)"
+Allocates a new \fBIrcChannel\fP, identified as channel_name, linking it into the connections channel list\&.
+.PP
+To retrieve it, call \fBGetChannel()\fP
+.PP
+\fBParameters:\fP
+.RS 4
+\fIchannel_name\fP The channel name to add to the channel list 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+If the channel is added to the connection list, the function returns true; otherwise false 
+.RE
+.PP
+
+.SS "bool IrcConnection::AddChannel (const char *channel_name)"
+Allocates a new \fBIrcChannel\fP, identified as channel_name, linking it into the connections channel list\&.
+.PP
+To retrieve it, call \fBGetChannel()\fP
+.PP
+\fBParameters:\fP
+.RS 4
+\fIchannel_name\fP The channel name to add to the channel list 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+If the channel is added to the connection list, the function returns true; otherwise false 
+.RE
+.PP
+
+.PP
+Definition at line 98 of file IrcConnection\&.cc\&.
+.PP
+References IrcObject::_irc_engine, IrcFactory::CreateIrcChannel(), IrcEngine::Factory(), fg_red(), IrcPool::GetConnection(), InvalidParameter, OK, and IrcEngine::Pools()\&.
+.PP
+Referenced by IrcParser::HandleJoin()\&.
+.PP
+.nf
+101 {
+102         if ( channel_name == nullptr )
+103                 goto no_name;
+104 
+105         {
+106                 std::lock_guard<std::mutex>     lock(_mutex);
+107                 
+108                 if ( _irc_engine->Factory()->CreateIrcChannel(
+109                         _irc_engine->Pools()->GetConnection(_id), channel_name) 
+110                         != nullptr )
+111                 {
+112                         _channel_list\&.insert(channel_name);
+113                 }
+114         }
+115 
+116         return EIrcStatus::OK;
+117 
+118 no_name:
+119         std::cerr << fg_red << "The supplied channel name was a nullptr\n";
+120         return EIrcStatus::InvalidParameter;
+121 }
+.fi
+.SS "bool IrcConnection::AddToRecvQueue (const char *data)\fC [private]\fP"
+Adds the supplied data to the connections receiving queue, ready to be picked up aned processed by the parsing thread\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdata\fP The raw text to have received 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true if the data is added to the pending queue, otherwise false is returned 
+.RE
+.PP
+
+.SS "bool IrcConnection::AddToRecvQueue (const char *data)\fC [private]\fP"
+Adds the supplied data to the connections receiving queue, ready to be picked up aned processed by the parsing thread\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdata\fP The raw text to have received 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true if the data is added to the pending queue, otherwise false is returned 
+.RE
+.PP
+
+.PP
+Definition at line 126 of file IrcConnection\&.cc\&.
+.PP
+References Debug, fg_red(), InvalidData, InvalidParameter, LOG, MAX_BUF_IRC_MSG, and OK\&.
+.PP
+.nf
+129 {
+130         uint32_t        length = 0;
+131 
+132         if ( data == nullptr )
+133                 goto no_data;
+134 
+135         length = strlen(data);
+136 
+137         /* if truncation occurs, the received message is longer than the known 
+138          * IRC RFC limit, and is therefore invalid\&. We have already stripped the
+139          * CR-LF so do not include that in the size check */
+140         if ( length >= MAX_BUF_IRC_MSG )
+141                 goto data_too_long;
+142         if ( length < 2 )
+143                 goto data_too_short;
+144 
+145         {
+146                 std::lock_guard<std::mutex>     lock(_mutex);
+147 
+148                 // append the new data to the receiving queue as a copy
+149                 _recv_queue\&.push(data);
+150         }
+151 
+152         // Debug log
+153         LOG(ELogLevel::Debug) << "Recv on " << this << ": " << data << "\n";
+154 
+155         return EIrcStatus::OK;
+156 
+157 no_data:
+158         std::cerr << fg_red << "The supplied data was a nullptr\n";
+159         return EIrcStatus::InvalidParameter;
+160 data_too_long:
+161         std::cerr << fg_red << "The supplied data exceeded the maximum buffer size for an IRC message\n";
+162         return EIrcStatus::InvalidData;
+163 data_too_short:
+164         std::cerr << fg_red << "The supplied data was too short for a valid IRC message\n";
+165         return EIrcStatus::InvalidData;
+166 }
+.fi
+.SS "bool IrcConnection::AddToSendQueue (const char *data)\fC [private]\fP"
+Adds the supplied data to the connections send queue, ready for sending to the server\&. The queue is processed by the dedicated thread automatically, keeping within the bounds of flood protection\&.
+.PP
+The trailing carriage return and linefeed are added BY this function, so there is no need to supply it as part of the data\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdata\fP The raw text to send 
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fIretval\fP true if the data is added to the pending queue 
+.br
+\fIfalse\fP on any failure; no data added to the pending queue 
+.RE
+.PP
+
+.SS "bool IrcConnection::AddToSendQueue (const char *data)\fC [private]\fP"
+Adds the supplied data to the connections send queue, ready for sending to the server\&. The queue is processed by the dedicated thread automatically, keeping within the bounds of flood protection\&.
+.PP
+The trailing carriage return and linefeed are added BY this function, so there is no need to supply it as part of the data\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdata\fP The raw text to send 
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fIretval\fP true if the data is added to the pending queue 
+.br
+\fIfalse\fP on any failure; no data added to the pending queue 
+.RE
+.PP
+
+.PP
+\fBTodo\fP
+.RS 4
+existing functionality is temporary - flood protection! 
+.RE
+.PP
+
+.PP
+Definition at line 171 of file IrcConnection\&.cc\&.
+.PP
+References OK\&.
+.PP
+.nf
+174 {
+177         SendBypass("%s\r\n", data);
+178 
+179         return EIrcStatus::OK;
+180 }
+.fi
+.SS "int32_t IrcConnection::AutoChangeNick ()"
+Sends a request to the connected server to choose the next nickname in the users profile\&.
+.PP
+\fBReturns:\fP
+.RS 4
+If no more nicknames are available, EC_NoMoreNicks is returned, but the counter is reset (so it can be called continuously again)\&. EC_Success is returned when the nick is changed\&. 
+.RE
+.PP
+
+.SS "int32_t IrcConnection::AutoChangeNick ()"
+Sends a request to the connected server to choose the next nickname in the users profile\&.
+.PP
+\fBReturns:\fP
+.RS 4
+If no more nicknames are available, EC_NoMoreNicks is returned, but the counter is reset (so it can be called continuously again)\&. EC_Success is returned when the nick is changed\&. 
+.RE
+.PP
+
+.PP
+Definition at line 185 of file IrcConnection\&.cc\&.
+.PP
+References fg_red(), config_profile::nicknames, NoMoreNicks, NoOwner, and OK\&.
+.PP
+Referenced by IrcParser::Handle432(), and IrcParser::Handle433()\&.
+.PP
+.nf
+186 {
+187         config_profile* profile;
+188         std::string     next_nick;
+189         bool            use = false;
+190         std::shared_ptr<IrcNetwork>     network = _owner\&.lock();
+191 
+192         if ( network == nullptr )
+193                 goto no_parent;
+194 
+195         profile = &network->_profile_config;
+196 
+197         for ( auto n : profile->nicknames )
+198         {
+199                 if ( use )
+200                 {
+201                         next_nick = n;
+202                         break;
+203                 }
+204 
+205                 if ( n\&.compare(network->ClientNickname()) == 0 )
+206                 {
+207                         use = true;
+208                 }
+209         }
+210 
+211         if ( next_nick\&.empty() )
+212         {
+213                 // if use is true, then the current nick was the final one
+214                 if ( use )
+215                         goto no_more_nicks;
+216                 // otherwise, we have a non-profile nick; so use the first again
+217                 next_nick = profile->nicknames[0];
+218         }
+219 
+220         network->_client\&.nickname = next_nick;
+221         SendNick(next_nick\&.c_str());
+222 
+223         return EIrcStatus::OK;
+224 
+225 no_parent:
+226         std::cerr << fg_red << "The supplied connections parent network was a nullptr\n";
+227         return EIrcStatus::NoOwner;
+228 no_more_nicks:
+229         std::cerr << fg_red << "There are no more nicknames left to try\n";
+230         return EIrcStatus::NoMoreNicks;
+231 }
+.fi
+.SS "void IrcConnection::Cleanup ()"
+Cleans up the connection, freeing any allocated memory, closing any sockets and shutting down SSL, if in usage\&.
+.PP
+This will not destroy the connection object itself, allowing it to be reused for another connection (i\&.e\&. reconnecting to the same server) 
+.SS "void IrcConnection::Cleanup ()"
+Cleans up the connection, freeing any allocated memory, closing any sockets and shutting down SSL, if in usage\&.
+.PP
+This will not destroy the connection object itself, allowing it to be reused for another connection (i\&.e\&. reconnecting to the same server) 
+.PP
+Definition at line 236 of file IrcConnection\&.cc\&.
+.PP
+References CS_Active, CS_Disconnected, CS_Disconnecting, fg_red(), OK, runtime, and Runtime::WaitThenKillThread()\&.
+.PP
+.nf
+237 {
+238         // the order of cleanup here should be the most stable/suitable
+239 
+240         if ( _state & CS_Active )
+241         {
+242                 /* we can't use _owner->_client\&.quit_reason\&.c_str() here,
+243                  * as the parent network has already been deleted if we're closing
+244                  * the application\&. Yes, we can copy it; or move the structs into
+245                  * this class; until we're fully aware of all the intricate bits,
+246                  * yes send a quit without a message\&. Not that important\&.\&.\&. */
+247                 SendQuit();
+248                 _state = CS_Disconnecting;
+249         }
+250 
+251         /* we can safely wipe out the channel list while we're waiting for the
+252          * server to close the connection and the thread to return */
+253         EraseChannelList();
+254 
+255 
+256 #if 0   // Code Removed: now handled by Runtime
+257 #if defined(_WIN32)
+258         if ( _thread != nullptr && _thread != INVALID_HANDLE_VALUE )
+259         {
+260                 DWORD   exit_code = 0;
+261 
+262                 /* give the thread 1 second to close */
+263                 WaitForSingleObject(_thread, 1000);
+264 
+265                 if ( !GetExitCodeThread(_thread, &exit_code) || exit_code == STILL_ACTIVE )
+266                 {
+267                         /* tried to let the thread go peacefully - kill it */
+268                         if ( !TerminateThread(_thread, EXIT_FAILURE) )
+269                         {
+270                                 /* termination failed - we're very likely to crash if the
+271                                  * thread tries to resume at the blocking BIO_read, since
+272                                  * we're about to free the ssl & class data\&.\&. */
+273                                 std::cerr << fg_red << "Failed to terminate the connection thread; Win32 error " << GetLastError();
+274                         }
+275                 }
+276 
+277                 /* we want nothing to do with the thread anymore; we've tried to kill
+278                  * it (even if it succeeded) and so we can close the handle, and the
+279                  * system should cleanup all the associated resources for it when it is
+280                  * able to do so\&. */
+281                 CloseHandle(_thread);
+282                 _thread = nullptr;
+283                 _thread_id = 0;
+284         }
+285 #elif defined(__linux__) || defined(BSD)
+286 
+287         /* this cleanup code has been copied and used in the IrcParser and
+288          * IrcAntiTimeout classes; modifications should be duplicated there;
+289          * either that or we call a function that does it\&.\&.\&.\&.recommended! */
+290 
+291         if ( _thread != 0 )
+292         {
+293                 s32             ret;
+294                 timespec        wait_time;
+295 
+296                 wait_time\&.tv_sec = 1;
+297 
+298                 /* wait 1 second for the thread to finish up */
+299                 ret = pthread_timedjoin_np(_thread, nullptr, &wait_time);
+300 
+301                 if ( ret == ETIMEDOUT )
+302                 {
+303                         /* tried to let the thread go peacefully - stop it */
+304                         pthread_cancel(_thread);
+305                         /* wait again */
+306                         ret = pthread_timedjoin_np(_thread, nullptr, &wait_time);
+307 
+308                         if ( ret == ETIMEDOUT )
+309                         {
+310                                 std::cout << fg_red << "Thread " << _thread << " has been forcibly killed after failing to finish on request\n";
+311 
+312                                 /* second timeout, even after cancelling\&. Just
+313                                  * kill it and live with any resource leaks */
+314                                 pthread_kill(_thread, SIGKILL);
+315                         }
+316                         else if ( ret != 0 )
+317                         {
+318                                 std::cout << fg_red << "Received errno " << ret << " after waiting for thread " << _thread << " to finish\n";
+319                         }
+320                 }
+321 
+322                 _thread = 0;
+323         }
+324 #endif
+325 #endif  // Code Removed
+326 
+327 #if defined(USING_OPENSSL_NET)
+328         /* the EstablishConnection thread will still be running (assuming we
+329          * actually connected) at this stage; and since it's blocking on the BIO
+330          * the only way we can sync it is to delete it\&. As such, perform the
+331          * deletion, and **wait** for the thread to finish before returning from
+332          * this function\&. */
+333         if ( _socket != nullptr )
+334         {
+335                 if ( _ssl != nullptr )
+336                 {
+337                         SSL_shutdown(_ssl\&.release());
+338                         SSL_CTX_free(_ssl_context\&.release());
+339                         // frees the connection->socket too, no need to reset
+340                         SSL_free(_ssl\&.release());
+341                         _ssl = nullptr;
+342                         _ssl_context = nullptr;
+343                 }
+344                 else
+345                 {
+346                         BIO_reset(_socket\&.get());
+347                         BIO_free(_socket\&.release());
+348                 }
+349 
+350                 _socket = nullptr;
+351         }
+352 #endif  // USING_OPENSSL_NET
+353 
+354         runtime\&.WaitThenKillThread(_thread);
+355 
+356         // theoretically possible for a queue to add entries inbetween above
+357 
+358         while ( !_send_queue\&.empty() )
+359                 _send_queue\&.pop();
+360         while ( !_recv_queue\&.empty() )
+361                 _recv_queue\&.pop();
+362 
+363         _last_data = 0;
+364         _lag_sent = 0;
+365         _state = CS_Disconnected;
+366 
+367         return EIrcStatus::OK;
+368 }
+.fi
+.SS "int32_t IrcConnection::ConnectToServer ()"
+
+.PP
+\fBTodo\fP
+.RS 4
+fixme Physically connects to the server set within the connection\&. This is done within , which includes performing a DNS lookup and populating the sockaddr structures\&. This function makes the first real outbound call, and on success, creates a thread to parse any data received\&.
+.RE
+.PP
+.PP
+\fBNote:\fP
+.RS 4
+Currently hardcoded to use OpenSSL for a connection without any preprocessor guards - to change if we want to support other SSL implementations\&. Until then, this will cause a compile error if not USING_OPENSSL
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+If an outbound connection is successfully made, and a thread created to process it, the function returns 0\&. 
+.PP
+Any failure causes the function to return -1 
+.PP
+If the connection is already active, the function returns 1 
+.RE
+.PP
+
+.SS "int32_t IrcConnection::ConnectToServer ()"
+
+.PP
+\fBTodo\fP
+.RS 4
+fixme Physically connects to the server set within the connection\&. This is done within , which includes performing a DNS lookup and populating the sockaddr structures\&. This function makes the first real outbound call, and on success, creates a thread to parse any data received\&.
+.RE
+.PP
+.PP
+\fBNote:\fP
+.RS 4
+Currently hardcoded to use OpenSSL for a connection without any preprocessor guards - to change if we want to support other SSL implementations\&. Until then, this will cause a compile error if not USING_OPENSSL
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+If an outbound connection is successfully made, and a thread created to process it, the function returns 0\&. 
+.PP
+Any failure causes the function to return -1 
+.PP
+If the connection is already active, the function returns 1 
+.RE
+.PP
+
+.PP
+Definition at line 580 of file IrcConnection\&.cc\&.
+.PP
+.nf
+581 {
+582 #       error No implementation exists for this function with current project settings
+583 }
+.fi
+.SS "bool IrcConnection::DeleteChannel (\fBIrcChannel\fP *channel)"
+Deletes the supplied channel\&. If it is still a part of the channel list, it will be unlinked first\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBGetChannel()\fP, RemoveChannel() 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIchannel\fP The \fBIrcChannel\fP to delete 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true if the channel is deleted; otherwise false 
+.RE
+.PP
+
+.PP
+Definition at line 632 of file bak/IrcConnection\&.cc\&.
+.PP
+References _channel_list, IrcObject::_irc_engine, _mutex, IrcFactory::DeleteIrcObject(), IrcEngine::Factory(), and IrcChannel::Name()\&.
+.PP
+.nf
+635 {
+636         bool    found = false;
+637 
+638         if ( channel == nullptr )
+639                 goto no_channel;
+640 
+641         {
+642                 std::lock_guard<std::mutex>     lock(_mutex);
+643 
+644                 for ( auto c : _channel_list )
+645                 {
+646                         if ( c == channel )
+647                         {
+648                                 found = true;
+649                                 _irc_engine->Factory()->DeleteIrcObject(channel);
+650                                 _channel_list\&.erase(c);
+651                                 // must break out of the loop, iterator invalid
+652                                 break;
+653                         }
+654                 }
+655         }
+656 
+657         if ( !found )
+658         {
+659                 std::cerr << fg_red << "The supplied channel (" << channel->Name() << ") was not found in the channel list\n";
+660                 return false;
+661         }
+662 
+663         return true;
+664 
+665 no_channel:
+666         std::cerr << fg_red << "The supplied channel was a nullptr\n";
+667         return false;
+668 }
+.fi
+.SS "\fBEIrcStatus\fP IrcConnection::DeleteChannel (const char *channel_name)"
+Deletes the supplied channel\&. If it is still a part of the channel list, it will be unlinked first\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBGetChannel()\fP, RemoveChannel() 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIchannel\fP The \fBIrcChannel\fP to delete 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true if the channel is deleted; otherwise false 
+.RE
+.PP
+
+.PP
+Definition at line 641 of file IrcConnection\&.cc\&.
+.PP
+References IrcObject::_irc_engine, ObjectPool< T >::FreeObject(), IrcPool::GetChannel(), InvalidParameter, IrcPool::IrcChannels(), ObjectNotFound, OK, and IrcEngine::Pools()\&.
+.PP
+.nf
+644 {
+645         bool    found = false;
+646 
+647         if ( channel_name == nullptr )
+648                 goto no_channel;
+649 
+650         {
+651                 std::lock_guard<std::mutex>     lock(_mutex);
+652 
+653                 for ( auto c : _channel_list )
+654                 {
+655                         if ( c == channel_name )
+656                         {
+657                                 found = true;
+658                                 _irc_engine->Pools()->IrcChannels()->FreeObject(
+659                                         _irc_engine->Pools()->GetChannel(_id, channel_name)
+660                                 );
+661                                 _channel_list\&.erase(channel_name);
+662                                 // must break out of the loop, iterator invalid
+663                                 break;
+664                         }
+665                 }
+666         }
+667 
+668         if ( !found )
+669                 goto not_found;
+670 
+671         return EIrcStatus::OK;
+672 
+673 no_channel:
+674         std::cerr << fg_red << "The supplied channel was a nullptr\n";
+675         return EIrcStatus::InvalidParameter;
+676 not_found:
+677         std::cerr << fg_red << "The supplied channel (" << channel_name << ") was not found in the channel list\n";
+678         return EIrcStatus::ObjectNotFound;
+679 }
+.fi
+.SS "void IrcConnection::EraseChannelList ()\fC [private]\fP"
+Wipes out the linked list containing the IRC channels\&.
+.PP
+Only expected to be executed when the destructor or \fBCleanup()\fP are called\&. 
+.SS "void IrcConnection::EraseChannelList ()\fC [private]\fP"
+Wipes out the linked list containing the IRC channels\&.
+.PP
+Only expected to be executed when the destructor or \fBCleanup()\fP are called\&. 
+.PP
+Definition at line 684 of file IrcConnection\&.cc\&.
+.PP
+References IrcObject::_irc_engine, ObjectPool< T >::FreeObject(), IrcPool::IrcChannels(), OK, and IrcEngine::Pools()\&.
+.PP
+Referenced by IrcParser::HandleQuit()\&.
+.PP
+.nf
+685 {
+686         std::lock_guard<std::mutex>     lock(_mutex);
+687 
+688         // all channels should be at reference count 1 here
+689         for ( auto c : _channel_list )
+690         {
+691                 _irc_engine->Pools()->IrcChannels()->FreeObject(GetChannel(c\&.c_str()));
+692         }
+693 
+694         _channel_list\&.clear();
+695 
+696         return EIrcStatus::OK;
+697 }
+.fi
+.SS "uint32_t IrcConnection::EstablishConnection ()\fC [private]\fP"
+The thread function that constantly receives data and adds it to the receiving queue\&. Automatically sends data (initial connection, PING and PONGs) where applicable\&.
+.PP
+Only called through \fBExecEstablishConnection()\fP as part of a new thread\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Always returns 0\&. 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBExecEstablishConnection\fP, Runtime::CreateThread 
+.RE
+.PP
+
+.SS "uint32_t IrcConnection::EstablishConnection ()\fC [private]\fP"
+The thread function that constantly receives data and adds it to the receiving queue\&. Automatically sends data (initial connection, PING and PONGs) where applicable\&.
+.PP
+Only called through \fBExecEstablishConnection()\fP as part of a new thread\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Always returns 0\&. 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBExecEstablishConnection\fP, Runtime::CreateThread 
+.RE
+.PP
+
+.PP
+Definition at line 702 of file IrcConnection\&.cc\&.
+.PP
+References IrcObject::_irc_engine, CS_Disconnected, IrcPool::GetConnection(), LN_NewData, MAX_BUF_IRC_MSG_CRLF, IrcEngine::NotifyListeners(), IrcEngine::Parser(), IrcEngine::Pools(), runtime, SLEEP_SECONDS, str_token(), strlcat(), strlcpy(), Runtime::ThreadStopping(), and IrcParser::TriggerSync()\&.
+.PP
+.nf
+703 {
+704         char    buffer[MAX_BUF_IRC_MSG_CRLF];
+705         char    store_buffer[MAX_BUF_IRC_MSG_CRLF] = { '\0' };
+706         char    delim[] = "\n";
+707         char*   last = nullptr;
+708         char*   p = nullptr;
+709         int32_t         buffer_read = 0;
+710         uint32_t        len;
+711         uint32_t        max_len = sizeof(buffer) - 1;
+712 
+713         if ( &_owner == nullptr )
+714                 goto invalid_parent;
+715 
+716         // ConnectToServer must have opened the connection
+717         if ( !IsConnecting() )
+718                 goto invalid_state;
+719 
+720 
+721         // store the thread id so the class can close it cleanly
+722 #if defined(_WIN32)
+723         _thread = GetCurrentThreadId();
+724 #else
+725         _thread = pthread_self();
+726 #endif
+727 
+728 
+729         try
+730         {
+731 
+732         /*
+733          * Different servers have different first responses\&. For example, Rizon
+734          * brings back the following:
+735          | :irc\&.shakeababy\&.net 439 * :Please wait while we process your connection\&.
+736          | :irc\&.shakeababy\&.net NOTICE AUTH :*** Looking up your hostname\&.\&.\&.
+737          | \&.\&.\&.
+738          * Whereas connecting to irc\&.freenode\&.net results in:
+739          | :calvino\&.freenode\&.net NOTICE * :*** Looking up your hostname\&.\&.\&.
+740          | \&.\&.\&.
+741          * ngIRCd even WAITS for US to send the first data!
+742          |
+743          * This makes it difficult to predict and determine at what stages we
+744          * should proceed with sending the connection data, and handling an event
+745          * when we connect\&. The only guarantee is that 001 will be received when
+746          * the connection is successful\&.
+747          *
+748          * Since I discovered ngIRCd does not send any data on initial connection
+749          * (at least by default), then we have to go through our init procedure
+750          * before the first read, otherwise it'll simply timeout, since the parse
+751          * function never gets called\&. As such, we have to maintain this for all
+752          * the other servers too!
+753          */
+754         SendInit();
+755 
+756         while ( IsActive() || IsConnecting() )
+757         {
+758 #if defined(USING_OPENSSL_NET)
+759                 if (( buffer_read = BIO_read(_socket\&.get(), buffer, max_len)) == 0 )
+760                 {
+761                         if ( !BIO_should_retry(_socket\&.get()) )
+762                                 goto bio_abort_0;
+763                         else
+764                         {
+765                                 // sleep for a second, then retry
+766                                 SLEEP_SECONDS(1);
+767                                 continue;
+768                         }
+769                 }
+770                 else if ( buffer_read < 0 )
+771                 {
+772                         if ( _socket != nullptr && BIO_should_retry(_socket\&.get()) )
+773                         {
+774                                 continue;
+775                         }
+776 
+777                         goto bio_abort;
+778                 }
+779                 else
+780 #elif defined(USING_BOOST_NET)
+781                 if ( 0 )
+782                 {
+783                 }
+784 #else
+785 #       error No implementation exisits for this function with current project settings
+786 #endif
+787                 {
+788                         // successfully retrieved data
+789                         _last_data = time(NULL);
+790                         _bytes_recv += buffer_read;
+791 
+792                         /* ensure the buffer is nul-terminated; only this thread accesses
+793                          * this buffer, copies are made for later usage\&. */
+794                         buffer[buffer_read] = '\0';
+795 
+796                         /* if it's a PING, reply straight away, bypassing the
+797                          * queue; otherwise, add it\&. More efficient checking
+798                          * it here than allocating memory for the queue */
+799                         if ( strncmp(buffer, "PING :", 6) == 0 )
+800                         {
+801                                 // Turn PING into PONG
+802                                 buffer[1] = 'O';
+803                                 SendBypass("%s", buffer);
+804                                 continue;
+805                         }
+806                         /* we don't handle PONG's here (replies from our PING LAG12345) as it
+807                          * contains the server prefix like a normal message */
+808 
+809                         /* reuse the same buffer that will be used for storing the 'prev'
+810                          * data, and make a copy of each instance\&. This eases debugging,
+811                          * and benefits the add_to_recv_queue functionality by making it
+812                          * do less work, at the cost of copying the string here - which
+813                          * will still be faster\&. */
+814                         p = str_token(buffer, delim, &last);
+815 
+816                         /* !!NOTE:: the str_token call will nul the newline 
+817                          * character, leaving only the linefeed behind, which we
+818                          * check for (and remove) */
+819 
+820                         while ( p != nullptr )
+821                         {
+822                                 if ( store_buffer[0] != '\0' )
+823                                 {
+824                                         // linefeed is 1 before nul
+825                                         len = strlen(p);
+826                                         if ( len < 1 || p[len-1] != '\r' )
+827                                                 goto invalid_data;
+828 
+829                                         // nul the linefeed
+830                                         p[len-1] = '\0';
+831                                         // append the rest of the string to the previous buffer
+832                                         strlcat(store_buffer, p, sizeof(store_buffer));
+833                                         // and add it to the queue as normal
+834                                         AddToRecvQueue(store_buffer);
+835                                         store_buffer[0] = '\0';
+836                                 }
+837                                 else
+838                                 {
+839                                         len = strlcpy(store_buffer, p, sizeof(store_buffer));
+840 
+841                                         /* if linefeed is the last character, we've received a full
+842                                          * message, otherwise retain it in the store_buffer ready
+843                                          * for the next batch of data */
+844                                         if ( len > 1 && store_buffer[len-1] == '\r' )
+845                                         {
+846                                                 // remove the linefeed
+847                                                 store_buffer[len-1] = '\0';
+848                                                 // add the whole string to the queue
+849                                                 AddToRecvQueue(store_buffer);
+850                                                 // whole message, start fresh with next iteration
+851                                                 store_buffer[0] = '\0';
+852                                         }
+853                                 }
+854 
+855                                 p = str_token(nullptr, delim, &last);
+856                         }
+857 
+858                         /* do the notifications here, on end of data instance,
+859                          * rather than AddToRecvQueue - potential race condition
+860                          * with the queues otherwise? */
+861 
+862                         // notify the pre-parse listeners there is new data available
+863                         _irc_engine->NotifyListeners(LN_NewData, _irc_engine->Pools()->GetConnection(_id));
+864                         // trigger the parser
+865                         _irc_engine->Parser()->TriggerSync();
+866                 }
+867         } // end while
+868 
+869         }
+870         catch ( std::exception& e )
+871         {
+872                 std::cerr << fg_red << "Caught an exception; " << e\&.what() << "\n";
+873         }
+874         catch ( \&.\&.\&. )
+875         {
+876                 std::cerr << fg_red << "Caught an unhandled exception\n";
+877         }
+878 
+879         goto finish;
+880 
+881 invalid_parent:
+882         std::cerr << fg_red << "The supplied connections parent_network was a nullptr\n";
+883         goto finish;
+884 invalid_data:
+885         std::cerr << fg_red << "The received data was invalid\n";
+886         goto finish;
+887 invalid_state:
+888         std::cerr << fg_red << "The connection state is invalid\n";
+889         goto finish;
+890 #if defined(USING_OPENSSL_NET)
+891 bio_abort:
+892         // as this thread blocks on the socket, it can be deleted legitimately
+893         if ( _socket != nullptr )
+894                 std::cerr << fg_red << "BIO_should_retry returned false\n";
+895         goto finish;
+896 bio_abort_0:
+897         if ( _socket != nullptr )
+898                 std::cerr << fg_red << "BIO_should_retry returned false\n";
+899         goto finish;
+900 #elif defined(USING_BOOST_NET)
+901 #else
+902         // non-OpenSSL equivalent
+903 #endif
+904 finish:
+905         _state = CS_Disconnected;
+906 
+907 #if defined(_WIN32)
+908         runtime\&.ThreadStopping(GetCurrentThreadId(), __FUNCTION__);
+909 #else
+910         runtime\&.ThreadStopping(pthread_self(), __FUNCTION__);
+911 #endif
+912         return 0;
+913 }
+.fi
+.SS "static uint32_t __stdcall IrcConnection::ExecEstablishConnection (void *thisptr)\fC [static]\fP, \fC [private]\fP"
+Used for creating a thread for the \fBEstablishConnection()\fP function\&. Since we reside in a C++ class, this is necessary to be able to have it called via a new thread\&.
+.PP
+\fBWarning:\fP
+.RS 4
+Do not call manually; the internal functions and other classes will do all necessary preparation, and call Runtime::CreateThread, which in turn will execute this function\&. As a result, no safety checks are performed\&.
+.RE
+.PP
+Runtime::CreateThread is a friend in order to call this function\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIthisptr\fP A pointer to the \fBIrcConnection\fP class 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Always returns 0\&. Whatever happens in the called function stays unique and separate\&. 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+Runtime::CreateThread, \fBIrcParser::ExecParser\fP 
+.RE
+.PP
+
+.SS "uint32_t IrcConnection::ExecEstablishConnection (void *thisptr)\fC [static]\fP, \fC [private]\fP"
+Used for creating a thread for the \fBEstablishConnection()\fP function\&. Since we reside in a C++ class, this is necessary to be able to have it called via a new thread\&.
+.PP
+\fBWarning:\fP
+.RS 4
+Do not call manually; the internal functions and other classes will do all necessary preparation, and call Runtime::CreateThread, which in turn will execute this function\&. As a result, no safety checks are performed\&.
+.RE
+.PP
+Runtime::CreateThread is a friend in order to call this function\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIthisptr\fP A pointer to the \fBIrcConnection\fP class 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Always returns 0\&. Whatever happens in the called function stays unique and separate\&. 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+Runtime::CreateThread, \fBIrcParser::ExecParser\fP 
+.RE
+.PP
+
+.PP
+Definition at line 929 of file IrcConnection\&.cc\&.
+.PP
+.nf
+932 {
+933 #if defined(_WIN32)
+934         return ((IrcConnection*)connection)->EstablishConnection();
+935 #else
+936         ((IrcConnection*)connection)->EstablishConnection();
+937         return nullptr;
+938 #endif
+939 }
+.fi
+.SS "\fBirc_activity\fP& IrcConnection::GetActivity ()\fC [inline]\fP"
+Gets the \fBirc_activity\fP struct for this connection\&.
+.PP
+Only called within \fBIrcEngine\fP as a means of getting the struct to pass to the listeners\&. As such, the lifetime of the returned reference is 'guaranteed' to be sufficient for as long as the listener functions are being run, and is also the only point at which the data within the struct should be accurate for usage\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A reference to the \fBirc_activity\fP if returned 
+.RE
+.PP
+
+.PP
+Definition at line 348 of file bak/IrcConnection\&.h\&.
+.PP
+.nf
+349         { return _activity; }
+.fi
+.SS "\fBirc_activity\fP& IrcConnection::GetActivity ()\fC [inline]\fP"
+Gets the \fBirc_activity\fP struct for this connection\&.
+.PP
+Only called within \fBIrcEngine\fP as a means of getting the struct to pass to the listeners\&. As such, the lifetime of the returned reference is 'guaranteed' to be sufficient for as long as the listener functions are being run, and is also the only point at which the data within the struct should be accurate for usage\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A reference to the \fBirc_activity\fP is returned 
+.RE
+.PP
+
+.PP
+Definition at line 354 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcParser::Handle001(), IrcParser::Handle002(), IrcParser::Handle003(), IrcParser::Handle004(), IrcParser::Handle005(), IrcParser::Handle332(), IrcParser::Handle333(), IrcParser::Handle353(), IrcParser::Handle366(), IrcParser::Handle372(), IrcParser::Handle375(), IrcParser::Handle376(), IrcParser::Handle432(), IrcParser::Handle433(), IrcParser::HandleCap(), IrcParser::HandleInvite(), IrcParser::HandleJoin(), IrcParser::HandleKick(), IrcParser::HandleKill(), IrcParser::HandleMode(), IrcParser::HandleNick(), IrcParser::HandleNotice(), IrcParser::HandlePart(), IrcParser::HandlePong(), IrcParser::HandlePrivmsg(), IrcParser::HandleQuit(), IrcParser::HandleTopic(), and IrcEngine::NotifyListeners()\&.
+.PP
+.nf
+355         { return _activity; }
+.fi
+.SS "\fBIrcChannel\fP* IrcConnection::GetChannel (const char *channel_name)"
+Gets the \fBIrcChannel\fP object from the specified connection, whose name matches channel_name\&.
+.PP
+Will not generate an error if the specified channel is not found, as this can be used for a simple search; raise your own error if this is undesired\&.
+.PP
+\fBWarning:\fP
+.RS 4
+Increments the reference counter for the channel; you must call Dereference on it when finished using it!
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIchannel_name\fP The name of the channel to locate 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+If the channel is not found, a nullptr is returned, otherwise it is a pointer to the \fBIrcChannel\fP called channel_name 
+.RE
+.PP
+
+.SS "\fBIrcChannel\fP * IrcConnection::GetChannel (const char *channel_name)"
+Gets the \fBIrcChannel\fP object from the specified connection, whose name matches channel_name\&.
+.PP
+Will not generate an error if the specified channel is not found, as this can be used for a simple search; raise your own error if this is undesired\&.
+.PP
+\fBWarning:\fP
+.RS 4
+Increments the reference counter for the channel; you must call Dereference on it when finished using it!
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIchannel_name\fP The name of the channel to locate 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+If the channel is not found, a nullptr is returned, otherwise it is a pointer to the \fBIrcChannel\fP called channel_name 
+.RE
+.PP
+
+.PP
+Definition at line 944 of file IrcConnection\&.cc\&.
+.PP
+References IrcObject::_irc_engine, IrcPool::GetChannel(), and IrcEngine::Pools()\&.
+.PP
+Referenced by IrcParser::Handle332(), IrcParser::Handle333(), IrcParser::Handle353(), IrcParser::Handle366(), IrcParser::HandleJoin(), IrcParser::HandleKick(), IrcParser::HandleMode(), IrcParser::HandlePart(), IrcParser::HandlePrivmsg(), and IrcParser::HandleTopic()\&.
+.PP
+.nf
+947 {
+948         if ( channel_name == nullptr )
+949                 goto invalid_name;
+950 
+951         {
+952                 std::lock_guard<std::mutex>     lock(_mutex);
+953 
+954                 for ( auto c : _channel_list )
+955                 {
+956                         if ( strcmp(c\&.c_str(), channel_name) == 0 )
+957                         {
+958                                 return _irc_engine->Pools()->GetChannel(_id, channel_name);
+959                         }
+960                 }
+961         }
+962 
+963         /* channel not found\&. Do not generate an error; this can be (and is used
+964          * for) locating if a channel exists or not; the caller must raise an
+965          * error if it's required */
+966         return nullptr;
+967 
+968 invalid_name:
+969         std::cerr << fg_red << "The supplied channel name was a nullptr\n";
+970         return nullptr;
+971 }
+.fi
+.SS "std::string IrcConnection::GetCurrentNickname () const"
+Retrieves a copy of the current nickname in usage for the network connection\&.
+.PP
+\fBReturns:\fP
+.RS 4
+The copied string is returned, so the memory will not be invalidated if the nickname changes while this is still held 
+.RE
+.PP
+
+.SS "std::string IrcConnection::GetCurrentNickname () const"
+Retrieves a copy of the current nickname in usage for the network connection\&.
+.PP
+\fBReturns:\fP
+.RS 4
+The copied string is returned, so the memory will not be invalidated if the nickname changes while this is still held 
+.RE
+.PP
+
+.PP
+Definition at line 976 of file IrcConnection\&.cc\&.
+.PP
+Referenced by IrcParser::HandleKill()\&.
+.PP
+.nf
+977 {
+978         std::lock_guard<std::mutex>     lock(_mutex);
+979         std::shared_ptr<IrcNetwork>     net = _owner\&.lock();
+980         return net == nullptr ? "" : net->_client\&.nickname;
+981 }
+.fi
+.SS "std::string IrcConnection::GroupName () const"
+Retrieves the group name of the network, as set by the user\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBIrcNetwork::GroupName\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the group network name 
+.RE
+.PP
+
+.SS "std::string IrcConnection::GroupName () const"
+Retrieves the group name of the network, as set by the user\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBIrcNetwork::GroupName\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the group network name 
+.RE
+.PP
+
+.PP
+Definition at line 986 of file IrcConnection\&.cc\&.
+.PP
+.nf
+987 {
+988         std::lock_guard<std::mutex>     lock(_mutex);
+989         std::shared_ptr<IrcNetwork>     net = _owner\&.lock();
+990         return net == nullptr ? "" : net->_group_name;
+991 }
+.fi
+.SS "uint32_t IrcConnection::Id () const\fC [inline]\fP"
+
+.PP
+Definition at line 404 of file IrcConnection\&.h\&.
+.PP
+.nf
+405         {
+406                 return _id;
+407         }
+.fi
+.SS "bool IrcConnection::IsActive ()"
+Determines if the connection is currently pending (i\&.e\&. in the state between connecting to the server, and being actually connected to it\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true if the connection is in the 'connected' state, otherwise returns false 
+.RE
+.PP
+
+.SS "bool IrcConnection::IsActive ()"
+Determines if the connection is currently pending (i\&.e\&. in the state between connecting to the server, and being actually connected to it\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true if the connection is in the 'connected' state, otherwise returns false 
+.RE
+.PP
+
+.PP
+Definition at line 996 of file IrcConnection\&.cc\&.
+.PP
+References CS_Active\&.
+.PP
+Referenced by IrcParser::Handle005(), and IrcParser::HandleNotice()\&.
+.PP
+.nf
+997 {
+998         return (_state & CS_Active) != 0;
+999 }
+.fi
+.SS "bool IrcConnection::IsConnecting ()"
+Determines if the connection is currently pending (i\&.e\&. in the state between connecting to the server, and being actually connected to it\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true if the connection is in the 'connecting' state, otherwise returns false 
+.RE
+.PP
+
+.SS "bool IrcConnection::IsConnecting ()"
+Determines if the connection is currently pending (i\&.e\&. in the state between connecting to the server, and being actually connected to it\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true if the connection is in the 'connecting' state, otherwise returns false 
+.RE
+.PP
+
+.PP
+Definition at line 1004 of file IrcConnection\&.cc\&.
+.PP
+References CS_Connecting\&.
+.PP
+.nf
+1005 {
+1006         return (_state & CS_Connecting) != 0;
+1007 }
+.fi
+.SS "bool IrcConnection::IsDisconnected ()"
+Determines if the connection is currently in a complete disconnected state - so is ready for a reconnect call, if needed\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true if the connection is in the 'disconnected' state, otherwise returns false 
+.RE
+.PP
+
+.SS "bool IrcConnection::IsDisconnected ()"
+Determines if the connection is currently in a complete disconnected state - so is ready for a reconnect call, if needed\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true if the connection is in the 'disconnected' state, otherwise returns false 
+.RE
+.PP
+
+.PP
+Definition at line 1012 of file IrcConnection\&.cc\&.
+.PP
+References CS_Disconnected\&.
+.PP
+.nf
+1013 {
+1014         return (_state & CS_Disconnected) != 0;
+1015 }
+.fi
+.SS "bool IrcConnection::IsDisconnecting ()"
+Determines if the connection is currently pending (i\&.e\&. in the state between connecting to the server, and being actually connected to it)
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true if the connection is in the 'disconnecting' state, otherwise returns false 
+.RE
+.PP
+
+.SS "bool IrcConnection::IsDisconnecting ()"
+Determines if the connection is currently pending (i\&.e\&. in the state between connecting to the server, and being actually connected to it)
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true if the connection is in the 'disconnecting' state, otherwise returns false 
+.RE
+.PP
+
+.PP
+Definition at line 1020 of file IrcConnection\&.cc\&.
+.PP
+References CS_Disconnecting\&.
+.PP
+.nf
+1021 {
+1022         return (_state & CS_Disconnecting) != 0;
+1023 }
+.fi
+.SS "std::string IrcConnection::NetworkName () const"
+Retrieves the name of the network, as reported within its ISUPPORT response\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBIrcNetwork::Name\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the server network name; if ISUPPORT (005) has not yet being received & processed, the string will be empty\&. 
+.RE
+.PP
+
+.SS "std::string IrcConnection::NetworkName () const"
+Retrieves the name of the network, as reported within its ISUPPORT response\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBIrcNetwork::Name\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A copy of the server network name; if ISUPPORT (005) has not yet being received & processed, the string will be empty\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1028 of file IrcConnection\&.cc\&.
+.PP
+.nf
+1029 {
+1030         std::lock_guard<std::mutex>     lock(_mutex);
+1031         std::shared_ptr<IrcNetwork>     net = _owner\&.lock();
+1032         return net == nullptr ? "" : net->_server\&.network;
+1033 }
+.fi
+.SS "IrcConnection::NO_CLASS_ASSIGNMENT (\fBIrcConnection\fP)\fC [private]\fP"
+
+.SS "IrcConnection::NO_CLASS_ASSIGNMENT (\fBIrcConnection\fP)\fC [private]\fP"
+
+.SS "IrcConnection::NO_CLASS_COPY (\fBIrcConnection\fP)\fC [private]\fP"
+
+.SS "IrcConnection::NO_CLASS_COPY (\fBIrcConnection\fP)\fC [private]\fP"
+
+.SS "\fBIrcNetwork\fP* IrcConnection::Owner ()"
+Retrieves the pointer for the \fBIrcNetwork\fP that owns this connection\&.
+.PP
+\fBWarning:\fP
+.RS 4
+Increments the reference counter for the network; you must call Dereference on it when finished using it!
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fIA\fP pointer to an \fBIrcNetwork\fP 
+.RE
+.PP
+
+.SS "\fBIrcNetwork\fP * IrcConnection::Owner ()"
+Retrieves the pointer for the \fBIrcNetwork\fP that owns this connection\&.
+.PP
+\fBWarning:\fP
+.RS 4
+Increments the reference counter for the network; you must call Dereference on it when finished using it!
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fIA\fP pointer to an \fBIrcNetwork\fP 
+.RE
+.PP
+
+.PP
+Definition at line 1038 of file IrcConnection\&.cc\&.
+.PP
+.nf
+1039 {
+1040         return _owner\&.lock();
+1041 }
+.fi
+.SS "void IrcConnection::SendAway (const char *message = \fCnullptr\fP)"
+Sends a message to the server to set our 'AWAY' state\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fImessage\fP The message to report back 
+.RE
+.PP
+
+.SS "void IrcConnection::SendAway (const char *message = \fCnullptr\fP)"
+Sends a message to the server to set our 'AWAY' state\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fImessage\fP The message to report back 
+.RE
+.PP
+
+.PP
+Definition at line 1046 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, and str_format()\&.
+.PP
+.nf
+1049 {
+1050         char    buffer[MAX_BUF_IRC_MSG];
+1051 
+1052         if ( message != nullptr )
+1053         {
+1054                 str_format(buffer, sizeof(buffer),
+1055                         "AWAY :%s",
+1056                         message);
+1057 
+1058                 return AddToSendQueue(buffer);
+1059         }
+1060         else
+1061         {
+1062                 return AddToSendQueue("AWAY : ");
+1063         }
+1064 }
+.fi
+.SS "void IrcConnection::SendBack ()"
+Sends a message to the server to clear a previously set 'AWAY' state\&. 
+.SS "void IrcConnection::SendBack ()"
+Sends a message to the server to clear a previously set 'AWAY' state\&. 
+.PP
+Definition at line 1069 of file IrcConnection\&.cc\&.
+.PP
+.nf
+1070 {
+1071         // unset our away status
+1072         return AddToSendQueue("AWAY");
+1073 }
+.fi
+.SS "int32_t IrcConnection::SendBypass (const char *data_format, \&.\&.\&.)\fC [private]\fP"
+Sends data across the wire through the socket, without doing any form of flood protection - the data is sent immediately\&.
+.PP
+Called by AddToSendQueue after flood protection has been taken into account\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdata_format\fP The format-string of the data to send 
+.br
+\fI\&.\&.\&.\fP Variable number of parameters as determined within data_format 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The return value is that of BIO_puts\&. Error handling is already processed when the function returns, if necessary\&. 
+.RE
+.PP
+
+.SS "int32_t IrcConnection::SendBypass (const char *data_format, \&.\&.\&.)\fC [private]\fP"
+Sends data across the wire through the socket, without doing any form of flood protection - the data is sent immediately\&.
+.PP
+Called by AddToSendQueue after flood protection has been taken into account\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdata_format\fP The format-string of the data to send 
+.br
+\fI\&.\&.\&.\fP Variable number of parameters as determined within data_format 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The return value is that of BIO_puts\&. Error handling is already processed when the function returns, if necessary\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1078 of file IrcConnection\&.cc\&.
+.PP
+References Debug, fg_magenta(), LOG, MAX_BUF_IRC_MSG_CRLF, MissingParameter, OK, and OpenSSLError\&.
+.PP
+Referenced by IrcParser::HandlePrivmsg()\&.
+.PP
+.nf
+1082 {
+1083         char            buf[MAX_BUF_IRC_MSG_CRLF];
+1084         va_list         args;
+1085         int32_t         ret = 0;
+1086 
+1087         if ( data_format == nullptr )
+1088                 goto no_format;
+1089 
+1090         // the following is mostly a copy of the str_format utility function
+1091 
+1092         va_start(args, data_format);
+1093 
+1094 #if MSVC_IS_VS8_OR_LATER
+1095 #       pragma warning ( push )
+1096 #       pragma warning ( disable : 4996 )       // variable or function may be unsafe
+1097 #endif
+1098 
+1099         // vsnprintf is fine when the buffer size is provided with -1 (for nul)
+1100         ret = vsnprintf(buf, (sizeof(buf) - 1), data_format, args);
+1101 
+1102 #if MSVC_IS_VS8_OR_LATER
+1103 #       pragma warning ( pop )
+1104 #endif
+1105 
+1106         va_end(args);
+1107 
+1108         /* if truncated, there will be no crlf and the server won't process it
+1109          * until the next one is provided! */
+1110 
+1111         if ( ret == -1 )
+1112         {
+1113                 // destination text has been truncated
+1114                 buf[sizeof(buf)-1] = '\0';
+1115                 buf[sizeof(buf)-2] = '\n';
+1116                 buf[sizeof(buf)-3] = '\r';
+1117                 std::cout << fg_magenta << "Sending buffer truncated to read: " << buf << "\n";
+1118         }
+1119         else
+1120         {
+1121                 /* to ensure nul-termination */
+1122                 buf[ret] = '\0';
+1123         }
+1124 
+1125 #if defined(USING_OPENSSL_NET)
+1126         ret = BIO_puts(_socket\&.get(), buf);
+1127 
+1128         if ( ret <= 0 )
+1129                 goto openssl;
+1130 #else
+1131 #endif
+1132 
+1133         // Debug log, remove the cr+lf! (-2, not -3, array pos by strlen)
+1134         buf[strlen(buf)-2] = '\0';
+1135         LOG(ELogLevel::Debug) << "Sent on " << this << ": " << buf << "\n";
+1136 
+1137         _bytes_sent += ret;
+1138 
+1139         return EIrcStatus::OK;
+1140 
+1141 no_format:
+1142         std::cerr << fg_red << "The supplied data format was a nullptr\n";
+1143         return EIrcStatus::MissingParameter;
+1144 
+1145 #if defined(USING_OPENSSL_NET)
+1146 openssl:
+1147         std::cerr << fg_red << "OpenSSL send error: " << ERR_error_string(ERR_get_error(), nullptr) << "\n";
+1148         return EIrcStatus::OpenSSLError;
+1149 #endif
+1150 
+1151 }
+.fi
+.SS "void IrcConnection::SendCTCP (const char *target, const char *message)"
+The contents of message are surrounded [prefix+suffix] by the CTCP codes (\\001), and sent off via a PRIVMSG to the supplied target\&. 
+.SS "void IrcConnection::SendCTCP (const char *target, const char *message)"
+The contents of message are surrounded [prefix+suffix] by the CTCP codes (\\001), and sent off via a PRIVMSG to the supplied target\&. 
+.PP
+Definition at line 1156 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, MissingParameter, and str_format()\&.
+.PP
+.nf
+1160 {
+1161         char    buffer[MAX_BUF_IRC_MSG];
+1162 
+1163         if ( target == nullptr )
+1164                 goto no_target;
+1165         if ( message == nullptr )
+1166                 goto no_message;
+1167 
+1168         str_format(buffer, sizeof(buffer),
+1169                 "PRIVMSG %s :\001%s\001",
+1170                 target, message);
+1171 
+1172         return AddToSendQueue(buffer);
+1173 
+1174 no_target:
+1175         return EIrcStatus::MissingParameter;
+1176 no_message:
+1177         return EIrcStatus::MissingParameter;
+1178 }
+.fi
+.SS "void IrcConnection::SendCTCPNotice (const char *destination, const char *message)"
+
+.SS "void IrcConnection::SendCTCPNotice (const char *destination, const char *message)"
+
+.PP
+Definition at line 1183 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, MissingParameter, and str_format()\&.
+.PP
+.nf
+1187 {
+1188         char    buffer[MAX_BUF_IRC_MSG];
+1189 
+1190         if ( destination == nullptr )
+1191                 goto no_dest;
+1192         if ( message == nullptr )
+1193                 goto no_message;
+1194 
+1195         str_format(buffer, sizeof(buffer),
+1196                 "NOTICE %s :\001%s\001",
+1197                 destination, message);
+1198 
+1199         return AddToSendQueue(buffer);
+1200 
+1201 no_dest:
+1202         return EIrcStatus::MissingParameter;
+1203 no_message:
+1204         return EIrcStatus::MissingParameter;
+1205 }
+.fi
+.SS "void IrcConnection::SendIdentify (const char *service, const char *pass)"
+
+.SS "void IrcConnection::SendIdentify (const char *service, const char *pass)"
+
+.PP
+Definition at line 1417 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, MissingParameter, and str_format()\&.
+.PP
+Referenced by IrcParser::HandleNotice()\&.
+.PP
+.nf
+1421 {
+1422 #if 0   // useful code, might need to use some of these format strings for full support\&. Think this was from xchat
+1423         // are all ircd authors idiots?
+1424         switch (serv->nickservtype)
+1425         {
+1426         case 0:
+1427                 tcp_sendf (serv, "PRIVMSG NICKSERV :%s %s%s%s\r\n", cmd, arg1, arg2, arg3);
+1428                 break;
+1429         case 1:
+1430                 tcp_sendf (serv, "NICKSERV %s %s%s%s\r\n", cmd, arg1, arg2, arg3);
+1431                 break;
+1432         case 2:
+1433                 tcp_sendf (serv, "NS %s %s%s%s\r\n", cmd, arg1, arg2, arg3);
+1434                 break;
+1435         case 3:
+1436                 tcp_sendf (serv, "PRIVMSG NS :%s %s%s%s\r\n", cmd, arg1, arg2, arg3);
+1437                 break;
+1438         case 4:
+1439                 // why couldn't QuakeNet implement one of the existing ones?
+1440                 tcp_sendf (serv, "AUTH %s%s%s\r\n", cmd, arg1, arg2, arg3);
+1441         }
+1442 #endif
+1443 
+1444         char    buffer[MAX_BUF_IRC_MSG];
+1445 
+1446         if ( service == nullptr )
+1447                 goto no_service;
+1448         if ( pass == nullptr )
+1449                 goto no_pass;
+1450 
+1451         str_format(buffer, sizeof(buffer),
+1452                 "%s IDENTIFY %s",
+1453                 service, pass);
+1454 
+1455         return AddToSendQueue(buffer);
+1456 
+1457 no_service:
+1458         return EIrcStatus::MissingParameter;
+1459 no_pass:
+1460         return EIrcStatus::MissingParameter;
+1461 }
+.fi
+.SS "void IrcConnection::SendInit ()"
+Sends the client standard initialization (nick and user, plus any capabilities with newer servers)\&. Some servers WE have to trigger this, as they wait for our first data whereas most others simply start the 439 straight away\&. 
+.SS "void IrcConnection::SendInit ()"
+Sends the client standard initialization (nick and user, plus any capabilities with newer servers)\&. Some servers WE have to trigger this, as they wait for our first data whereas most others simply start the 439 straight away\&. 
+.PP
+\fBTodo\fP
+.RS 4
+we should wait here, receive the replys, and REQ in response\&.\&.\&. 
+.RE
+.PP
+
+.PP
+Definition at line 1210 of file IrcConnection\&.cc\&.
+.PP
+References IrcNetwork::_client, IrcNetwork::_profile_config, CS_InitSent, config_profile::ident, MAX_BUF_IRC_MSG, config_profile::mode, irc_client::nickname, config_profile::nicknames, OK, config_profile::real_name, strlcat(), and strlcpy()\&.
+.PP
+Referenced by IrcParser::ParseNextRecvQueueItem()\&.
+.PP
+.nf
+1211 {
+1212         char            response[MAX_BUF_IRC_MSG];
+1213         const char*     capabilities[] = { "multi-prefix", "uhnames" };
+1214         const uint32_t  num_cap = sizeof(capabilities)/sizeof(char*);
+1215         IrcNetwork*     network = std::shared_ptr<IrcNetwork>(_owner)\&.get();
+1216         uint32_t        len;
+1217         uint32_t        i;
+1218         char*           p = nullptr;
+1219         EIrcStatus      retval;
+1220 
+1221         /* send our nick, user, and capability requests\&. If the server doesn't
+1222          * support them, there's not much we can do about it, so just dump all
+1223          * our initial requirements and handle the responses as best as possible\&. */
+1224 
+1225         _state |= CS_InitSent;
+1226 
+1227         if (( retval = SendBypass("CAP LIST\r\n")) != EIrcStatus::OK )
+1228                 return retval;
+1229 
+1231 
+1232         /* use our copy/append trick to save using str_format for each
+1233          * capability */
+1234         p = &response[(len = strlcpy(response, "CAP REQ ", sizeof(response)))];
+1235 
+1236         for ( i = 0; i < num_cap; i++ )
+1237         {
+1238                 response[len] = '\0';
+1239                 strlcat(p, capabilities[i], sizeof(response)-len);
+1240 
+1241                 // function will log all errors itself
+1242                 if (( retval = SendBypass("%s\r\n", response)) != EIrcStatus::OK )
+1243                         return retval;
+1244         }
+1245 
+1246         if (( retval = SendBypass("CAP END\r\n")) != EIrcStatus::OK )
+1247                 return retval;
+1248 
+1249         /* use the first nickname in the profile configuration, unless
+1250          * we're reconnecting, in which case this is already set */
+1251         if ( network->_client\&.nickname\&.empty() )
+1252                 network->_client\&.nickname = network->_profile_config\&.nicknames[0];
+1253 
+1254         /* We will not support 'PASS', as automatically sending a password
+1255          * across the wire is dangerous, especially so if we're not using SSL;
+1256          * put it down to the user if they want to send their pass plaintext */
+1257 
+1258         if (( retval = SendNick(network->_client\&.nickname\&.c_str())) != EIrcStatus::OK )
+1259                 return retval;
+1260 
+1261         /* user fields are non-modifiable once connected, so they are
+1262          * loaded from the profile configuration */
+1263         return SendUser(
+1264                 network->_profile_config\&.ident\&.c_str(),
+1265                 network->_profile_config\&.mode,
+1266                 network->_profile_config\&.real_name\&.c_str());
+1267 }
+.fi
+.SS "void IrcConnection::SendInvite (const char *channel_name, const char *nickname)"
+
+.SS "void IrcConnection::SendInvite (const char *channel_name, const char *nickname)"
+
+.PP
+Definition at line 1272 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, MissingParameter, and str_format()\&.
+.PP
+.nf
+1276 {
+1277         char    buffer[MAX_BUF_IRC_MSG];
+1278 
+1279         if ( channel_name == nullptr )
+1280                 goto no_channel;
+1281         if ( nickname == nullptr )
+1282                 goto no_nickname;
+1283 
+1284         str_format(buffer, sizeof(buffer),
+1285                 "INVITE %s %s",
+1286                 nickname, channel_name);
+1287 
+1288         return AddToSendQueue(buffer);
+1289 
+1290 no_channel:
+1291         return EIrcStatus::MissingParameter;
+1292 no_nickname:
+1293         return EIrcStatus::MissingParameter;
+1294 }
+.fi
+.SS "void IrcConnection::SendJoin (const char *channel_name, const char *channel_key = \fCnullptr\fP)"
+
+.SS "void IrcConnection::SendJoin (const char *channel_name, const char *channel_key = \fCnullptr\fP)"
+
+.PP
+Definition at line 1299 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, MissingParameter, and str_format()\&.
+.PP
+Referenced by IrcParser::HandleKick(), and IrcParser::HandleNotice()\&.
+.PP
+.nf
+1303 {
+1304         char    buffer[MAX_BUF_IRC_MSG];
+1305 
+1306         if ( channel_name == nullptr )
+1307                 goto no_channel;
+1308 
+1309         if ( channel_key == nullptr )
+1310         {
+1311                 str_format(buffer, sizeof(buffer),
+1312                         "JOIN %s",
+1313                         channel_name);
+1314         }
+1315         else
+1316         {
+1317                 str_format(buffer, sizeof(buffer),
+1318                         "JOIN %s %s",
+1319                         channel_name);
+1320         }
+1321 
+1322         return AddToSendQueue(buffer);
+1323 
+1324 no_channel:
+1325         return EIrcStatus::MissingParameter;
+1326 }
+.fi
+.SS "void IrcConnection::SendKick (const char *channel_name, const char *nickname, const char *msg = \fCnullptr\fP)"
+
+.SS "void IrcConnection::SendKick (const char *channel_name, const char *nickname, const char *msg = \fCnullptr\fP)"
+
+.PP
+Definition at line 1331 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, MissingParameter, and str_format()\&.
+.PP
+.nf
+1336 {
+1337         char    buffer[MAX_BUF_IRC_MSG];
+1338 
+1339         if ( channel_name == nullptr )
+1340                 goto no_channel;
+1341         if ( nickname == nullptr )
+1342                 goto no_nickname;
+1343 
+1344         if ( msg == nullptr )
+1345         {
+1346                 str_format(buffer, sizeof(buffer),
+1347                         "KICK %s %s",
+1348                         channel_name, nickname);
+1349         }
+1350         else
+1351         {
+1352                 str_format(buffer, sizeof(buffer),
+1353                         "KICK %s %s :%s",
+1354                         channel_name, nickname, msg);
+1355         }
+1356 
+1357         return AddToSendQueue(buffer);
+1358 
+1359 no_channel:
+1360         return EIrcStatus::MissingParameter;
+1361 no_nickname:
+1362         return EIrcStatus::MissingParameter;
+1363 }
+.fi
+.SS "void IrcConnection::SendMode (const char *target, const char *mode)"
+
+.SS "void IrcConnection::SendMode (const char *target, const char *mode)"
+
+.PP
+Definition at line 1368 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, MissingParameter, and str_format()\&.
+.PP
+.nf
+1372 {
+1373         char    buffer[MAX_BUF_IRC_MSG];
+1374 
+1375         if ( target == nullptr )
+1376                 goto no_target;
+1377         if ( mode == nullptr )
+1378                 goto no_mode;
+1379 
+1380         str_format(buffer, sizeof(buffer),
+1381                 "MODE %s %s",
+1382                 target, mode);
+1383 
+1384         return AddToSendQueue(buffer);
+1385 
+1386 no_target:
+1387         return EIrcStatus::MissingParameter;
+1388 no_mode:
+1389         return EIrcStatus::MissingParameter;
+1390 }
+.fi
+.SS "void IrcConnection::SendNick (const char *nickname)"
+
+.SS "void IrcConnection::SendNick (const char *nickname)"
+
+.PP
+Definition at line 1395 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, MissingParameter, and str_format()\&.
+.PP
+.nf
+1398 {
+1399         char    buffer[MAX_BUF_IRC_MSG];
+1400 
+1401         if ( nickname == nullptr )
+1402                 goto no_nick;
+1403 
+1404         str_format(buffer, sizeof(buffer),
+1405                 "NICK %s",
+1406                 nickname);
+1407 
+1408         return AddToSendQueue(buffer);
+1409 
+1410 no_nick:
+1411         return EIrcStatus::MissingParameter;
+1412 }
+.fi
+.SS "void IrcConnection::SendNotice (const char *target, const char *message)"
+
+.SS "void IrcConnection::SendNotice (const char *target, const char *message)"
+
+.PP
+Definition at line 1466 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, MissingParameter, and str_format()\&.
+.PP
+.nf
+1470 {
+1471         char    buffer[MAX_BUF_IRC_MSG];
+1472 
+1473         if ( target == nullptr )
+1474                 goto no_target;
+1475         if ( message == nullptr )
+1476                 goto no_message;
+1477 
+1478         str_format(buffer, sizeof(buffer),
+1479                 "NOTICE %s :%s",
+1480                 target, message);
+1481 
+1482         return AddToSendQueue(buffer);
+1483 
+1484 no_target:
+1485         return EIrcStatus::MissingParameter;
+1486 no_message:
+1487         return EIrcStatus::MissingParameter;
+1488 }
+.fi
+.SS "void IrcConnection::SendPart (const char *channel_name, const char *msg = \fCnullptr\fP)"
+
+.SS "void IrcConnection::SendPart (const char *channel_name, const char *msg = \fCnullptr\fP)"
+
+.PP
+Definition at line 1493 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, MissingParameter, and str_format()\&.
+.PP
+.nf
+1497 {
+1498         char    buffer[MAX_BUF_IRC_MSG];
+1499 
+1500         if ( channel_name == nullptr )
+1501                 goto no_channel;
+1502 
+1503         if ( msg == nullptr )
+1504         {
+1505                 str_format(buffer, sizeof(buffer),
+1506                         "PART %s",
+1507                         channel_name);
+1508         }
+1509         else
+1510         {
+1511                 str_format(buffer, sizeof(buffer),
+1512                         "PART %s :%s",
+1513                         channel_name, msg);
+1514         }
+1515 
+1516         return AddToSendQueue(buffer);
+1517 
+1518 no_channel:
+1519         return EIrcStatus::MissingParameter;
+1520 }
+.fi
+.SS "void IrcConnection::SendPrivmsg (const char *target, const char *privmsg)"
+
+.SS "void IrcConnection::SendPrivmsg (const char *target, const char *privmsg)"
+
+.PP
+Definition at line 1525 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, MissingParameter, and str_format()\&.
+.PP
+.nf
+1529 {
+1530         char    buffer[MAX_BUF_IRC_MSG];
+1531 
+1532         // do not support blank entries
+1533         if ( target == nullptr )
+1534                 goto no_target;
+1535         if ( privmsg == nullptr )
+1536                 goto no_message;
+1537 
+1538         str_format(buffer, sizeof(buffer),
+1539                 "PRIVMSG %s :%s",
+1540                 target, privmsg);
+1541 
+1542         // populate activity, notify? can't do this though, what if we're passing
+1543         // a message through from the parser at the same time\&.\&.\&.
+1544 
+1545         return AddToSendQueue(buffer);
+1546 
+1547 no_target:
+1548         return EIrcStatus::MissingParameter;
+1549 no_message:
+1550         return EIrcStatus::MissingParameter;
+1551 }
+.fi
+.SS "void IrcConnection::SendQuit (const char *msg = \fCnullptr\fP)"
+
+.SS "void IrcConnection::SendQuit (const char *msg = \fCnullptr\fP)"
+
+.PP
+Definition at line 1566 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, str_format(), and strlcpy()\&.
+.PP
+.nf
+1569 {
+1570         char    buffer[MAX_BUF_IRC_MSG];
+1571 
+1572         if ( msg == nullptr )
+1573         {
+1574                 // embed our own quit message if none provided
+1575                 strlcpy(buffer, "QUIT :http://www\&.trezanik\&.org/", sizeof(buffer));
+1576         }
+1577         else
+1578         {
+1579                 str_format(buffer, sizeof(buffer),
+1580                         "QUIT :%s",
+1581                         msg);
+1582         }
+1583 
+1584         return AddToSendQueue(buffer);
+1585 }
+.fi
+.SS "void IrcConnection::SendRaw (const char *data)"
+
+.SS "void IrcConnection::SendRaw (const char *data)"
+
+.PP
+Definition at line 1556 of file IrcConnection\&.cc\&.
+.PP
+Referenced by IrcParser::HandleNotice()\&.
+.PP
+.nf
+1559 {
+1560         return AddToSendQueue(data);
+1561 }
+.fi
+.SS "void IrcConnection::SendTopic (const char *channel_name, const char *message = \fCnullptr\fP)"
+
+.SS "void IrcConnection::SendTopic (const char *channel_name, const char *message = \fCnullptr\fP)"
+
+.PP
+Definition at line 1590 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, MissingParameter, and str_format()\&.
+.PP
+.nf
+1594 {
+1595         char    buffer[MAX_BUF_IRC_MSG];
+1596 
+1597         if ( channel_name == nullptr )
+1598                 goto no_channel;
+1599 
+1600         if ( topic == nullptr )
+1601         {
+1602                 // remove the channel topic
+1603                 str_format(buffer, sizeof(buffer),
+1604                         "TOPIC %s :\r\n",
+1605                         channel_name);
+1606         }
+1607         else if ( topic[0] != '\0' )
+1608         {
+1609                 // set the channel topic
+1610                 str_format(buffer, sizeof(buffer),
+1611                         "TOPIC %s :%s\r\n",
+1612                         channel_name, topic);
+1613         }
+1614         else
+1615         {
+1616                 // request the topic for the channel
+1617                 str_format(buffer, sizeof(buffer),
+1618                         "TOPIC %s\r\n",
+1619                         channel_name);
+1620         }
+1621 
+1622         return AddToSendQueue(buffer);
+1623 
+1624 no_channel:
+1625         return EIrcStatus::MissingParameter;
+1626 }
+.fi
+.SS "void IrcConnection::SendUser (const char *username, const uint16_tmode = \fC8\fP, const char *realname = \fCnullptr\fP)"
+
+.SS "void IrcConnection::SendUser (const char *username, const uint16_tmode = \fC8\fP, const char *realname = \fCnullptr\fP)"
+
+.PP
+Definition at line 1631 of file IrcConnection\&.cc\&.
+.PP
+References MAX_BUF_IRC_MSG, MissingParameter, and str_format()\&.
+.PP
+.nf
+1636 {
+1637         char    buffer[MAX_BUF_IRC_MSG];
+1638 
+1639         if ( username == nullptr )
+1640                 goto no_username;
+1641 
+1642         // if not set, real name is the same as the user/ident name
+1643         if ( realname == nullptr )
+1644                 realname = username;
+1645 
+1646         /*
+1647         rfc 1419 ::
+1648         <username> <hostname> <servername> :<realname>
+1649         rfc 2812 ::
+1650         <user> <mode> <unused> :<realname>
+1651         */
+1652         str_format(buffer, sizeof(buffer),
+1653                 "USER %s %d * :%s",
+1654                 username, mode, realname);
+1655 
+1656         return AddToSendQueue(buffer);
+1657 
+1658 no_username:
+1659         return EIrcStatus::MissingParameter;
+1660 }
+.fi
+.SS "void IrcConnection::SetActiveChannel (\fBIrcChannel\fP *channel)"
+Activates the supplied channel as the currently active \fBIrcChannel\fP in the connection\&. If no channels exist, and \fBAddChannel()\fP adds a new channel, this is automatically called to make it active\&.
+.PP
+Dereferences any channel that was previously set to active, before referencing the supplied one, and setting it active\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIchannel\fP The \fBIrcChannel\fP to set as active 
+.RE
+.PP
+
+.SS "\fBEIrcStatus\fP IrcConnection::SetActiveChannel (const char *channel_name)"
+Activates the supplied channel as the currently active \fBIrcChannel\fP in the connection\&. If no channels exist, and \fBAddChannel()\fP adds a new channel, this is automatically called to make it active\&.
+.PP
+Dereferences any channel that was previously set to active, before referencing the supplied one, and setting it active\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIchannel\fP The channel name to set as active 
+.RE
+.PP
+
+.SS "bool IrcConnection::Setup (\fBIrcNetwork\fP *network, std::shared_ptr< \fBconfig_server\fP >server_config)"
+Creates an irc_connection struct, ready for a call to connect_to_server\&. This also performs the DNS lookup, sockaddr creation, etc\&. This should be the only outbound data at this stage; we won't touch the specified server until the actual connect function is called\&.
+.PP
+Populates the classes parameters struct, required before calling EstablishConnection
+.PP
+The OpenSSL library will also be used to create the BIO (socket) in preparation for usage before returning\&.
+.PP
+If using SSL, this creates the SSL struct and its context too\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fInetwork\fP A pointer to this connections network; obtained from a prior call to ??? 
+.br
+\fIserver_config\fP A pointer to the XML element for the server to connect to 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+On success, a pointer to the dynamically allocated struct is returned; this must be freed when no longer in usage\&. 
+.PP
+Any failure results in the function returning false 
+.RE
+.PP
+
+.PP
+\fBTodo\fP
+.RS 4
+these should be pre-validated from reading the config; are these extra checks still needed? 
+.RE
+.PP
+
+.PP
+Definition at line 1561 of file bak/IrcConnection\&.cc\&.
+.PP
+References IrcNetwork::_network_config, _params, irc_connection_params::allow_invalid_cert, config_network::allow_invalid_cert, irc_connection_params::conn_str, irc_connection_params::data, irc_connection_params::host, host_to_ipv4(), irc_connection_params::ip, irc_connection_params::ip_addr, ipv4_to_host(), irc_connection_params::port, str_format(), IrcNetwork::UpdateServerInfo(), and irc_connection_params::use_ssl\&.
+.PP
+.nf
+1565 {
+1566         int32_t i;
+1567         char    buffer[NI_MAXHOST];
+1568 
+1569         /* if a prior conn_str exists, we're reconnecting, so the network and
+1570          * server_config pointers are expected to be null\&. In case the IP has
+1571          * changed, we do want to do fresh lookups though, so don't skip this
+1572          * function! */
+1573         if ( _params\&.conn_str[0] != '\0' )
+1574                 goto params_set;
+1575 
+1576         if ( network == nullptr )
+1577                 goto invalid_network;
+1578         if ( server_config == nullptr )
+1579                 goto no_server;
+1580 
+1581         /* Child elements (optionally) consist of the 'port' and 'ssl', with
+1582          * int and bool types respectively\&. If not supplied, they will default
+1583          * to port = 6667, and ssl = false\&. */
+1584 
+1588         // validate settings
+1589 
+1590         if ( server_config->port < 1 || server_config->port > 65535 )
+1591         {
+1592                 // generate an error, but don't cease processing
+1593                 std::cerr << fg_red << "The port specified for " 
+1594                         << server_config->hostname << " (" 
+1595                         << server_config->port 
+1596                         << ") is outside the applicable range; defaulting to 6667\n";
+1597                 server_config->port = 6667;
+1598         }
+1599 
+1600         // copy the server data into the connection parameters
+1601         _params\&.use_ssl  = server_config->ssl;
+1602         _params\&.port     = server_config->port;
+1603         _params\&.host     = server_config->hostname;
+1604         _params\&.ip_addr  = server_config->ip_address;
+1605 
+1606 params_set:
+1607 
+1608         // check if a host is specified first
+1609         if ( _params\&.host\&.length() > 0 )
+1610         {
+1611                 // setup the connection string to pass to OpenSSL
+1612                 str_format(buffer, sizeof(buffer),
+1613                         "%s:%u", _params\&.host\&.c_str(), _params\&.port);
+1614                 _params\&.conn_str = buffer;
+1615 
+1616                 // verify we can identify an IP address for the host
+1617 #if defined(USING_POCO_NET)
+1618 #else
+1619                 i = host_to_ipv4(_params\&.host\&.c_str(), -1, buffer, sizeof(buffer));
+1620 
+1621                 if ( i == -1 )
+1622                         goto lookup_failed;
+1623 
+1624                 _params\&.data = buffer;
+1625 #endif
+1626         }
+1627         else if ( _params\&.ip_addr\&.length() > 0 )
+1628         {
+1629                 str_format(buffer, sizeof(buffer),
+1630                         "%s:%u", _params\&.ip_addr\&.c_str(), _params\&.port);
+1631                 _params\&.conn_str = buffer;
+1632 
+1633                 /* reverse lookup for additional information */
+1634 #if defined(USING_POCO_NET)
+1635 #else
+1636                 ipv4_to_host(_params\&.ip_addr\&.c_str(), buffer, sizeof(buffer));
+1637                 _params\&.data = buffer;
+1638 #endif
+1639         }
+1640         else
+1641                 goto no_server;
+1642 
+1643         /* reaching here, we must know an IP to connect to */
+1644         inet_pton(AF_INET, _params\&.ip_addr\&.c_str(), &_params\&.ip);
+1645 
+1646         /* copy the data into the networks connection information */
+1647         network->UpdateServerInfo();
+1648 
+1649         if ( _params\&.use_ssl )
+1650         {
+1651 #if defined(USING_OPENSSL)
+1652                 // SSL connection requested
+1653                 SSL_CTX*        ssl_ctx = SSL_CTX_new(SSLv23_client_method());
+1654                 SSL*            ssl = nullptr;
+1655                 BIO*            socket = nullptr;
+1656 
+1657                 if ( ssl_ctx == nullptr )
+1658                         goto openssl_context_failed;
+1659 
+1660                 _ssl_context = std::unique_ptr<SSL_CTX>(ssl_ctx);
+1661 
+1662                 socket = BIO_new_ssl_connect(ssl_ctx);
+1663 
+1664                 if ( socket == nullptr )
+1665                         goto openssl_ssl_bio_failed;
+1666 
+1667                 _socket = std::unique_ptr<BIO>(socket);
+1668 
+1669                 BIO_get_ssl(_socket\&.get(), &ssl);
+1670                 _ssl = std::unique_ptr<SSL>(ssl);
+1671 
+1672                 SSL_set_mode(_ssl\&.get(), SSL_MODE_AUTO_RETRY);
+1673                 BIO_set_conn_hostname(_socket\&.get(), _params\&.conn_str\&.c_str());
+1674         }
+1675         else
+1676         {
+1677                 // non-SSL connection requested
+1678                 BIO*    socket = BIO_new_connect(const_cast<char*>(_params\&.conn_str\&.c_str()));
+1679                 if ( socket == nullptr )
+1680                         goto openssl_bio_failed;
+1681                 _socket\&.reset(socket);
+1682 #else
+1683 #endif
+1684         }
+1685 
+1686         // and anything else that needs putting across
+1687         _params\&.allow_invalid_cert = network->_network_config\&.allow_invalid_cert;
+1688 
+1689         return true;
+1690 
+1691 invalid_network:
+1692         std::cerr << fg_red << "The supplied irc_network was a nullptr\n";
+1693         return false;
+1694 no_server:
+1695         std::cerr << fg_red << "There is no server specified by the input xml element\n";
+1696         return false;
+1697 lookup_failed:
+1698         // already logged in function call
+1699         return false;
+1700 
+1701 #if defined(USING_OPENSSL)
+1702 openssl_context_failed:
+1703         std::cerr << fg_red << "Failed to create the OpenSSL SSL context\n";
+1704         return false;
+1705 openssl_ssl_bio_failed:
+1706         std::cerr << fg_red << "Failed to create the OpenSSL SSL BIO\n";
+1707         SSL_CTX_free(_ssl_context\&.release());
+1708         return false;
+1709 openssl_bio_failed:
+1710         std::cerr << fg_red << "Failed to create the OpenSSL BIO\n";
+1711         return false;
+1712 #endif
+1713 
+1714 }
+.fi
+.SS "\fBEIrcStatus\fP IrcConnection::Setup (std::shared_ptr< \fBIrcNetwork\fP >network, std::shared_ptr< \fBconfig_server\fP >server_config)"
+Creates an irc_connection struct, ready for a call to connect_to_server\&. This also performs the DNS lookup, sockaddr creation, etc\&. This should be the only outbound data at this stage; we won't touch the specified server until the actual connect function is called\&.
+.PP
+Populates the classes parameters struct, required before calling EstablishConnection
+.PP
+The OpenSSL library will also be used to create the BIO (socket) in preparation for usage before returning\&.
+.PP
+If using SSL, this creates the SSL struct and its context too\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fInetwork\fP A pointer to this connections network; obtained from a prior call to ??? 
+.br
+\fIserver_config\fP A pointer to the XML element for the server to connect to 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+On success, a pointer to the dynamically allocated struct is returned; this must be freed when no longer in usage\&. 
+.PP
+Any failure results in the function returning false 
+.RE
+.PP
+
+.PP
+\fBTodo\fP
+.RS 4
+these should be pre-validated from reading the config; are these extra checks still needed? 
+.RE
+.PP
+
+.PP
+Definition at line 1665 of file IrcConnection\&.cc\&.
+.PP
+References host_to_ipv4(), InvalidData, ipv4_to_host(), LookupFailed, MissingParameter, OK, OpenSSLError, and str_format()\&.
+.PP
+.nf
+1669 {
+1670         int32_t i;
+1671         char    buffer[NI_MAXHOST];
+1672 
+1673         /* if a prior conn_str exists, we're reconnecting, so the network and
+1674          * server_config pointers are expected to be null\&. In case the IP has
+1675          * changed, we do want to do fresh lookups though, so don't skip this
+1676          * function! */
+1677         if ( _params\&.conn_str[0] != '\0' )
+1678                 goto params_set;
+1679 
+1680         if ( network == nullptr )
+1681                 goto invalid_network;
+1682         if ( server_config == nullptr )
+1683                 goto no_server;
+1684 
+1685         /* Child elements (optionally) consist of the 'port' and 'ssl', with
+1686          * int and bool types respectively\&. If not supplied, they will default
+1687          * to port = 6667, and ssl = false\&. */
+1688 
+1692         // validate settings
+1693 
+1694         if ( server_config->port < 1 || server_config->port > 65535 )
+1695         {
+1696                 // generate an error, but don't cease processing
+1697                 std::cerr << fg_red << "The port specified for " 
+1698                         << server_config->hostname << " (" 
+1699                         << server_config->port 
+1700                         << ") is outside the applicable range; defaulting to 6667\n";
+1701                 server_config->port = 6667;
+1702         }
+1703 
+1704         // copy the server data into the connection parameters
+1705         _params\&.use_ssl  = server_config->ssl;
+1706         _params\&.port     = server_config->port;
+1707         _params\&.host     = server_config->hostname;
+1708         _params\&.ip_addr  = server_config->ip_address;
+1709 
+1710 params_set:
+1711 
+1712         // check if a host is specified first
+1713         if ( _params\&.host\&.length() > 0 )
+1714         {
+1715                 // setup the connection string to pass to OpenSSL
+1716                 str_format(buffer, sizeof(buffer),
+1717                         "%s:%u", _params\&.host\&.c_str(), _params\&.port);
+1718                 _params\&.conn_str = buffer;
+1719 
+1720                 // verify we can identify an IP address for the host
+1721 #if defined(USING_BOOST_NET)
+1722                 io_service              io_service;
+1723                 ip::tcp::resolver       resolver(io_service);
+1724                 ip::tcp::resolver::query        query(_params\&.host);
+1725                 ip::tcp::endpoint       ep;
+1726                 /* we're only interested in one IP lookup, not all, so just
+1727                  * use the first one that we resolve\&. */
+1728                 ep = *resolver\&.resolve(query);
+1729                 _params\&.data = ep\&.address()\&.to_string();
+1730 #else
+1731                 i = host_to_ipv4(_params\&.host\&.c_str(), -1, buffer, sizeof(buffer));
+1732 
+1733                 if ( i == -1 )
+1734                         goto lookup_failed;
+1735 
+1736                 _params\&.data = buffer;
+1737 #endif
+1738         }
+1739         else if ( _params\&.ip_addr\&.length() > 0 )
+1740         {
+1741                 str_format(buffer, sizeof(buffer),
+1742                         "%s:%u", _params\&.ip_addr\&.c_str(), _params\&.port);
+1743                 _params\&.conn_str = buffer;
+1744 
+1745                 // reverse lookup for additional information
+1746 #if defined(USING_BOOST_NET)
+1747                 ip::tcp::endpoint       ep;
+1748                 ip::address_v4          ip = ip::address_v4::from_string(_params\&.ip_addr);
+1749                 io_service              ios;
+1750                 ip::tcp::resolver               res(ios);
+1751                 ip::tcp::resolver::iterator     dest;
+1752 
+1753                 ep\&.address(ip);
+1754                 /* we're only interested in one hostname reverse lookup, not
+1755                  * all, so just use the first one that we receive\&. */
+1756                 dest = res\&.resolve(ep);
+1757                 _params\&.data = dest->host_name();
+1758 #else
+1759                 ipv4_to_host(_params\&.ip_addr\&.c_str(), buffer, sizeof(buffer));
+1760                 _params\&.data = buffer;
+1761 #endif
+1762         }
+1763         else
+1764         {
+1765                 goto no_server;
+1766         }
+1767 
+1768         // reaching here, we must know an IP to connect to
+1769         inet_pton(AF_INET, _params\&.ip_addr\&.c_str(), &_params\&.ip);
+1770 
+1771         // copy the data into the networks connection information
+1772         network->UpdateServerInfo();
+1773 
+1774         if ( _params\&.use_ssl )
+1775         {
+1776 #if defined(USING_OPENSSL_NET)
+1777                 // SSL connection requested
+1778                 SSL_CTX*        ssl_ctx = SSL_CTX_new(SSLv23_client_method());
+1779                 SSL*            ssl = nullptr;
+1780                 BIO*            socket = nullptr;
+1781 
+1782                 if ( ssl_ctx == nullptr )
+1783                         goto openssl_context_failed;
+1784 
+1785                 _ssl_context = std::unique_ptr<SSL_CTX>(ssl_ctx);
+1786 
+1787                 socket = BIO_new_ssl_connect(ssl_ctx);
+1788 
+1789                 if ( socket == nullptr )
+1790                         goto openssl_ssl_bio_failed;
+1791 
+1792                 _socket = std::unique_ptr<BIO>(socket);
+1793 
+1794                 BIO_get_ssl(_socket\&.get(), &ssl);
+1795                 _ssl = std::unique_ptr<SSL>(ssl);
+1796 
+1797                 SSL_set_mode(_ssl\&.get(), SSL_MODE_AUTO_RETRY);
+1798                 BIO_set_conn_hostname(_socket\&.get(), _params\&.conn_str\&.c_str());
+1799         }
+1800         else
+1801         {
+1802                 // non-SSL connection requested
+1803                 BIO*    socket = BIO_new_connect(const_cast<char*>(_params\&.conn_str\&.c_str()));
+1804                 if ( socket == nullptr )
+1805                         goto openssl_bio_failed;
+1806                 _socket\&.reset(socket);
+1807 
+1808 #elif defined(USING_BOOST_NET)
+1809                 // SSL connection requested
+1810         }
+1811         else
+1812         {
+1813                 // non-SSL connection requested
+1814 #else
+1815 #endif
+1816         }
+1817 
+1818         // and anything else that needs putting across
+1819         _params\&.allow_invalid_cert = network->_network_config\&.allow_invalid_cert;
+1820 
+1821         return EIrcStatus::OK;
+1822 
+1823 invalid_network:
+1824         std::cerr << fg_red << "The supplied irc_network was a nullptr\n";
+1825         return EIrcStatus::MissingParameter;
+1826 no_server:
+1827         std::cerr << fg_red << "There is no server specified by the input\n";
+1828         return EIrcStatus::InvalidData;
+1829 lookup_failed:
+1830         // already logged in function call
+1831         return EIrcStatus::LookupFailed;
+1832 
+1833 #if defined(USING_OPENSSL_NET)
+1834 openssl_context_failed:
+1835         std::cerr << fg_red << "Failed to create the OpenSSL SSL context\n";
+1836         return EIrcStatus::OpenSSLError;
+1837 openssl_ssl_bio_failed:
+1838         std::cerr << fg_red << "Failed to create the OpenSSL SSL BIO\n";
+1839         SSL_CTX_free(_ssl_context\&.release());
+1840         return EIrcStatus::OpenSSLError;
+1841 openssl_bio_failed:
+1842         std::cerr << fg_red << "Failed to create the OpenSSL BIO\n";
+1843         return EIrcStatus::OpenSSLError;
+1844 #endif
+1845 
+1846 }
+.fi
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "\fBIrcNetwork\fP\fC [friend]\fP"
+
+.PP
+Definition at line 81 of file IrcConnection\&.h\&.
+.SS "\fBIrcParser\fP\fC [friend]\fP"
+
+.PP
+Definition at line 79 of file IrcConnection\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBirc_activity\fP IrcConnection::_activity\fC [private]\fP"
+The last parsed activity 
+.PP
+Definition at line 121 of file IrcConnection\&.h\&.
+.SS "uint64_t IrcConnection::_bytes_recv\fC [private]\fP"
+stats tracking - bytes received 
+.PP
+Definition at line 91 of file IrcConnection\&.h\&.
+.SS "uint64_t IrcConnection::_bytes_sent\fC [private]\fP"
+stats tracking - bytes sent 
+.PP
+Definition at line 92 of file IrcConnection\&.h\&.
+.SS "std::vector< std::string > IrcConnection::_cap_ack\fC [private]\fP"
+Servers confirmed CAP support 
+.PP
+Definition at line 117 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcParser::HandleCap()\&.
+.SS "std::vector< std::string > IrcConnection::_cap_ls\fC [private]\fP"
+Servers listed CAP support 
+.PP
+Definition at line 119 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcParser::HandleCap()\&.
+.SS "std::vector< std::string > IrcConnection::_cap_nak\fC [private]\fP"
+Servers confirmed CAP no support 
+.PP
+Definition at line 118 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcParser::HandleCap()\&.
+.SS "std::set<\fBIrcChannel\fP*> IrcConnection::_channel_list\fC [private]\fP"
+The connections channel list 
+.PP
+Definition at line 101 of file bak/IrcConnection\&.h\&.
+.SS "std::set<std::string> IrcConnection::_channel_list\fC [private]\fP"
+The connections channel list 
+.PP
+Definition at line 103 of file IrcConnection\&.h\&.
+.PP
+Referenced by DeleteChannel(), IrcParser::HandleNick(), and IrcParser::HandleQuit()\&.
+.SS "uint32_t IrcConnection::_id\fC [private]\fP"
+Unique id 
+.PP
+Definition at line 123 of file IrcConnection\&.h\&.
+.SS "time_t IrcConnection::_lag_sent\fC [private]\fP"
+The time 'LAG' was sent 
+.PP
+Definition at line 90 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcParser::HandlePong()\&.
+.SS "time_t IrcConnection::_last_data\fC [private]\fP"
+The time data was last received 
+.PP
+Definition at line 89 of file IrcConnection\&.h\&.
+.SS "std::mutex IrcConnection::_mutex\fC [mutable]\fP, \fC [private]\fP"
+Synchronization lock; mutable to enable constness for retrieval functions 
+.PP
+Definition at line 95 of file IrcConnection\&.h\&.
+.PP
+Referenced by DeleteChannel(), and IrcParser::ParseNextRecvQueueItem()\&.
+.SS "std::weak_ptr<\fBIrcNetwork\fP> IrcConnection::_owner\fC [private]\fP"
+the network we reside in 
+.PP
+Definition at line 115 of file IrcConnection\&.h\&.
+.SS "\fBirc_connection_params\fP IrcConnection::_params\fC [private]\fP"
+The parameters used for the last server connection 
+.PP
+Definition at line 122 of file IrcConnection\&.h\&.
+.PP
+Referenced by Setup(), and IrcNetwork::UpdateServerInfo()\&.
+.SS "\fBIrcNetwork\fP* IrcConnection::_parent_network\fC [private]\fP"
+the network we reside in 
+.PP
+Definition at line 109 of file bak/IrcConnection\&.h\&.
+.PP
+Referenced by IrcParser::Handle001(), IrcParser::Handle002(), IrcParser::Handle005(), IrcParser::Handle353(), IrcParser::HandleJoin(), IrcParser::HandleKick(), IrcParser::HandleKill(), IrcParser::HandleMode(), IrcParser::HandleNick(), IrcParser::HandleNotice(), IrcParser::HandlePart(), IrcParser::HandleQuit(), IrcParser::HasChannelPrefix(), and IrcParser::ModeHasArgument()\&.
+.SS "std::queue< std::string > IrcConnection::_recv_queue\fC [private]\fP"
+The connections unprocessed receive queue 
+.PP
+Definition at line 98 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcParser::ParseNextRecvQueueItem()\&.
+.SS "std::queue< std::string > IrcConnection::_send_queue\fC [private]\fP"
+The connections unprocessed send queue 
+.PP
+Definition at line 100 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcParser::ProcessNextSendQueueItem()\&.
+.SS "uint32_t IrcConnection::_state\fC [private]\fP"
+flag-based connection state 
+.PP
+Definition at line 88 of file IrcConnection\&.h\&.
+.PP
+Referenced by IrcParser::Handle001(), and IrcParser::ParseNextRecvQueueItem()\&.
+.SS "uint32_t IrcConnection::_thread\fC [private]\fP"
+ID of the connection preservation thread 
+.PP
+Definition at line 126 of file IrcConnection\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

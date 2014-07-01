@@ -1,0 +1,105 @@
+.TH "qrc_sbi.cc" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+qrc_sbi.cc \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <QtCore/qglobal\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "QT_BEGIN_NAMESPACE 
+.br
+Q_CORE_EXPORT bool \fBqRegisterResourceData\fP (int, const unsigned char *, const unsigned char *, const unsigned char *)"
+.br
+.ti -1c
+.RI "Q_CORE_EXPORT bool \fBqUnregisterResourceData\fP (int, const unsigned char *, const unsigned char *, const unsigned char *)"
+.br
+.ti -1c
+.RI "QT_END_NAMESPACE int 
+.br
+QT_MANGLE_NAMESPACE() \fBqInitResources_core\fP ()"
+.br
+.ti -1c
+.RI "int QT_MANGLE_NAMESPACE() \fBqCleanupResources_core\fP ()"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "static const unsigned char \fBqt_resource_data\fP []"
+.br
+.ti -1c
+.RI "static const unsigned char \fBqt_resource_name\fP []"
+.br
+.ti -1c
+.RI "static const unsigned char \fBqt_resource_struct\fP []"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "int QT_MANGLE_NAMESPACE() qCleanupResources_core ()"
+
+.PP
+Definition at line 8292 of file qrc_sbi\&.cc\&.
+.PP
+References qt_resource_data, qt_resource_name, qt_resource_struct, and qUnregisterResourceData()\&.
+.PP
+.nf
+8293 {
+8294     QT_PREPEND_NAMESPACE(qUnregisterResourceData)
+8295        (0x01, qt_resource_struct, qt_resource_name, qt_resource_data);
+8296     return 1;
+8297 }
+.fi
+.SS "QT_END_NAMESPACE int QT_MANGLE_NAMESPACE() qInitResources_core ()"
+
+.PP
+Definition at line 8283 of file qrc_sbi\&.cc\&.
+.PP
+References qRegisterResourceData(), qt_resource_data, qt_resource_name, and qt_resource_struct\&.
+.PP
+.nf
+8284 {
+8285     QT_PREPEND_NAMESPACE(qRegisterResourceData)
+8286         (0x01, qt_resource_struct, qt_resource_name, qt_resource_data);
+8287     return 1;
+8288 }
+.fi
+.SS "QT_BEGIN_NAMESPACE Q_CORE_EXPORT bool qRegisterResourceData (int, const unsigned char *, const unsigned char *, const unsigned char *)"
+
+.PP
+Referenced by qInitResources_core()\&.
+.SS "Q_CORE_EXPORT bool qUnregisterResourceData (int, const unsigned char *, const unsigned char *, const unsigned char *)"
+
+.PP
+Referenced by qCleanupResources_core()\&.
+.SH "Variable Documentation"
+.PP 
+.SS "const unsigned char qt_resource_data[]\fC [static]\fP"
+
+.PP
+Definition at line 11 of file qrc_sbi\&.cc\&.
+.PP
+Referenced by qCleanupResources_core(), and qInitResources_core()\&.
+.SS "const unsigned char qt_resource_name[]\fC [static]\fP"
+
+.PP
+Definition at line 7916 of file qrc_sbi\&.cc\&.
+.PP
+Referenced by qCleanupResources_core(), and qInitResources_core()\&.
+.SS "const unsigned char qt_resource_struct[]\fC [static]\fP"
+
+.PP
+Definition at line 8168 of file qrc_sbi\&.cc\&.
+.PP
+Referenced by qCleanupResources_core(), and qInitResources_core()\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

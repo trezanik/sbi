@@ -1,0 +1,901 @@
+.TH "IrcEngine" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IrcEngine \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <IrcEngine\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fB~IrcEngine\fP ()"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBIrcChannel\fP > \fBActiveChannel\fP ()"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBIrcConnection\fP > \fBActiveConnection\fP ()"
+.br
+.ti -1c
+.RI "void \fBAttachListener\fP (\fBIrcListener\fP *listener)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBCreateChannel\fP (const uint32_t connection_id, const char *name)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBCreateConnection\fP (const char *network)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBCreateNetwork\fP (const char *name)"
+.br
+.ti -1c
+.RI "\fBEIrcStatus\fP \fBCreateUser\fP (const uint32_t connection_id, const char *channel, const char *name, const char *ident, const char *hostmask)"
+.br
+.ti -1c
+.RI "void \fBDetachListener\fP (\fBIrcListener\fP *listener)"
+.br
+.ti -1c
+.RI "\fBIrcParser\fP * \fBParser\fP () const "
+.br
+.ti -1c
+.RI "\fBIrcPool\fP * \fBPools\fP () const "
+.br
+.ti -1c
+.RI "\fB~IrcEngine\fP ()"
+.br
+.ti -1c
+.RI "\fBIrcChannel\fP * \fBActiveChannel\fP ()"
+.br
+.ti -1c
+.RI "\fBIrcConnection\fP * \fBActiveConnection\fP ()"
+.br
+.ti -1c
+.RI "void \fBAttachListener\fP (\fBIrcListener\fP *listener)"
+.br
+.ti -1c
+.RI "std::vector< \fBIrcConnection\fP * > \fBConnections\fP () const "
+.br
+.ti -1c
+.RI "void \fBDetachListener\fP (\fBIrcListener\fP *listener)"
+.br
+.ti -1c
+.RI "\fBIrcFactory\fP * \fBFactory\fP () const "
+.br
+.ti -1c
+.RI "std::vector< \fBIrcNetwork\fP * > \fBNetworks\fP () const "
+.br
+.ti -1c
+.RI "void \fBNotifyDeleteObject\fP (\fBIrcObject\fP *object)"
+.br
+.ti -1c
+.RI "void \fBNotifyDeleteConnection\fP (\fBIrcConnection\fP *connection)"
+.br
+.ti -1c
+.RI "void \fBNotifyDeleteNetwork\fP (\fBIrcNetwork\fP *network)"
+.br
+.ti -1c
+.RI "void \fBNotifyNewConnection\fP (\fBIrcConnection\fP *connection)"
+.br
+.ti -1c
+.RI "void \fBNotifyNewNetwork\fP (\fBIrcNetwork\fP *network)"
+.br
+.ti -1c
+.RI "void \fBNotifyNewObject\fP (\fBIrcObject\fP *object)"
+.br
+.ti -1c
+.RI "\fBIrcParser\fP * \fBParser\fP () const "
+.br
+.ti -1c
+.RI "\fBIrcPool\fP * \fBPools\fP () const "
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "friend \fBint::spawn_interface\fP ()"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_ASSIGNMENT\fP (\fBIrcEngine\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_COPY\fP (\fBIrcEngine\fP)"
+.br
+.ti -1c
+.RI "\fBIrcEngine\fP ()"
+.br
+.ti -1c
+.RI "\fBIrcFactory\fP * \fBFactory\fP () const "
+.br
+.ti -1c
+.RI "void \fBNotifyListeners\fP (\fBE_IRC_LISTENER_NOTIFICATION\fP event_type, std::shared_ptr< \fBIrcConnection\fP > connection) const "
+.br
+.ti -1c
+.RI "\fBNO_CLASS_ASSIGNMENT\fP (\fBIrcEngine\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_COPY\fP (\fBIrcEngine\fP)"
+.br
+.ti -1c
+.RI "\fBIrcEngine\fP ()"
+.br
+.ti -1c
+.RI "void \fBNotifyListeners\fP (\fBE_IRC_LISTENER_NOTIFICATION\fP event_type, \fBIrcConnection\fP *connection) const "
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::set< \fBIrcListener\fP * > \fB_listeners\fP"
+.br
+.ti -1c
+.RI "std::string \fB_active_connection\fP"
+.br
+.ti -1c
+.RI "std::string \fB_active_channel\fP"
+.br
+.ti -1c
+.RI "std::unique_ptr< \fBIrcFactory\fP > \fB_ircobject_factory\fP"
+.br
+.ti -1c
+.RI "std::vector< \fBIrcObject\fP * > \fB_objects\fP"
+.br
+.ti -1c
+.RI "std::vector< \fBIrcConnection\fP * > \fB_connections\fP"
+.br
+.ti -1c
+.RI "std::vector< \fBIrcNetwork\fP * > \fB_networks\fP"
+.br
+.ti -1c
+.RI "std::unique_ptr< \fBIrcConnection\fP > \fB_active_connection\fP"
+.br
+.ti -1c
+.RI "std::unique_ptr< \fBIrcChannel\fP > \fB_active_channel\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBIrcConnection\fP"
+.br
+.ti -1c
+.RI "class \fBIrcParser\fP"
+.br
+.ti -1c
+.RI "void * \fBinstance\fP (void *params)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBTodo\fP
+.RS 4
+Try to get \fBNotifyNewObject()\fP working again with RTTI/dynamic_cast - when I first created it, it did work, but since pooling + factory creation this no longer works, hence I've had to create \fBNotifyNewConnection()\fP, network, etc\&. These can be deleted if this is fixable! (CRTP looks interesting but unsuitable)
+.RE
+.PP
+
+.PP
+Definition at line 107 of file IrcEngine\&.h\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "IrcEngine::IrcEngine ()\fC [private]\fP"
+
+.PP
+Definition at line 28 of file IrcEngine\&.cc\&.
+.PP
+.nf
+29 {
+30         _ircobject_factory\&.reset(new IrcFactory(this));
+31 }
+.fi
+.SS "IrcEngine::~IrcEngine ()"
+
+.PP
+Definition at line 35 of file IrcEngine\&.cc\&.
+.PP
+References _ircobject_factory\&.
+.PP
+.nf
+36 {
+37         _ircobject_factory\&.release();
+38 }
+.fi
+.SS "IrcEngine::IrcEngine ()\fC [private]\fP"
+
+.SS "IrcEngine::~IrcEngine ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBIrcChannel\fP* IrcEngine::ActiveChannel ()\fC [inline]\fP"
+Retrieves the 'active' \fBIrcChannel\fP (the one the user has requested to set focus to, or the only one present on the connection)\&.
+.PP
+\fBTodo\fP
+.RS 4
+Reference + Dereference needed? 
+.RE
+.PP
+
+.PP
+Definition at line 183 of file bak/IrcEngine\&.h\&.
+.PP
+.nf
+184         { return _active_channel\&.get(); }
+.fi
+.SS "std::shared_ptr<\fBIrcChannel\fP> IrcEngine::ActiveChannel ()"
+Retrieves the 'active' \fBIrcChannel\fP (the one the user has requested to set focus to, or the only one present on the connection)\&. 
+.SS "\fBIrcConnection\fP* IrcEngine::ActiveConnection ()\fC [inline]\fP"
+Retrieves the 'active' \fBIrcConnection\fP (the one the user has requested to set focus to, or the only one present on creation/closure)\&.
+.PP
+\fBTodo\fP
+.RS 4
+Reference + Dereference needed? 
+.RE
+.PP
+
+.PP
+Definition at line 194 of file bak/IrcEngine\&.h\&.
+.PP
+.nf
+195         { return _active_connection\&.get(); }
+.fi
+.SS "std::shared_ptr<\fBIrcConnection\fP> IrcEngine::ActiveConnection ()"
+Retrieves the 'active' \fBIrcConnection\fP (the one the user has requested to set focus to, or the only one present on creation/closure)\&. 
+.SS "void IrcEngine::AttachListener (\fBIrcListener\fP *listener)"
+Attaches an \fBIrcListener\fP to receive notifications of NotifyData() - it must be detached when it is finished\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBDetachListener()\fP, NotifyData() 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIlistener\fP The \fBIrcListener\fP to add 
+.RE
+.PP
+
+.SS "void IrcEngine::AttachListener (\fBIrcListener\fP *listener)"
+Attaches an \fBIrcListener\fP to receive notifications of NotifyData() - it must be detached when it is finished\&.
+.PP
+Never fails\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBDetachListener()\fP, NotifyData() 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIlistener\fP The \fBIrcListener\fP to add 
+.RE
+.PP
+
+.PP
+Definition at line 43 of file IrcEngine\&.cc\&.
+.PP
+References _listeners\&.
+.PP
+.nf
+46 {
+47         assert(listener != nullptr);
+48 
+49         _listeners\&.insert(listener);
+50 }
+.fi
+.SS "std::vector< \fBIrcConnection\fP * > IrcEngine::Connections () const"
+Retrieves the vector for all known \fBIrcConnection\fP objects; the list is a copy, and makes no guarantee as to the lifetime of each connection\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns a vector of \fBIrcConnection\fP pointers 
+.RE
+.PP
+
+.PP
+Definition at line 54 of file bak/IrcEngine\&.cc\&.
+.PP
+References _connections\&.
+.PP
+.nf
+55 {
+56         return _connections;
+57 }
+.fi
+.SS "\fBEIrcStatus\fP IrcEngine::CreateChannel (const uint32_tconnection_id, const char *name)"
+
+.PP
+Definition at line 55 of file IrcEngine\&.cc\&.
+.PP
+References IrcFactory::CreateIrcChannel(), Factory(), ObjectAddError, OK, and Pools()\&.
+.PP
+Referenced by IrcParser::HandleJoin()\&.
+.PP
+.nf
+59 {
+60         return Factory()->CreateIrcChannel(
+61                 Pools()->GetConnection(connection_id),
+62                 name
+63         ) == nullptr ? EIrcStatus::ObjectAddError : EIrcStatus::OK;
+64 }
+.fi
+.SS "\fBEIrcStatus\fP IrcEngine::CreateConnection (const char *network)"
+
+.PP
+Definition at line 69 of file IrcEngine\&.cc\&.
+.PP
+References IrcFactory::CreateIrcConnection(), Factory(), ObjectAddError, OK, and Pools()\&.
+.PP
+Referenced by IrcNetwork::Setup()\&.
+.PP
+.nf
+72 {
+73         return Factory()->CreateIrcConnection(
+74                 Pools()->GetNetwork(network)
+75         ) == nullptr ? EIrcStatus::ObjectAddError : EIrcStatus::OK;
+76 }
+.fi
+.SS "\fBEIrcStatus\fP IrcEngine::CreateNetwork (const char *name)"
+
+.PP
+Definition at line 81 of file IrcEngine\&.cc\&.
+.PP
+References IrcFactory::CreateIrcNetwork(), Factory(), ObjectAddError, and OK\&.
+.PP
+.nf
+84 {
+85         return Factory()->CreateIrcNetwork(
+86                 name
+87         ) == nullptr ? EIrcStatus::ObjectAddError : EIrcStatus::OK;
+88 }
+.fi
+.SS "\fBEIrcStatus\fP IrcEngine::CreateUser (const uint32_tconnection_id, const char *channel, const char *name, const char *ident, const char *hostmask)"
+
+.PP
+Definition at line 93 of file IrcEngine\&.cc\&.
+.PP
+References IrcFactory::CreateIrcUser(), Factory(), ObjectAddError, OK, and Pools()\&.
+.PP
+Referenced by IrcChannel::AddNamesUser(), and IrcParser::HandleJoin()\&.
+.PP
+.nf
+100 {
+101         return Factory()->CreateIrcUser(
+102                 Pools()->GetChannel(connection_id, channel), 
+103                 name, ident, hostmask
+104         ) == nullptr ? EIrcStatus::ObjectAddError : EIrcStatus::OK;
+105 }
+.fi
+.SS "void IrcEngine::DetachListener (\fBIrcListener\fP *listener)"
+Detaches an \fBIrcListener\fP previously attached\&. Once removed, the object will not longer receive notifications of new data on connections\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBAttachListener()\fP, NotifyData() 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIlistener\fP The \fBIrcListener\fP to remove 
+.RE
+.PP
+
+.SS "void IrcEngine::DetachListener (\fBIrcListener\fP *listener)"
+Detaches an \fBIrcListener\fP previously attached\&. Once removed, the object will not longer receive notifications of new data on connections\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBAttachListener()\fP, NotifyData() 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIlistener\fP The \fBIrcListener\fP to remove 
+.RE
+.PP
+
+.PP
+Definition at line 110 of file IrcEngine\&.cc\&.
+.PP
+References _listeners\&.
+.PP
+.nf
+113 {
+114         assert(listener != nullptr);
+115 
+116         _listeners\&.erase(_listeners\&.find(listener));
+117 }
+.fi
+.SS "\fBIrcFactory\fP * IrcEngine::Factory () const\fC [private]\fP"
+Retrieves a pointer to the IRC \fBObject\fP Factory, used for creating new channels, users, connections, etc\&. - they are all allocated via a pool for efficiency purposes\&.
+.PP
+Private as only the engine itself can be authorized to create new IrcObjects\&.
+.PP
+\fBWarning:\fP
+.RS 4
+Always access through this function, and not the raw pointer, as the factory is not created/constructed until this has been called for the first time\&.
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fIIrcFactory*\fP 
+.RE
+.PP
+
+.PP
+Definition at line 122 of file IrcEngine\&.cc\&.
+.PP
+References _ircobject_factory\&.
+.PP
+Referenced by IrcConnection::AddChannel(), IrcChannel::AddUser(), CreateChannel(), CreateConnection(), CreateNetwork(), CreateUser(), IrcConnection::DeleteChannel(), and IrcChannel::DeleteUser()\&.
+.PP
+.nf
+123 {
+124         return _ircobject_factory\&.get();
+125 }
+.fi
+.SS "\fBIrcFactory\fP* IrcEngine::Factory () const"
+Retrieves a pointer to the IRC \fBObject\fP Factory, used for creating new channels, users, connections, etc\&. - they are all allocated via a pool for efficiency purposes\&. 
+.SS "\fBIrcEngine::int::spawn_interface\fP ()\fC [private]\fP"
+
+.SS "std::vector< \fBIrcNetwork\fP * > IrcEngine::Networks () const"
+Retrieves the vector for all known \fBIrcNetwork\fP objects; the list is a copy, and makes no guarantee as to the lifetime of each connection\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns a vector of \fBIrcNetwork\fP pointers 
+.RE
+.PP
+
+.PP
+Definition at line 80 of file bak/IrcEngine\&.cc\&.
+.PP
+References _networks\&.
+.PP
+.nf
+81 {
+82         return _networks;
+83 }
+.fi
+.SS "IrcEngine::NO_CLASS_ASSIGNMENT (\fBIrcEngine\fP)\fC [private]\fP"
+
+.SS "IrcEngine::NO_CLASS_ASSIGNMENT (\fBIrcEngine\fP)\fC [private]\fP"
+
+.SS "IrcEngine::NO_CLASS_COPY (\fBIrcEngine\fP)\fC [private]\fP"
+
+.SS "IrcEngine::NO_CLASS_COPY (\fBIrcEngine\fP)\fC [private]\fP"
+
+.SS "void IrcEngine::NotifyDeleteConnection (\fBIrcConnection\fP *connection)"
+
+.PP
+Definition at line 151 of file bak/IrcEngine\&.cc\&.
+.PP
+References _active_connection, _connections, and UNREFERENCE_OBJECT\&.
+.PP
+.nf
+154 {
+155         if ( connection == _active_connection\&.get() )
+156                 _active_connection\&.reset(nullptr);
+157         
+158         UNREFERENCE_OBJECT(connection);
+159 
+160         _connections\&.erase(std::find(_connections\&.begin(), _connections\&.end(), connection));
+161 }
+.fi
+.SS "void IrcEngine::NotifyDeleteNetwork (\fBIrcNetwork\fP *network)"
+
+.PP
+Definition at line 166 of file bak/IrcEngine\&.cc\&.
+.PP
+References _networks, and UNREFERENCE_OBJECT\&.
+.PP
+.nf
+169 {
+170         UNREFERENCE_OBJECT(network);
+171 
+172         _networks\&.erase(std::find(_networks\&.begin(), _networks\&.end(), network));
+173 }
+.fi
+.SS "void IrcEngine::NotifyDeleteObject (\fBIrcObject\fP *object)"
+
+.PP
+\fBWarning:\fP
+.RS 4
+Called within the destructor for \fBIrcObject\fP - do not call manually\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBNotifyNewObject()\fP 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobject\fP The \fBObject\fP deleted 
+.RE
+.PP
+
+.PP
+Definition at line 141 of file bak/IrcEngine\&.cc\&.
+.PP
+References _objects\&.
+.PP
+.nf
+144 {
+145         _objects\&.erase(std::find(_objects\&.begin(), _objects\&.end(), object));
+146 }
+.fi
+.SS "void IrcEngine::NotifyListeners (\fBE_IRC_LISTENER_NOTIFICATION\fPevent_type, \fBIrcConnection\fP *connection) const\fC [private]\fP"
+Called within \fBIrcConnection\fP whenever it successfully adds data to its receive queue; the event_type will be LN_NewData\&.
+.PP
+Also called from the \fBIrcParser\fP whenever a supported event is parsed out; a '001' results in LN_001, another user joining results in LN_Join, and so forth\&.
+.PP
+This informs all the _listeners by triggering their own notification handlers, ready for optional processing\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBAttachListener()\fP, \fBDetachListener()\fP 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIevent_type\fP The event that triggered this notification 
+.br
+\fIconnection\fP The \fBIrcConnection\fP this event occurred in 
+.RE
+.PP
+
+.PP
+Definition at line 88 of file bak/IrcEngine\&.cc\&.
+.PP
+References _listeners, fg_red(), IrcConnection::GetActivity(), LN_001, LN_002, LN_003, LN_004, LN_005, LN_331, LN_332, LN_353, LN_366, LN_Cap, LN_ConnectionReady, LN_GotChannelMode, LN_GotKicked, LN_GotKilled, LN_GotNickChanged, LN_GotUserMode, LN_Invite, LN_Join, LN_Kick, LN_Kill, LN_Mode, LN_NewData, LN_Nick, LN_Notice, LN_Part, LN_Privmsg, LN_Quit, LN_SentInvite, LN_SentPrivmsg, LN_Topic, LN_WeJoined, LN_WeKicked, LN_WeParted, and LN_WeQuit\&.
+.PP
+.nf
+92 {
+93         for ( auto l : _listeners )
+94         {
+95                 switch ( event_type )
+96                 {
+97                 case LN_NewData:        l->OnData(connection); break;
+98                 case LN_001:            l->On001(connection, connection->GetActivity()); break;
+99                 case LN_002:            l->On002(connection, connection->GetActivity()); break;
+100                 case LN_003:            l->On003(connection, connection->GetActivity()); break;
+101                 case LN_004:            l->On004(connection, connection->GetActivity()); break;
+102                 case LN_005:            l->On005(connection, connection->GetActivity()); break;
+103                 case LN_331:            l->On331(connection, connection->GetActivity()); break;
+104                 case LN_332:            l->On332(connection, connection->GetActivity()); break;
+105                 case LN_353:            l->On353(connection, connection->GetActivity()); break;
+106                 case LN_366:            l->On366(connection, connection->GetActivity()); break;
+107                 case LN_ConnectionReady:        /* what to do? */break;
+108                 case LN_Cap:            l->OnCap(connection, connection->GetActivity()); break;
+109                 case LN_Invite:         l->OnInvite(connection, connection->GetActivity()); break;
+110                 case LN_Join:           l->OnJoin(connection, connection->GetActivity()); break;
+111                 case LN_Kick:           l->OnKick(connection, connection->GetActivity()); break;
+112                 case LN_Kill:           l->OnKill(connection, connection->GetActivity()); break;
+113                 case LN_Mode:           l->OnMode(connection, connection->GetActivity()); break;
+114                 case LN_Nick:           l->OnNick(connection, connection->GetActivity()); break;
+115                 case LN_Notice:         l->OnNotice(connection, connection->GetActivity()); break;
+116                 case LN_Part:           l->OnPart(connection, connection->GetActivity()); break;
+117                 case LN_Privmsg:        l->OnPrivmsg(connection, connection->GetActivity()); break;
+118                 case LN_Quit:           l->OnQuit(connection, connection->GetActivity()); break;
+119                 case LN_Topic:          l->OnTopic(connection, connection->GetActivity()); break;
+120                 case LN_SentInvite:     l->OnOurInvite(connection, connection->GetActivity()); break;
+121                 case LN_WeJoined:       l->OnOurJoin(connection, connection->GetActivity()); break;
+122                 case LN_WeKicked:       l->OnOurKick(connection, connection->GetActivity()); break;
+123                 case LN_GotKicked:      l->OnOurKicked(connection, connection->GetActivity()); break;
+124                 case LN_GotNickChanged: l->OnOurNick(connection, connection->GetActivity()); break;
+125                 case LN_SentPrivmsg:    l->OnOurPrivmsg(connection, connection->GetActivity()); break;
+126                 case LN_GotUserMode:    l->OnOurServerMode(connection, connection->GetActivity()); break;
+127                 case LN_GotChannelMode: l->OnOurMode(connection, connection->GetActivity()); break;
+128                 case LN_GotKilled:      l->OnOurKilled(connection, connection->GetActivity()); break;
+129                 case LN_WeParted:       l->OnOurPart(connection, connection->GetActivity()); break;
+130                 case LN_WeQuit:         l->OnOurQuit(connection, connection->GetActivity()); break;
+131                 default:
+132                         std::cerr << fg_red << "Unhandled event type received (" << event_type << ")";
+133                         break;
+134                 }
+135         }
+136 }
+.fi
+.SS "void IrcEngine::NotifyListeners (\fBE_IRC_LISTENER_NOTIFICATION\fPevent_type, std::shared_ptr< \fBIrcConnection\fP >connection) const\fC [private]\fP"
+Called within \fBIrcConnection\fP whenever it successfully adds data to its receive queue; the event_type will be LN_NewData\&.
+.PP
+Also called from the \fBIrcParser\fP whenever a supported event is parsed out; a '001' results in LN_001, another user joining results in LN_Join, and so forth\&.
+.PP
+This informs all the _listeners by triggering their own notification handlers, ready for optional processing\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBAttachListener()\fP, \fBDetachListener()\fP 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIevent_type\fP The event that triggered this notification 
+.br
+\fIconnection\fP The \fBIrcConnection\fP this event occurred in 
+.RE
+.PP
+
+.PP
+Definition at line 130 of file IrcEngine\&.cc\&.
+.PP
+References _listeners, fg_red(), LN_001, LN_002, LN_003, LN_004, LN_005, LN_331, LN_332, LN_353, LN_366, LN_Cap, LN_ConnectionReady, LN_GotChannelMode, LN_GotKicked, LN_GotKilled, LN_GotNickChanged, LN_GotUserMode, LN_Invite, LN_Join, LN_Kick, LN_Kill, LN_Mode, LN_NewData, LN_Nick, LN_Notice, LN_Part, LN_Privmsg, LN_Quit, LN_SentInvite, LN_SentPrivmsg, LN_Topic, LN_WeJoined, LN_WeKicked, LN_WeParted, and LN_WeQuit\&.
+.PP
+Referenced by IrcConnection::EstablishConnection(), IrcParser::Handle001(), IrcParser::Handle002(), IrcParser::Handle003(), IrcParser::Handle004(), IrcParser::Handle005(), IrcParser::Handle332(), IrcParser::Handle353(), IrcParser::Handle366(), IrcParser::HandleCap(), IrcParser::HandleInvite(), IrcParser::HandleJoin(), IrcParser::HandleKick(), IrcParser::HandleKill(), IrcParser::HandleNick(), IrcParser::HandlePart(), IrcParser::HandlePrivmsg(), IrcParser::HandleQuit(), and IrcParser::HandleTopic()\&.
+.PP
+.nf
+134 {
+135         for ( auto l : _listeners )
+136         {
+137                 switch ( event_type )
+138                 {
+139                 case LN_NewData:        l->OnData(connection); break;
+140                 case LN_001:            l->On001(connection, connection->GetActivity()); break;
+141                 case LN_002:            l->On002(connection, connection->GetActivity()); break;
+142                 case LN_003:            l->On003(connection, connection->GetActivity()); break;
+143                 case LN_004:            l->On004(connection, connection->GetActivity()); break;
+144                 case LN_005:            l->On005(connection, connection->GetActivity()); break;
+145                 case LN_331:            l->On331(connection, connection->GetActivity()); break;
+146                 case LN_332:            l->On332(connection, connection->GetActivity()); break;
+147                 case LN_353:            l->On353(connection, connection->GetActivity()); break;
+148                 case LN_366:            l->On366(connection, connection->GetActivity()); break;
+149                 case LN_ConnectionReady:        /* what to do? */break;
+150                 case LN_Cap:            l->OnCap(connection, connection->GetActivity()); break;
+151                 case LN_Invite:         l->OnInvite(connection, connection->GetActivity()); break;
+152                 case LN_Join:           l->OnJoin(connection, connection->GetActivity()); break;
+153                 case LN_Kick:           l->OnKick(connection, connection->GetActivity()); break;
+154                 case LN_Kill:           l->OnKill(connection, connection->GetActivity()); break;
+155                 case LN_Mode:           l->OnMode(connection, connection->GetActivity()); break;
+156                 case LN_Nick:           l->OnNick(connection, connection->GetActivity()); break;
+157                 case LN_Notice:         l->OnNotice(connection, connection->GetActivity()); break;
+158                 case LN_Part:           l->OnPart(connection, connection->GetActivity()); break;
+159                 case LN_Privmsg:        l->OnPrivmsg(connection, connection->GetActivity()); break;
+160                 case LN_Quit:           l->OnQuit(connection, connection->GetActivity()); break;
+161                 case LN_Topic:          l->OnTopic(connection, connection->GetActivity()); break;
+162                 case LN_SentInvite:     l->OnOurInvite(connection, connection->GetActivity()); break;
+163                 case LN_WeJoined:       l->OnOurJoin(connection, connection->GetActivity()); break;
+164                 case LN_WeKicked:       l->OnOurKick(connection, connection->GetActivity()); break;
+165                 case LN_GotKicked:      l->OnOurKicked(connection, connection->GetActivity()); break;
+166                 case LN_GotNickChanged: l->OnOurNick(connection, connection->GetActivity()); break;
+167                 case LN_SentPrivmsg:    l->OnOurPrivmsg(connection, connection->GetActivity()); break;
+168                 case LN_GotUserMode:    l->OnOurServerMode(connection, connection->GetActivity()); break;
+169                 case LN_GotChannelMode: l->OnOurMode(connection, connection->GetActivity()); break;
+170                 case LN_GotKilled:      l->OnOurKilled(connection, connection->GetActivity()); break;
+171                 case LN_WeParted:       l->OnOurPart(connection, connection->GetActivity()); break;
+172                 case LN_WeQuit:         l->OnOurQuit(connection, connection->GetActivity()); break;
+173                 default:
+174                         std::cerr << fg_red << "Unhandled event type received (" << event_type << ")";
+175                         break;
+176                 }
+177         }
+178 }
+.fi
+.SS "void IrcEngine::NotifyNewConnection (\fBIrcConnection\fP *connection)"
+
+.PP
+Definition at line 178 of file bak/IrcEngine\&.cc\&.
+.PP
+References _active_connection, _connections, and REFERENCE_OBJECT\&.
+.PP
+Referenced by IrcConnection::IrcConnection()\&.
+.PP
+.nf
+181 {
+182         if ( _active_connection == nullptr )
+183                 _active_connection\&.reset(connection);
+184 
+185         REFERENCE_OBJECT(connection);
+186         
+187         _connections\&.push_back(connection);
+188 }
+.fi
+.SS "void IrcEngine::NotifyNewNetwork (\fBIrcNetwork\fP *network)"
+
+.PP
+Definition at line 193 of file bak/IrcEngine\&.cc\&.
+.PP
+References _networks, and REFERENCE_OBJECT\&.
+.PP
+.nf
+196 {
+197         REFERENCE_OBJECT(network);
+198 
+199         _networks\&.push_back(network);
+200 }
+.fi
+.SS "void IrcEngine::NotifyNewObject (\fBIrcObject\fP *object)"
+Enables the engine to keep track and iterate through all the created objects\&.
+.PP
+\fBWarning:\fP
+.RS 4
+Called within the constructor for \fBIrcObject\fP - do not call manually\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBNotifyDeleteObject()\fP 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobject\fP The \fBObject\fP created 
+.RE
+.PP
+
+.PP
+Definition at line 205 of file bak/IrcEngine\&.cc\&.
+.PP
+References _connections, _networks, _objects, fg_cyan(), and fg_white()\&.
+.PP
+.nf
+208 {
+209         _objects\&.push_back(object);
+210 
+211 #if 0   // Code Removed: No longer works - did when i first created it though!
+212         IrcNetwork*     rtti_network;
+213         IrcConnection*  rtti_connection;
+214         //IrcChannel*   rtti_channel;
+215         // etc\&.
+216 
+217         std::cout << fg_cyan << object << fg_white << " is a " << typeid(object)\&.name() << "\n";
+218 
+219         if (( rtti_connection = dynamic_cast<IrcConnection*>(object)) != nullptr )
+220         {
+221                 _connections\&.push_back(rtti_connection);
+222         }
+223         else if (( rtti_network = dynamic_cast<IrcNetwork*>(object)) != nullptr )
+224         {
+225                 _networks\&.push_back(rtti_network);
+226         }
+227 #endif
+228 }
+.fi
+.SS "\fBIrcParser\fP* IrcEngine::Parser () const"
+Retrieves the \fBIrcParser\fP\&.
+.PP
+\fBReturn values:\fP
+.RS 4
+\fIA\fP pointer to the \fBIrcParser\fP 
+.RE
+.PP
+
+.SS "\fBIrcParser\fP * IrcEngine::Parser () const"
+Retrieves the \fBIrcParser\fP\&. Never fails - created on the stack as a static variable\&.
+.PP
+\fBReturn values:\fP
+.RS 4
+\fIA\fP pointer to the \fBIrcParser\fP 
+.RE
+.PP
+
+.PP
+Definition at line 183 of file IrcEngine\&.cc\&.
+.PP
+Referenced by IrcConnection::EstablishConnection()\&.
+.PP
+.nf
+184 {
+185         static IrcParser        parser;
+186         return &parser;
+187 }
+.fi
+.SS "\fBIrcPool\fP* IrcEngine::Pools () const"
+Gets the \fBIrcObject\fP pool allocator\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A pointer to the static instance within the class\&. 
+.RE
+.PP
+
+.SS "\fBIrcPool\fP * IrcEngine::Pools () const"
+Gets the \fBIrcObject\fP pool allocator\&. Never fails - created on the stack as a static variable\&.
+.PP
+\fBReturns:\fP
+.RS 4
+A pointer to the \fBIrcPool\fP 
+.RE
+.PP
+
+.PP
+Definition at line 193 of file IrcEngine\&.cc\&.
+.PP
+Referenced by IrcConnection::AddChannel(), IrcChannel::AddNamesUser(), CreateChannel(), CreateConnection(), IrcFactory::CreateIrcChannel(), IrcFactory::CreateIrcConnection(), IrcFactory::CreateIrcNetwork(), IrcFactory::CreateIrcUser(), CreateUser(), IrcConnection::DeleteChannel(), IrcFactory::DeleteIrcObject(), IrcChannel::DeleteUser(), IrcConnection::EraseChannelList(), IrcChannel::EraseNameslist(), IrcConnection::EstablishConnection(), IrcConnection::GetChannel(), IrcChannel::GetUser(), IrcParser::HandleQuit(), and IrcParser::RunParser()\&.
+.PP
+.nf
+194 {
+195         static IrcPool  pools;
+196         return &pools;
+197 }
+.fi
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "void* instance (void *params)\fC [friend]\fP"
+Returns a pointer to the interface instance\&. Return type must be void as the api/runtime cannot know what object the instance will be, since it's compiled with no knowledge of the interface\&.
+.PP
+\fBWarning:\fP
+.RS 4
+Assumes \fBspawn_interface()\fP has been called before now as part of the loading procedure, which creates the object this refers to\&. Third-party interfaces can do this however they want, but is useful to know what to expect\&. 
+.RE
+.PP
+
+.PP
+Definition at line 35 of file interface\&.cc\&.
+.PP
+.nf
+38 {
+39         // unused
+40         params;
+41 
+42         return irc_engine\&.get();
+43 }
+.fi
+.SS "\fBIrcConnection\fP\fC [friend]\fP"
+
+.PP
+Definition at line 114 of file IrcEngine\&.h\&.
+.SS "\fBIrcParser\fP\fC [friend]\fP"
+
+.PP
+Definition at line 115 of file IrcEngine\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string IrcEngine::_active_channel\fC [private]\fP"
+The 'active' \fBIrcChannel\fP 
+.PP
+Definition at line 138 of file IrcEngine\&.h\&.
+.SS "std::unique_ptr<\fBIrcChannel\fP> IrcEngine::_active_channel\fC [private]\fP"
+
+.PP
+Definition at line 141 of file bak/IrcEngine\&.h\&.
+.SS "std::string IrcEngine::_active_connection\fC [private]\fP"
+The 'active' \fBIrcConnection\fP 
+.PP
+Definition at line 136 of file IrcEngine\&.h\&.
+.PP
+Referenced by NotifyDeleteConnection(), and NotifyNewConnection()\&.
+.SS "std::unique_ptr<\fBIrcConnection\fP> IrcEngine::_active_connection\fC [private]\fP"
+The 'active' \fBIrcConnection\fP 
+.PP
+Definition at line 140 of file bak/IrcEngine\&.h\&.
+.SS "std::vector<\fBIrcConnection\fP*> IrcEngine::_connections\fC [private]\fP"
+Connections tracking 
+.PP
+Definition at line 135 of file bak/IrcEngine\&.h\&.
+.PP
+Referenced by Connections(), NotifyDeleteConnection(), NotifyNewConnection(), and NotifyNewObject()\&.
+.SS "std::unique_ptr< \fBIrcFactory\fP > IrcEngine::_ircobject_factory\fC [private]\fP"
+\fBIrcObject\fP creation factory 
+.PP
+Definition at line 141 of file IrcEngine\&.h\&.
+.PP
+Referenced by Factory(), and ~IrcEngine()\&.
+.SS "std::set< \fBIrcListener\fP * > IrcEngine::_listeners\fC [private]\fP"
+The listeners receive all data on every connection; the first member is always the parser, while subsequent members are usually the user interface(s) and any plugins present 
+.PP
+Definition at line 124 of file IrcEngine\&.h\&.
+.PP
+Referenced by AttachListener(), DetachListener(), and NotifyListeners()\&.
+.SS "std::vector<\fBIrcNetwork\fP*> IrcEngine::_networks\fC [private]\fP"
+Networks tracking 
+.PP
+Definition at line 137 of file bak/IrcEngine\&.h\&.
+.PP
+Referenced by Networks(), NotifyDeleteNetwork(), NotifyNewNetwork(), and NotifyNewObject()\&.
+.SS "std::vector<\fBIrcObject\fP*> IrcEngine::_objects\fC [private]\fP"
+Keeps knowledge of every IRC object created 
+.PP
+Definition at line 133 of file bak/IrcEngine\&.h\&.
+.PP
+Referenced by NotifyDeleteObject(), and NotifyNewObject()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

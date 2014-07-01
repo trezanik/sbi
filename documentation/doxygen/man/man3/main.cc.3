@@ -1,0 +1,165 @@
+.TH "main.cc" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+main.cc \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <exception>\fP
+.br
+\fC#include <stdexcept>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <cstdlib>\fP
+.br
+\fC#include <api/types\&.h>\fP
+.br
+\fC#include <api/Runtime\&.h>\fP
+.br
+\fC#include <api/Log\&.h>\fP
+.br
+\fC#include 'app\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int32_t \fBmain\fP (int32_t argc, char **argv)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBAuthor:\fP
+.RS 4
+James Warren 
+.RE
+.PP
+\fBCopyright:\fP
+.RS 4
+James Warren, 2014 
+.RE
+.PP
+\fBLicense:\fP
+.RS 4
+Zlib (see license\&.txt or http://opensource.org/licenses/Zlib) 
+.RE
+.PP
+
+.PP
+Definition in file \fBmain\&.cc\fP\&.
+.SH "Function Documentation"
+.PP 
+.SS "int32_t main (int32_targc, char **argv)"
+
+.PP
+Definition at line 28 of file main\&.cc\&.
+.PP
+References app_exec(), app_init(), APP_NAMESPACE, app_stop(), Log::Close(), Error, LOG, Runtime::Logger(), and runtime\&.
+.PP
+.nf
+32 {
+33         int32_t         exit_status = EXIT_FAILURE;
+34 
+35         using namespace APP_NAMESPACE;
+36 
+37 
+38         /* initialize the application\&. These are the core essentials; if an
+39          * error or exception is raised, we cannot continue with normal startup
+40          * and must quit\&. Only this function has access to expose items to the
+41          * application runtime\&.
+42          *
+43          * If an exception occurs, the log may well not be open here, so there
+44          * will be no record of it\&. This is why we duplicate the output to
+45          * stderr\&. (We should think about doing this in the function\&.\&.\&.)
+46          */
+47         try
+48         {
+49                 app_init(argc, argv);
+50         }
+51         catch ( std::runtime_error& e )
+52         {
+53                 std::cerr << "Initialization runtime error:\n\t" << e\&.what() << "\n";
+54                 LOG(ELogLevel::Error) << "Initialization runtime error:\n\t" << e\&.what() << "\n";
+55                 goto abort;
+56         }
+57         catch ( std::exception& e )
+58         {
+59                 std::cerr << "Uncaught exception in initialization:\n\t" << e\&.what() << "\n";
+60                 LOG(ELogLevel::Error) << "Uncaught exception in initialization:\n\t" << e\&.what() << "\n";
+61                 goto abort;
+62         }
+63         catch ( \&.\&.\&. )
+64         {
+65                 std::cerr << "Unhandled exception in initialization";
+66                 LOG(ELogLevel::Error) << "Unhandled exception in initialization";
+67                 goto abort;
+68         }
+69 
+70 
+71         try
+72         {
+73                 app_exec();
+74         }
+75         /* we throw runtime_errors on a failure we cannot recover from, but do
+76          * not throw exceptions ourselves outside of this */
+77         catch ( std::runtime_error& e )
+78         {
+79                 std::cerr << "runtime error:\n\t" << e\&.what() << "\n";
+80                 LOG(ELogLevel::Error) << "runtime error:\n\t" << e\&.what() << "\n";
+81                 goto abort;
+82         }
+83         catch ( std::exception& e )
+84         {
+85                 std::cerr << "Uncaught exception in execution:\n\t" << e\&.what() << "\n";
+86                 LOG(ELogLevel::Error) << "Uncaught exception in execution:\n\t" << e\&.what() << "\n";
+87                 goto abort;
+88         }
+89         catch ( \&.\&.\&. )
+90         {
+91                 std::cerr << "Unhandled exception in execution";
+92                 LOG(ELogLevel::Error) << "Unhandled exception in execution";
+93                 goto abort;
+94         }
+95 
+96 
+97         try
+98         {
+99                 app_stop();
+100         }
+101         catch ( std::runtime_error& e )
+102         {
+103                 std::cerr << "Shutdown runtime error:\n\t" << e\&.what() << "\n";
+104                 LOG(ELogLevel::Error) << "Shutdown runtime error:\n\t" << e\&.what() << "\n";
+105                 goto abort;
+106         }
+107         catch ( std::exception& e )
+108         {
+109                 std::cerr << "Uncaught exception in shutdown:\n\t" << e\&.what() << "\n";
+110                 LOG(ELogLevel::Error) << "Uncaught exception in shutdown:\n\t" << e\&.what() << "\n";
+111                 goto abort;
+112         }
+113         catch ( \&.\&.\&. )
+114         {
+115                 std::cerr << "Unhandled exception in shutdown\n";
+116                 LOG(ELogLevel::Error) << "Unhandled exception in shutdown\n";
+117                 goto abort;
+118         }
+119 
+120 
+121         exit_status = EXIT_SUCCESS;
+122 
+123 abort:
+124         /* special case: should be done in app_stop(), but if an exception is
+125          * raised, then we'll never be able to log it! */
+126         runtime\&.Logger()->Close();
+127         return exit_status;
+128 }
+.fi
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

@@ -1,0 +1,1325 @@
+.TH "IrcListener" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IrcListener \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <IrcListener\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBIrcListener\fP ()"
+.br
+.ti -1c
+.RI "\fB~IrcListener\fP ()"
+.br
+.ti -1c
+.RI "void \fBNotify\fP (\fBE_IRC_LISTENER_NOTIFICATION\fP event_type, std::shared_ptr< \fBIrcConnection\fP > connection)"
+.br
+.ti -1c
+.RI "\fBIrcListener\fP ()"
+.br
+.ti -1c
+.RI "\fB~IrcListener\fP ()"
+.br
+.ti -1c
+.RI "void \fBNotify\fP (\fBE_IRC_LISTENER_NOTIFICATION\fP event_type, \fBIrcConnection\fP *connection)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBOnData\fP (std::shared_ptr< \fBIrcConnection\fP > connection)"
+.br
+.ti -1c
+.RI "virtual void \fBOn001\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn002\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn003\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn004\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn005\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn331\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn332\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn353\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn366\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnCap\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnInvite\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnJoin\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnKick\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnKill\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnMode\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnNick\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnNotice\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnPart\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnPrivmsg\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnQuit\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnTopic\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurInvite\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurJoin\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurKick\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurKicked\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurKilled\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurMode\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurNick\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurNotice\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurPart\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurPrivmsg\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurQuit\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurServerMode\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurTopic\fP (std::shared_ptr< \fBIrcConnection\fP > connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnData\fP (\fBIrcConnection\fP *connection)"
+.br
+.ti -1c
+.RI "virtual void \fBOn001\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn002\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn003\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn004\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn005\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn331\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn332\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn353\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOn366\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnCap\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnInvite\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnJoin\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnKick\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnKill\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnMode\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnNick\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnNotice\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnPart\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnPrivmsg\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnQuit\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnTopic\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurInvite\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurJoin\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurKick\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurKicked\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurKilled\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurMode\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurNick\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurNotice\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurPart\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurPrivmsg\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurQuit\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurServerMode\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.ti -1c
+.RI "virtual void \fBOnOurTopic\fP (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNO_CLASS_ASSIGNMENT\fP (\fBIrcListener\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_COPY\fP (\fBIrcListener\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_ASSIGNMENT\fP (\fBIrcListener\fP)"
+.br
+.ti -1c
+.RI "\fBNO_CLASS_COPY\fP (\fBIrcListener\fP)"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBIrcEngine\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Derive a class from this to handle all IRC events you choose\&. Since there are so many event types, this one class handles them all, and provides a blank set of functionality by default (i\&.e\&. the class is not abstract)\&.
+.PP
+The design choices are purely down to the vast amount of event types there, with small variances in importance\&.
+.PP
+This enables you to only overload the functions/events you want\&.
+.PP
+This class resides within the application runtime, and receives all events as brought in by the \fBIrcParser\fP\&. The \fBIrcConnection\fP also enables the pre-parse hook, calling into this class before received data enters the parser\&.
+.PP
+\fBIrcChannel\fP and its fellow classes are not listeners, as the \fBIrcParser\fP is responsible for updating their internals\&. It would also increase the vtable size, and add extra layers of work to do, just for the case of not having the parser with full private access, and updating \fIwhile it has the data ready to go\fP!!
+.PP
+\fBTodo\fP
+.RS 4
+These functions can probably all be const, implement if good to go
+.RE
+.PP
+.PP
+Derive a class from this to handle all IRC events you choose\&. Since there are so many event types, this one class handles them all, and provides a blank set of functionality by default (i\&.e\&. the class is not abstract)\&.
+.PP
+The design choices are purely down to the vast amount of event types there, with small variances in importance\&.
+.PP
+This enables you to only overload the functions/events you want\&.
+.PP
+This class resides within the application runtime, and receives all events as brought in by the \fBIrcParser\fP\&. The \fBIrcConnection\fP also enables the pre-parse hook, calling into this class before received data enters the parser\&.
+.PP
+\fBIrcChannel\fP and its fellow classes are not listeners, as the \fBIrcParser\fP is responsible for updating their internals\&. It would also increase the vtable size, and add extra layers of work to do, just for the case of not having the parser with full private access, and updating \fIwhile it has the data ready to go\fP!!
+.PP
+\fBTodo\fP
+.RS 4
+These functions can probably all be const, implement if good to go
+.RE
+.PP
+
+.PP
+Definition at line 110 of file IrcListener\&.h\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "IrcListener::IrcListener ()\fC [inline]\fP"
+
+.PP
+Definition at line 539 of file IrcListener\&.h\&.
+.PP
+.nf
+540         {
+541         }
+.fi
+.SS "IrcListener::~IrcListener ()\fC [inline]\fP"
+
+.PP
+Definition at line 543 of file IrcListener\&.h\&.
+.PP
+.nf
+544         {
+545         }
+.fi
+.SS "IrcListener::IrcListener ()\fC [inline]\fP"
+
+.PP
+Definition at line 539 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+540         {
+541         }
+.fi
+.SS "IrcListener::~IrcListener ()\fC [inline]\fP"
+
+.PP
+Definition at line 543 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+544         {
+545         }
+.fi
+.SH "Member Function Documentation"
+.PP 
+.SS "IrcListener::NO_CLASS_ASSIGNMENT (\fBIrcListener\fP)\fC [private]\fP"
+
+.SS "IrcListener::NO_CLASS_ASSIGNMENT (\fBIrcListener\fP)\fC [private]\fP"
+
+.SS "IrcListener::NO_CLASS_COPY (\fBIrcListener\fP)\fC [private]\fP"
+
+.SS "IrcListener::NO_CLASS_COPY (\fBIrcListener\fP)\fC [private]\fP"
+
+.SS "void IrcListener::Notify (\fBE_IRC_LISTENER_NOTIFICATION\fPevent_type, std::shared_ptr< \fBIrcConnection\fP >connection)"
+
+.SS "void IrcListener::Notify (\fBE_IRC_LISTENER_NOTIFICATION\fPevent_type, \fBIrcConnection\fP *connection)"
+
+.SS "virtual void IrcListener::On001 (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 001 
+.PP
+Definition at line 140 of file IrcListener\&.h\&.
+.PP
+.nf
+144         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On001 (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 001 
+.PP
+Definition at line 140 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+144         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On002 (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 001 
+.PP
+Definition at line 151 of file IrcListener\&.h\&.
+.PP
+.nf
+155         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On002 (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 001 
+.PP
+Definition at line 151 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+155         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On003 (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 001 
+.PP
+Definition at line 162 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+166         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On003 (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 001 
+.PP
+Definition at line 162 of file IrcListener\&.h\&.
+.PP
+.nf
+166         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On004 (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 001 
+.PP
+Definition at line 173 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+177         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On004 (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 001 
+.PP
+Definition at line 173 of file IrcListener\&.h\&.
+.PP
+.nf
+177         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On005 (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 005 
+.PP
+Definition at line 184 of file IrcListener\&.h\&.
+.PP
+.nf
+188         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On005 (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 005 
+.PP
+Definition at line 184 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+188         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On331 (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 331 
+.PP
+Definition at line 195 of file IrcListener\&.h\&.
+.PP
+.nf
+199         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On331 (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 331 
+.PP
+Definition at line 195 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+199         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On332 (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 332 
+.PP
+Definition at line 206 of file IrcListener\&.h\&.
+.PP
+.nf
+210         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On332 (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 332 
+.PP
+Definition at line 206 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+210         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On353 (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 353 
+.PP
+Definition at line 217 of file IrcListener\&.h\&.
+.PP
+.nf
+221         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On353 (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 353 
+.PP
+Definition at line 217 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+221         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On366 (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 366 
+.PP
+Definition at line 228 of file IrcListener\&.h\&.
+.PP
+.nf
+232         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::On366 (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Our connection receives a 366 
+.PP
+Definition at line 228 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+232         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnCap (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Received a response to a CAP request
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 241 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+245         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnCap (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Received a response to a CAP request
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 241 of file IrcListener\&.h\&.
+.PP
+.nf
+245         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnData (\fBIrcConnection\fP *connection)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Definition at line 125 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+128         { connection; }
+.fi
+.SS "virtual void IrcListener::OnData (std::shared_ptr< \fBIrcConnection\fP >connection)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Definition at line 125 of file IrcListener\&.h\&.
+.PP
+.nf
+128         { connection; }
+.fi
+.SS "virtual void IrcListener::OnInvite (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Another user invited us to a channel
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 254 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+258         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnInvite (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Another user invited us to a channel
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 254 of file IrcListener\&.h\&.
+.PP
+.nf
+258         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnJoin (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Another user joined the channel
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 267 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+271         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnJoin (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Another user joined the channel
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 267 of file IrcListener\&.h\&.
+.PP
+.nf
+271         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnKick (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+A user kicked another user in the channel
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 280 of file IrcListener\&.h\&.
+.PP
+.nf
+284         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnKick (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+A user kicked another user in the channel
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 280 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+284         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnKill (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Another user was killed from the server
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 293 of file IrcListener\&.h\&.
+.PP
+.nf
+297         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnKill (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Another user was killed from the server
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 293 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+297         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnMode (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 306 of file IrcListener\&.h\&.
+.PP
+.nf
+310         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnMode (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 306 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+310         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnNick (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Another user changed their nickname
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 319 of file IrcListener\&.h\&.
+.PP
+.nf
+323         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnNick (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Another user changed their nickname
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 319 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+323         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnNotice (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Another user sent a notice that we were recipient to
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 332 of file IrcListener\&.h\&.
+.PP
+.nf
+336         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnNotice (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Another user sent a notice that we were recipient to
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 332 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+336         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurInvite (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We invited someone to a channel 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnInvite\fP 
+.RE
+.PP
+
+.PP
+Definition at line 398 of file IrcListener\&.h\&.
+.PP
+.nf
+402         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurInvite (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We invited someone to a channel 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnInvite\fP 
+.RE
+.PP
+
+.PP
+Definition at line 398 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+402         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurJoin (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We joined a channel 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnJoin\fP 
+.RE
+.PP
+
+.PP
+Definition at line 409 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+413         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurJoin (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We joined a channel 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnJoin\fP 
+.RE
+.PP
+
+.PP
+Definition at line 409 of file IrcListener\&.h\&.
+.PP
+.nf
+413         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurKick (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We kicked another user 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnKick\fP 
+.RE
+.PP
+
+.PP
+Definition at line 420 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+424         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurKick (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We kicked another user 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnKick\fP 
+.RE
+.PP
+
+.PP
+Definition at line 420 of file IrcListener\&.h\&.
+.PP
+.nf
+424         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurKicked (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We were kicked from a channel 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnKick\fP 
+.RE
+.PP
+
+.PP
+Definition at line 431 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+435         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurKicked (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We were kicked from a channel 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnKick\fP 
+.RE
+.PP
+
+.PP
+Definition at line 431 of file IrcListener\&.h\&.
+.PP
+.nf
+435         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurKilled (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We were killed from the server 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnKill\fP 
+.RE
+.PP
+
+.PP
+Definition at line 442 of file IrcListener\&.h\&.
+.PP
+.nf
+446         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurKilled (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We were killed from the server 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnKill\fP 
+.RE
+.PP
+
+.PP
+Definition at line 442 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+446         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurMode (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We had a mode update in a channel 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnMode\fP 
+.RE
+.PP
+
+.PP
+Definition at line 453 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+457         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurMode (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We had a mode update in a channel 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnMode\fP 
+.RE
+.PP
+
+.PP
+Definition at line 453 of file IrcListener\&.h\&.
+.PP
+.nf
+457         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurNick (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We had a NICK change 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnNick\fP 
+.RE
+.PP
+
+.PP
+Definition at line 464 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+468         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurNick (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We had a NICK change 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnNick\fP 
+.RE
+.PP
+
+.PP
+Definition at line 464 of file IrcListener\&.h\&.
+.PP
+.nf
+468         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurNotice (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We sent a notice 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnNotice\fP 
+.RE
+.PP
+
+.PP
+Definition at line 475 of file IrcListener\&.h\&.
+.PP
+.nf
+479         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurNotice (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We sent a notice 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnNotice\fP 
+.RE
+.PP
+
+.PP
+Definition at line 475 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+479         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurPart (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We parted from a channel 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnPart\fP 
+.RE
+.PP
+
+.PP
+Definition at line 486 of file IrcListener\&.h\&.
+.PP
+.nf
+490         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurPart (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We parted from a channel 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnPart\fP 
+.RE
+.PP
+
+.PP
+Definition at line 486 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+490         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurPrivmsg (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We sent a privmsg 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnPrivmsg\fP 
+.RE
+.PP
+
+.PP
+Definition at line 497 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+501         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurPrivmsg (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We sent a privmsg 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnPrivmsg\fP 
+.RE
+.PP
+
+.PP
+Definition at line 497 of file IrcListener\&.h\&.
+.PP
+.nf
+501         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurQuit (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We quit from a connection 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnQuit\fP 
+.RE
+.PP
+
+.PP
+Definition at line 508 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+512         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurQuit (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We quit from a connection 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnQuit\fP 
+.RE
+.PP
+
+.PP
+Definition at line 508 of file IrcListener\&.h\&.
+.PP
+.nf
+512         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurServerMode (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We had a mode update on the server 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnMode\fP 
+.RE
+.PP
+
+.PP
+Definition at line 519 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+523         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurServerMode (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We had a mode update on the server 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnMode\fP 
+.RE
+.PP
+
+.PP
+Definition at line 519 of file IrcListener\&.h\&.
+.PP
+.nf
+523         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurTopic (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We updated a topic in a channel 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnTopic\fP 
+.RE
+.PP
+
+.PP
+Definition at line 530 of file IrcListener\&.h\&.
+.PP
+.nf
+534         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnOurTopic (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+We updated a topic in a channel 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBOnTopic\fP 
+.RE
+.PP
+
+.PP
+Definition at line 530 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+534         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnPart (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 345 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+349         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnPart (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 345 of file IrcListener\&.h\&.
+.PP
+.nf
+349         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnPrivmsg (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 358 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+362         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnPrivmsg (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 358 of file IrcListener\&.h\&.
+.PP
+.nf
+362         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnQuit (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 370 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+374         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnQuit (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 370 of file IrcListener\&.h\&.
+.PP
+.nf
+374         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnTopic (\fBIrcConnection\fP *connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 382 of file bak/IrcListener\&.h\&.
+.PP
+.nf
+386         { connection; activity; }
+.fi
+.SS "virtual void IrcListener::OnTopic (std::shared_ptr< \fBIrcConnection\fP >connection, \fBirc_activity\fP &activity)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP The \fBIrcConnection\fP this event occurred on 
+.br
+\fIactivity\fP The connections \fBirc_activity\fP, for easier access 
+.RE
+.PP
+
+.PP
+Definition at line 382 of file IrcListener\&.h\&.
+.PP
+.nf
+386         { connection; activity; }
+.fi
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "\fBIrcEngine\fP\fC [friend]\fP"
+The engine calls our methods; nothing else is permitted\&. 
+.PP
+Definition at line 113 of file IrcListener\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

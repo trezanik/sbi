@@ -332,12 +332,14 @@ IrcParser::Handle001(
 	char*		nick_end = nullptr;
 	char*		p = nullptr;
 	irc_activity&	activity = connection->GetActivity();
+    irc_client*	client;
+    irc_server*	server;
 
 	if ( network == nullptr )
 		goto no_network;
 
-	irc_client*	client = &network->_client;
-	irc_server*	server = &network->_server;
+    client = &network->_client;
+    server = &network->_server;
 
 	/* Our accessors to other variables is done by direct access, and not
 	 * using the Get() methods (which cause a reference).

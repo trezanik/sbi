@@ -19,6 +19,7 @@
 #	include <pthread.h>		// pthread creation
 #	include <unistd.h>		// usleep
 #	include <netdb.h>		// NI_MAXHOST
+#	include <stdarg.h>		// variable args
 #endif
 
 #if defined(USING_OPENSSL_NET)
@@ -1681,25 +1682,6 @@ IrcConnection::Setup(
 		goto invalid_network;
 	if ( server_config == nullptr )
 		goto no_server;
-
-	/* Child elements (optionally) consist of the 'port' and 'ssl', with
-	 * int and bool types respectively. If not supplied, they will default
-	 * to port = 6667, and ssl = false. */
-
-	/** @todo these should be pre-validated from reading the config; are
-	 * these extra checks still needed? */
-
-	// validate settings
-
-	if ( server_config->port < 1 || server_config->port > 65535 )
-	{
-		// generate an error, but don't cease processing
-		std::cerr << fg_red << "The port specified for " 
-			<< server_config->hostname << " (" 
-			<< server_config->port 
-			<< ") is outside the applicable range; defaulting to 6667\n";
-		server_config->port = 6667;
-	}
 
 	// copy the server data into the connection parameters
 	_params.use_ssl	= server_config->ssl;

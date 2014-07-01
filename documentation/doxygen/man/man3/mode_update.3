@@ -1,0 +1,52 @@
+.TH "mode_update" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+mode_update \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <irc_structs\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBerase_existing\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBto_add\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBto_remove\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The struct used for dynamically updating channel and user modes on receipt 
+.PP
+Definition at line 140 of file irc_structs\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "bool mode_update::erase_existing"
+If true, erase the existing modes 
+.PP
+Definition at line 142 of file irc_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle353(), IrcParser::HandleMode(), and IrcUser::Update()\&.
+.SS "uint16_t mode_update::to_add"
+Modes to add 
+.PP
+Definition at line 143 of file irc_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle353(), IrcParser::HandleMode(), and IrcUser::Update()\&.
+.SS "uint16_t mode_update::to_remove"
+Modes to remove 
+.PP
+Definition at line 144 of file irc_structs\&.h\&.
+.PP
+Referenced by IrcParser::Handle353(), IrcParser::HandleMode(), and IrcUser::Update()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

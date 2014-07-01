@@ -43,6 +43,12 @@ BEGIN_NAMESPACE(PlatformType)
 		typedef std::string		CHARSTRINGTYPE;
 #		define RESET_STREAM(s)		s.str("")
 #	endif
+#else
+    // I assume Android + Linux are happy with the same data types??
+    typedef char			CHARTYPE;
+    typedef std::stringstream	CHARSTREAMTYPE;
+    typedef std::string		CHARSTRINGTYPE;
+#	define RESET_STREAM(s)		s.str("")
 #endif
 
 #if 0

@@ -1,0 +1,310 @@
+.TH "app.cc" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+app.cc \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <cassert>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <Windows\&.h>\fP
+.br
+\fC#include <api/char_helper\&.h>\fP
+.br
+\fC#include <api/utils\&.h>\fP
+.br
+\fC#include <api/Runtime\&.h>\fP
+.br
+\fC#include <api/Log\&.h>\fP
+.br
+\fC#include <api/Allocator\&.h>\fP
+.br
+\fC#include <api/Configuration\&.h>\fP
+.br
+\fC#include 'app\&.h'\fP
+.br
+\fC#include 'getopt\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBapp_exec\fP ()"
+.br
+.ti -1c
+.RI "void \fBapp_init\fP (int32_t argc, char **argv)"
+.br
+.ti -1c
+.RI "void \fBapp_stop\fP ()"
+.br
+.ti -1c
+.RI "bool \fBparse_commandline\fP (int32_t argc, char **argv)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBAuthor:\fP
+.RS 4
+James Warren 
+.RE
+.PP
+\fBCopyright:\fP
+.RS 4
+James Warren, 2014 
+.RE
+.PP
+\fBLicense:\fP
+.RS 4
+Zlib (see license\&.txt or http://opensource.org/licenses/Zlib) 
+.RE
+.PP
+
+.PP
+Definition in file \fBapp\&.cc\fP\&.
+.SH "Function Documentation"
+.PP 
+.SS "void app_exec ()"
+Executes the main processing loop of the application\&. Does not return until the application window is closed\&.
+.PP
+Executed only after \fBapp_init()\fP has returned, and is wrapped in a dedicated exception handler\&. 
+.PP
+Definition at line 34 of file app\&.cc\&.
+.PP
+References Runtime::Config(), Debug, Log::Flush(), get_ms_time(), Info, Configuration::library, LOG, Runtime::Logger(), runtime, and Configuration::ui\&.
+.PP
+Referenced by main()\&.
+.PP
+.nf
+35 {
+36         // all classes are safe to use at this point, so we can do ANYTHING now
+37 
+38         uint64_t        start_time = get_ms_time();
+39         uint64_t        end_time;
+40         
+41 
+42         if ( runtime\&.Config()->ui\&.library\&.pfunc_spawn_interface() == 0 )
+43         {
+44                 LOG(ELogLevel::Debug) << "spawn_interface() executed successfully; handing control to GUI library\n";
+45 
+46                 runtime\&.Config()->ui\&.library\&.pfunc_process_interface();
+47                 runtime\&.Config()->ui\&.library\&.pfunc_destroy_interface();
+48         }
+49 
+50         LOG(ELogLevel::Debug) << "GUI library returned control\n";
+51 
+52 
+53         end_time = get_ms_time();
+54         LOG(ELogLevel::Info) << "The application ran for "
+55                 << (end_time - start_time) / 1000 << " seconds\n";
+56 
+57         // ensure log entries are written
+58         runtime\&.Logger()->Flush();
+59 }
+.fi
+.SS "void app_init (int32_targc, char **argv)"
+Initializes the application; the command line arguments from main are passed into the function, where they are processed in \fBparse_commandline()\fP\&.
+.PP
+Is wrapped in a dedicated exception handler\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIargc\fP The number of arguments within argv 
+.br
+\fIargv\fP An array of pointers to arguments 
+.RE
+.PP
+
+.PP
+Definition at line 64 of file app\&.cc\&.
+.PP
+References Runtime::Config(), Debug, get_current_binary_path(), get_ms_time(), Info, Configuration::Load(), LOG, Runtime::Logger(), Log::Open(), parse_commandline(), runtime, Log::SetLogLevel(), and unlink\&.
+.PP
+Referenced by main()\&.
+.PP
+.nf
+68 {
+69         uint64_t        start_time = get_ms_time();
+70         uint64_t        end_time;
+71 
+72 #if defined(_WIN32)
+73         /* very first thing; ensure our current directory is that of the binary
+74          * if we're on Windows; in Visual Studio debugging, this is not the case
+75          * automatically! */
+76         wchar_t         cur_path[MAX_PATH];
+77 
+78         get_current_binary_path(cur_path, _countof(cur_path));
+79         SetCurrentDirectory(cur_path);
+80 #endif
+81 
+82 
+83 #if defined(USING_MEMORY_DEBUGGING)
+84         // delete all the old log files, if present\&.
+86         unlink(MEM_LEAK_LOG_NAME);
+87 #endif
+88 
+89 
+90         /* since the runtime classes are now accessible, we can actually use
+91          * them all immediately; so we can log from the outset, at a cost of 
+92          * keeping the 'global classes' constructors performing minimal 
+93          * activity\&. */
+94         runtime\&.Logger()->Open("app\&.log");
+95         // default to all events logged, override in the config if desired
+96         runtime\&.Logger()->SetLogLevel(ELogLevel::Debug);
+97 
+98 
+99         runtime\&.Config()->Load();
+100 
+101 
+102         /* parse the command line, assign overrides before other objects are
+103          * created\&. This way command line takes precedence over config file\&. */
+104         parse_commandline(argc, argv);
+105 
+106 
+107 #if defined(_WIN32)
+108         {
+109                 RECT    work_area;
+110 
+111                 if ( SystemParametersInfo(SPI_GETWORKAREA, 0, &work_area, 0) )
+112                 {
+113                         HWND    hwnd = GetConsoleWindow();
+114                         RECT    wnd_rect;
+115 
+116                         GetWindowRect(hwnd, &wnd_rect);
+117 
+118                         // relocate the console window
+119 #if 0   // Bottom-Left
+120                         work_area\&.top = work_area\&.bottom - (wnd_rect\&.bottom - wnd_rect\&.top);
+121 #endif
+122 #if 0   // Bottom-Right
+123                         work_area\&.top = work_area\&.bottom - (wnd_rect\&.bottom - wnd_rect\&.top);
+124                         work_area\&.left = work_area\&.right - (wnd_rect\&.right - wnd_rect\&.left);
+125 #endif
+126 #if 1   // Top-Left
+127 #endif
+128 #if 0   // Top-Right
+129                         work_area\&.left = work_area\&.right - (wnd_rect\&.right - wnd_rect\&.left);
+130 #endif
+131 
+132                         //SetWindowPos(hwnd, NULL, work_area\&.left, work_area\&.top, 0, 0, SWP_NOSIZE);
+133                         MoveWindow(hwnd, work_area\&.left, work_area\&.top, 800, 500, true);
+134                 }
+135                 /* intercept ctrl+c - mostly useful for debugging - don't care
+136                  * if we fail */
+137                 //SetConsoleCtrlHandler((PHANDLER_ROUTINE)sig_handler, TRUE);
+138         }
+139 #endif
+140 
+141 
+142 
+143 
+144 
+145         // have you been modifying anything\&.\&.
+146 #if defined(USING_MEMORY_DEBUGGING)
+147         assert(runtime\&.Memory() != nullptr);
+148 #endif
+149         //assert(runtime\&.Pools() != nullptr);
+150         assert(runtime\&.Logger() != nullptr);
+151         //assert(runtime\&.Config() != nullptr);
+152 
+153 
+154         /*runtime\&.Config()->Load();
+155 
+156 
+157         if ( !runtime\&.Config()->display\&.show_terminal )
+158         {
+159 #if defined(_WIN32)
+160                 HWND    console_wnd = GetConsoleWindow();
+161                 ShowWindow(console_wnd, SW_HIDE);
+162 #else
+163                 std::cout << "'show_terminal' setting ignored for this operating system\n";
+164 #endif
+165         }
+166         */
+167         
+168 
+169         end_time = get_ms_time();
+170         std::cout << "Application startup completed in " << (end_time - start_time) << "ms\n";
+171         LOG(ELogLevel::Info) << "Application startup completed in " << (end_time - start_time) << "ms\n";
+172 }
+.fi
+.SS "void app_stop ()"
+Cleans up any resources still loaded by the application\&.
+.PP
+Executed only after \fBapp_exec()\fP has returned, and is wrapped in a dedicated exception handler\&. 
+.PP
+Definition at line 177 of file app\&.cc\&.
+.PP
+References Log::Flush(), Runtime::Logger(), and runtime\&.
+.PP
+Referenced by main()\&.
+.PP
+.nf
+178 {
+179         //runtime\&.Config()->Unload();
+180         runtime\&.Logger()->Flush();
+181 }
+.fi
+.SS "bool parse_commandline (int32_targc, char **argv)"
+
+.PP
+\fBParameters:\fP
+.RS 4
+\fIargc\fP The number of arguments within argv 
+.br
+\fIargv\fP An array of pointers to arguments 
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fIfalse\fP if an invalid option was passed in 
+.br
+\fItrue\fP if all options were processed, or none to do 
+.RE
+.PP
+
+.PP
+Definition at line 186 of file app\&.cc\&.
+.PP
+References getopt()\&.
+.PP
+Referenced by app_init()\&.
+.PP
+.nf
+190 {
+191         char            getopt_str[] = "c:h";
+192         int32_t         opt = getopt(argc, argv, getopt_str);
+193         //app_config_writer     cfg_writer;
+194 
+195         while ( opt != -1 )
+196         {
+197                 switch ( opt )
+198                 {
+199                 case 'c':
+200                         //cfg_writer\&.Set_Path_Configuration(optarg);
+201                         break;
+202                 case 'g':
+203                         // do nothing beyond text event generation
+204                         //cfg_writer\&.Set_GenerateTextEvents();
+205                         return true;
+206                 case 'h':
+207                 default:
+208                         //display_usage(argv[0], opt);
+209                         return false;
+210                 }
+211 
+212                 opt = getopt(argc, argv, getopt_str);
+213         }
+214 
+215         // nothing invalid or help, so startup can proceed
+216         return true;
+217 }
+.fi
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

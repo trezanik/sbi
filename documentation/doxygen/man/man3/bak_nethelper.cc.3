@@ -1,0 +1,371 @@
+.TH "nethelper.cc" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+nethelper.cc \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <string>\fP
+.br
+\fC#include <WS2tcpip\&.h>\fP
+.br
+\fC#include <in6addr\&.h>\fP
+.br
+\fC#include <api/char_helper\&.h>\fP
+.br
+\fC#include <api/utils\&.h>\fP
+.br
+\fC#include <api/Terminal\&.h>\fP
+.br
+\fC#include <api/Runtime\&.h>\fP
+.br
+\fC#include <api/Log\&.h>\fP
+.br
+\fC#include 'nethelper\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int32_t \fBhost_to_ipv4\fP (const char *hostname, int32_t index, char *ip_dest, uint32_t dest_size)"
+.br
+.ti -1c
+.RI "bool \fBipv4_to_host\fP (const char *ipv4_address, char *host_dest, uint32_t dest_size)"
+.br
+.ti -1c
+.RI "bool \fBis_ip_address\fP (const char *data)"
+.br
+.ti -1c
+.RI "void \fBnet_cleanup\fP ()"
+.br
+.ti -1c
+.RI "bool \fBnet_startup\fP (uint16_t winsock_version)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "int32_t host_to_ipv4 (const char *hostname, int32_tindex, char *ip_dest, uint32_tdest_size)"
+Validates and looks up the supplied \fIhostname\fP\&. On success, the first IP address (or overriden by index) is copied into \fIip_dest\fP\&. This allows a different address to be returned in case the first one tried is unreachable\&.
+.PP
+If the index is out of range, an error is generated\&.
+.PP
+Useful on systems that have a lookup cache, otherwise, you'll be doing a fresh lookup every time you need to use an alternate address - hopefully this shouldn't come up too often anyway\&.
+.PP
+Example usage:
+.PP
+.PP
+.nf
+       char     buf[NI_MAXHOST];
+       int              num_res;
+       char     ip_dest[INET_ADDRSTRLEN];
+
+       // fgets into buf
+
+       if (( num_res = host_to_ipv4(buf, -1, ip_dest, sizeof(ip_dest))) >= 0 )
+       {
+        printf("Primary Index: %s\n", ip_dest);
+
+        // do work on address, otherwise enter loop
+
+        for ( int i = 1; i < num_res; i++ )
+        {
+                host_to_ipv4(buf, i, ip_dest, sizeof(ip_dest));
+                printf("Secondary Index [%i]: %s\n", i, ip_dest);
+
+                // attempt work on alternate address
+        }
+       }
+
+// Example Output::
+//
+// google\&.com
+// Primary Index: 173\&.194\&.34\&.65
+// Secondary Index [1]: 173\&.194\&.34\&.68
+// Secondary Index [2]: 173\&.194\&.34\&.70
+// Secondary Index [3]: 173\&.194\&.34\&.69
+// Secondary Index [4]: 173\&.194\&.34\&.66
+// Secondary Index [5]: 173\&.194\&.34\&.64
+// Secondary Index [6]: 173\&.194\&.34\&.78
+// Secondary Index [7]: 173\&.194\&.34\&.67
+// Secondary Index [8]: 173\&.194\&.34\&.73
+// Secondary Index [9]: 173\&.194\&.34\&.72
+// Secondary Index [10]: 173\&.194\&.34\&.71
+* 
+.fi
+.PP
+.PP
+\fBParameters:\fP
+.RS 4
+\fIhostname\fP The hostname to lookup 
+.br
+\fIindex\fP The 0-based index within the results to return 
+.br
+\fIip_dest\fP The buffer to copy the IP address to 
+.br
+\fIdest_size\fP The size of \fIip_dest\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The function returns the number of addresses found for the specified \fIhostname\fP\&. 
+.PP
+-1 is returned if the input data is invalid; 0 is returned if the data was valid, but there were no results (this is abnormal)\&. 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBipv4_to_host\fP 
+.RE
+.PP
+
+.PP
+Definition at line 40 of file bak/nethelper\&.cc\&.
+.PP
+References Error, fg_green(), fg_red(), Info, LOG, and strlcpy()\&.
+.PP
+.nf
+46 {
+47         struct addrinfo         hints = { 0 };
+48         struct addrinfo*        result = NULL;
+49         struct addrinfo*        rp = NULL;
+50         int32_t         ret = 0;
+51         int32_t         res;
+52 
+53         // obtain address(es) matching host
+54 
+55         // IPv4 only
+56         hints\&.ai_family          = AF_INET;
+57 
+58 
+59         if (( res = getaddrinfo(hostname, NULL, &hints, &result)) != 0 )
+60         {
+61                 LOG(LL_Error) << fg_red << "Error " << res 
+62                         << " (" << gai_strerror(res) 
+63                         << ") looking up" << hostname 
+64                         << "\n";
+65 
+66                 ret--;
+67         }
+68         else
+69         {
+70                 for ( rp = result; rp != NULL; rp = rp->ai_next, ++ret )
+71                 {
+72                         struct sockaddr_in      *a = (struct sockaddr_in*)rp->ai_addr;
+73 
+74                         if ( index < 0 )
+75                         {
+76                                 // no index specified; copy the first result
+77                                 strlcpy(ip_dest, (char*)inet_ntoa(a->sin_addr), dest_size);
+78                                 index = 0;
+79                         }
+80                         else if ( index == ret )
+81                         {
+82                                 // copy the specified index
+83                                 strlcpy(ip_dest, (char*)inet_ntoa(a->sin_addr), dest_size);
+84                         }
+85                 }
+86 
+87                 if ( index >= ret )
+88                 {
+89                         LOG(LL_Error) << fg_red << "The specified index '" 
+90                                 << index << "' is out of range ("
+91                                 << ret << ")\n";
+92                 }
+93                 else
+94                 {
+95                         LOG(LL_Info) << fg_green << hostname << " resolved to "
+96                                 << ip_dest << "\n";
+97                 }
+98         }
+99 
+100         if ( result != NULL )
+101                 freeaddrinfo(result);
+102 
+103         // -1 on error
+104         // 0 is abnormal (lookup succeeded, but no results)
+105         // >=1 if 1 or more results
+106         return ret;
+107 }
+.fi
+.SS "bool ipv4_to_host (const char *ipv4_address, char *host_dest, uint32_tdest_size)"
+Performs a reverse lookup on the input ipv4_address\&.
+.PP
+e\&.g\&. 173\&.194\&.34\&.67 reverse lookup: lhr14s19-in-f3\&.1e100\&.net
+.PP
+\fBParameters:\fP
+.RS 4
+\fIipv4_address\fP The IPv4 address to reverse-lookup 
+.br
+\fIhost_dest\fP The destination buffer to copy the hostname to 
+.br
+\fIdest_size\fP The size of host_dest 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The function returns true if the IP address is valid, and a lookup is performed\&. If the name could not be found, true is still returned; only on an error is false returned\&. 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBhost_to_ipv4\fP 
+.RE
+.PP
+
+.PP
+Definition at line 112 of file bak/nethelper\&.cc\&.
+.PP
+References Error, fg_red(), Info, and LOG\&.
+.PP
+.nf
+117 {
+118         struct addrinfo         hints = { 0 };
+119         struct addrinfo*        result = NULL;
+120         int32_t                 res;
+121 
+122         // IPv4 only
+123         hints\&.ai_family          = AF_INET;
+124 
+125 
+126         if (( res = getaddrinfo(ipv4_address, NULL, &hints, &result)) != 0 )
+127         {
+128                 LOG(LL_Error) << "Error " << res
+129                         << " (" << gai_strerror(res)
+130                         << ") looking up" << ipv4_address
+131                         << "\n";
+132                 return false;
+133         }
+134 
+135         /* we don't want to fail if the name cannot be looked up, so supply no
+136          * flags; if the lookup does not resolve,  */
+137 
+138         if (( res = getnameinfo(result->ai_addr, result->ai_addrlen, host_dest, dest_size, NULL, 0, 0)) != 0 )
+139         {
+140                 LOG(LL_Error) << "Error " << res
+141                         << " (" << gai_strerror(res)
+142                         << ") looking up" << ipv4_address
+143                         << "\n";
+144                 freeaddrinfo(result);
+145                 return false;
+146         }
+147 
+148 
+149 
+150         LOG(LL_Info) << ipv4_address << " resolved to " << host_dest << "\n";
+151 
+152         freeaddrinfo(result);
+153         return true;
+154 }
+.fi
+.SS "bool is_ip_address (const char *data)"
+Checks if the supplied string is an IPv4 or IPv6 address\&. Mostly used for determining if a server in the config is an IP address or hostname\&. 
+.PP
+Definition at line 159 of file bak/nethelper\&.cc\&.
+.PP
+References ip_address::data\&.
+.PP
+.nf
+162 {
+163         struct ip_address       ipaddr;
+164 
+165         // inet_pton returns 1 on success, -1 on error, or 0 if input is invalid
+166         if ( inet_pton(AF_INET, data, &ipaddr\&.data) != 1 )
+167         {
+168                 if ( inet_pton(AF_INET6, data, &ipaddr\&.data) != 1 )
+169                 {
+170                         // not an IPv4 or IPv6 address
+171                         return false;
+172                 }
+173         }
+174 
+175         // is an IPv4 or IPv6 address
+176         return true;
+177 }
+.fi
+.SS "void net_cleanup ()"
+Cleans up all aspects of networking loaded within the application\&. Should only ever be called before the application closes, as a chance to free any dynamically allocated memory not yet freed\&.
+.PP
+We use the opportunity to cleanup things that don't 'really' need to be called, such as WSACleanup and ERR_free_strings; but it's good practice to do so\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBnet_startup\fP 
+.RE
+.PP
+
+.PP
+Definition at line 182 of file bak/nethelper\&.cc\&.
+.PP
+.nf
+183 {
+184         /* no error checking to be done, since we only call this when the app
+185          * is closing, and needless reporting will slow it down */
+186 
+187 #if defined(USING_OPENSSL)
+188         // free OpenSSLs loaded error strings
+189         ERR_free_strings();
+190 #endif
+191 
+192 #if defined(_WIN32)
+193         // unload winsock
+194         WSACleanup();
+195 #endif
+196 }
+.fi
+.SS "bool net_startup (uint16_twinsock_version = \fC0\fP)"
+Loads OpenSSL networking components (and non-SSL networking) - as Windows utilizes (and requires) WinSock, this will also call WSAStartup on Windows builds\&. winsock_version is ignored on non-Windows builds, and it can therefore be omitted\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIwinsock_version\fP The version of Winsock to load and initialize 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Returns true on success, false on failure 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBnet_cleanup\fP 
+.RE
+.PP
+
+.PP
+Definition at line 201 of file bak/nethelper\&.cc\&.
+.PP
+References Error, fg_red(), and LOG\&.
+.PP
+.nf
+204 {
+205 #if defined(USING_OPENSSL)
+206         // load the openssl components
+208         SSL_library_init();
+209         SSL_load_error_strings();
+210         ERR_load_crypto_strings();
+211         ERR_load_BIO_strings();
+212         ERR_load_SSL_strings();
+213         ERR_load_ERR_strings();
+214         /* in case of an older version of OpenSSL being used; see man page */
+215         OpenSSL_add_all_algorithms();
+216 #endif
+217 
+218 #if defined(_WIN32)
+219         struct WSAData  wsa;
+220 
+221         if ( WSAStartup(winsock_version, &wsa) != 0 )
+222         {
+223                 LOG(LL_Error) << "Could not startup Winsock; Win32 error " 
+224                         << GetLastError() << "\n";
+225                 return false;
+226         }
+227 #endif
+228         // cannot return false on non-Windows builds
+229         return true;
+230 }
+.fi
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

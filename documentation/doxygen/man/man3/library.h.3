@@ -1,0 +1,155 @@
+.TH "library.h" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+library.h \- 
+.PP
+Qt5GUI library core components for execution\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <api/definitions\&.h>\fP
+.br
+\fC#include <api/types\&.h>\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBGUI_NAMESPACE\fP   Qt5GUI"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBSBI_QT5GUI_API\fP int32_t \fBdestroy_interface\fP ()"
+.br
+.ti -1c
+.RI "\fBSBI_QT5GUI_API\fP int32_t \fBprocess_interface\fP ()"
+.br
+.ti -1c
+.RI "\fBSBI_QT5GUI_API\fP int32_t \fBspawn_interface\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Qt5GUI library core components for execution\&. 
+
+
+.PP
+\fBAuthor:\fP
+.RS 4
+James Warren 
+.RE
+.PP
+
+.PP
+Definition in file \fBlibrary\&.h\fP\&.
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define GUI_NAMESPACE   Qt5GUI"
+
+.PP
+Definition at line 42 of file library\&.h\&.
+.PP
+Referenced by destroy_interface(), process_interface(), and spawn_interface()\&.
+.SH "Function Documentation"
+.PP 
+.SS "\fBSBI_QT5GUI_API\fP int32_t destroy_interface ()"
+Destroys the \fBUI\fP previously brought up by \fBspawn_interface()\fP, cleaning up any associated resources\&. This opportunity is also used to enable save-on-exit functionality (like the main window size + position), before the windows are deleted\&.
+.PP
+One of the three exported functions from the library, which are mandatory in order to be loaded by the executable dynamically\&.
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP This function always returns 0
+.RE
+.PP
+Cleans up any resources created by the interface\&. Required to be called when the module unloads\&. 
+.PP
+Definition at line 25 of file interface\&.cc\&.
+.PP
+References APP_NAMESPACE, g_ui, GUI_NAMESPACE, irc_engine, and Ok\&.
+.PP
+.nf
+26 {
+27         irc_engine\&.release();
+28 
+29         return (int)EInterfaceStatus::Ok;
+30 }
+.fi
+.SS "\fBSBI_QT5GUI_API\fP int32_t process_interface ()"
+Enters the processing loop for the GUI (like Win32's MessageLoop) - does not return until the \fBUI\fP relinquishes control, usually through closing the window\&.
+.PP
+One of the three exported functions from the library, which are mandatory in order to be loaded by the executable dynamically\&.
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP This function always returns 0 
+.RE
+.PP
+
+.PP
+Definition at line 93 of file library\&.cc\&.
+.PP
+References APP_NAMESPACE, g_ui, and GUI_NAMESPACE\&.
+.PP
+.nf
+94 {
+95         using namespace APP_NAMESPACE;
+96         using namespace GUI_NAMESPACE;
+97 
+98         g_ui->Run();
+99 
+100         return 0;
+101 }
+.fi
+.SS "\fBSBI_QT5GUI_API\fP int32_t spawn_interface ()"
+Creates the Root user interface object, the default windows, and shows it\&.
+.PP
+One of the three exported functions from the library, which are mandatory in order to be loaded by the executable dynamically\&.
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP On successful startup 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+If the startup was successful but encountered non-fatal errors, a positive number is returned\&. On error, a negative number is returned\&.
+.RE
+.PP
+Creates the instance within the library\&. The interface should use this opportunity to set everything up internally, including creating any threads needed to retain execution\&.
+.PP
+\fBNote:\fP
+.RS 4
+Win32's DllMain can be used in place of this (and \fBdestroy_interface()\fP), but since we want to support all *nixes too, these are the approved + supported methods of initialization and destruction\&. If you really want to do any handling in DllMain, feel free - you're not limited to the functions you can call (since the app has loaded all the DLLs required before now, so there'll be no deadlock risk)\&.
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI\fBEInterfaceStatus::Ok\fP\fP on initialization success 
+.br
+\fI\&.\&.\&.\fP 
+.RE
+.PP
+
+.PP
+Definition at line 48 of file interface\&.cc\&.
+.PP
+References APP_NAMESPACE, Runtime::Config(), g_ui, GUI_NAMESPACE, irc_engine, Ok, Configuration::Path(), and runtime\&.
+.PP
+.nf
+49 {
+50         // add custom menu options, load modules, etc\&.
+51         irc_engine\&.reset(new IrcEngine);
+52 
+53         return (int)EInterfaceStatus::Ok;
+54 }
+.fi
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

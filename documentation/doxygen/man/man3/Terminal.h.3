@@ -1,0 +1,731 @@
+.TH "Terminal.h" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Terminal.h \- 
+.PP
+Win32 console and Linux/Unix terminal colour output formatting\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <iostream>\fP
+.br
+\fC#include <iomanip>\fP
+.br
+\fC#include <Windows\&.h>\fP
+.br
+\fC#include <conio\&.h>\fP
+.br
+\fC#include 'definitions\&.h'\fP
+.br
+\fC#include 'types\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBTerminal\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBWIN32_LEAN_AND_MEAN\fP"
+.br
+.ti -1c
+.RI "#define \fBBG_MASK\fP   ( BACKGROUND_BLUE|BACKGROUND_GREEN|BACKGROUND_RED|BACKGROUND_INTENSITY )"
+.br
+.ti -1c
+.RI "#define \fBFG_MASK\fP   ( FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY )"
+.br
+.ti -1c
+.RI "#define \fBFG_BLACK\fP   0"
+.br
+.ti -1c
+.RI "#define \fBFG_RED\fP   FOREGROUND_RED"
+.br
+.ti -1c
+.RI "#define \fBFG_GREEN\fP   FOREGROUND_GREEN"
+.br
+.ti -1c
+.RI "#define \fBFG_BLUE\fP   FOREGROUND_BLUE"
+.br
+.ti -1c
+.RI "#define \fBFG_CYAN\fP   (\fBFG_GREEN\fP|\fBFG_BLUE\fP)"
+.br
+.ti -1c
+.RI "#define \fBFG_MAGENTA\fP   (\fBFG_RED\fP|\fBFG_BLUE\fP)"
+.br
+.ti -1c
+.RI "#define \fBFG_YELLOW\fP   (\fBFG_RED\fP|\fBFG_GREEN\fP)"
+.br
+.ti -1c
+.RI "#define \fBFG_WHITE\fP   (\fBFG_RED\fP|\fBFG_GREEN\fP|\fBFG_BLUE\fP)"
+.br
+.ti -1c
+.RI "#define \fBFG_GREY\fP   (\fBFG_BLACK\fP|FOREGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBFG_BRIGHT_WHITE\fP   (\fBFG_WHITE\fP|FOREGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBFG_BRIGHT_RED\fP   (FOREGROUND_RED|FOREGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBFG_BRIGHT_GREEN\fP   (FOREGROUND_GREEN|FOREGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBFG_BRIGHT_BLUE\fP   (FOREGROUND_BLUE|FOREGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBFG_BRIGHT_CYAN\fP   (\fBFG_GREEN\fP|\fBFG_BLUE\fP|FOREGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBFG_BRIGHT_MAGENTA\fP   (\fBFG_RED\fP|\fBFG_BLUE\fP|FOREGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBFG_BRIGHT_YELLOW\fP   (\fBFG_RED\fP|\fBFG_GREEN\fP|FOREGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBBG_BLACK\fP   0"
+.br
+.ti -1c
+.RI "#define \fBBG_RED\fP   BACKGROUND_RED"
+.br
+.ti -1c
+.RI "#define \fBBG_GREEN\fP   BACKGROUND_GREEN"
+.br
+.ti -1c
+.RI "#define \fBBG_BLUE\fP   BACKGROUND_BLUE"
+.br
+.ti -1c
+.RI "#define \fBBG_CYAN\fP   (\fBBG_GREEN\fP|\fBBG_BLUE\fP)"
+.br
+.ti -1c
+.RI "#define \fBBG_MAGENTA\fP   (\fBBG_RED\fP|\fBBG_BLUE\fP)"
+.br
+.ti -1c
+.RI "#define \fBBG_YELLOW\fP   (\fBBG_RED\fP|\fBBG_GREEN\fP)"
+.br
+.ti -1c
+.RI "#define \fBBG_WHITE\fP   (\fBBG_RED\fP|\fBBG_GREEN\fP|\fBBG_BLUE\fP)"
+.br
+.ti -1c
+.RI "#define \fBBG_GREY\fP   (\fBBG_BLACK\fP|BACKGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBBG_BRIGHT_WHITE\fP   (\fBBG_WHITE\fP|BACKGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBBG_BRIGHT_RED\fP   (BACKGROUND_RED|BACKGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBBG_BRIGHT_GREEN\fP   (BACKGROUND_GREEN|BACKGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBBG_BRIGHT_BLUE\fP   (BACKGROUND_BLUE|BACKGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBBG_BRIGHT_CYAN\fP   (\fBBG_GREEN\fP|\fBBG_BLUE\fP|BACKGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBBG_BRIGHT_MAGENTA\fP   (\fBBG_RED\fP|\fBBG_BLUE\fP|BACKGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBBG_BRIGHT_YELLOW\fP   (\fBBG_RED\fP|\fBBG_GREEN\fP|BACKGROUND_INTENSITY)"
+.br
+.ti -1c
+.RI "#define \fBbg_default\fP   \fBbgfg_default\fP"
+.br
+.ti -1c
+.RI "#define \fBfg_default\fP   \fBbgfg_default\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "std::ostream & \fBbg_black\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBbg_blue\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBbg_cyan\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBbgfg_default\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBbg_green\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBbg_grey\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBbg_magenta\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBbg_red\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBbg_white\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBbg_yellow\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBclear\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBfg_black\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBfg_blue\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBfg_cyan\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBfg_green\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBfg_grey\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBfg_magenta\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBfg_red\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBfg_white\fP (std::ostream &os)"
+.br
+.ti -1c
+.RI "std::ostream & \fBfg_yellow\fP (std::ostream &os)"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "static class \fBTerminal\fP \fBterminal\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Win32 console and Linux/Unix terminal colour output formatting\&. 
+
+
+.PP
+\fBAuthor:\fP
+.RS 4
+James Warren 
+.RE
+.PP
+\fBTodo\fP
+.RS 4
+Win32 code complete, unix/linux needs doing 
+.RE
+.PP
+
+.PP
+Definition in file \fBTerminal\&.h\fP\&.
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define BG_BLACK   0"
+
+.PP
+Definition at line 79 of file Terminal\&.h\&.
+.PP
+Referenced by bg_black()\&.
+.SS "#define BG_BLUE   BACKGROUND_BLUE"
+
+.PP
+Definition at line 82 of file Terminal\&.h\&.
+.SS "#define BG_BRIGHT_BLUE   (BACKGROUND_BLUE|BACKGROUND_INTENSITY)"
+
+.PP
+Definition at line 91 of file Terminal\&.h\&.
+.PP
+Referenced by bg_blue()\&.
+.SS "#define BG_BRIGHT_CYAN   (\fBBG_GREEN\fP|\fBBG_BLUE\fP|BACKGROUND_INTENSITY)"
+
+.PP
+Definition at line 92 of file Terminal\&.h\&.
+.PP
+Referenced by bg_cyan()\&.
+.SS "#define BG_BRIGHT_GREEN   (BACKGROUND_GREEN|BACKGROUND_INTENSITY)"
+
+.PP
+Definition at line 90 of file Terminal\&.h\&.
+.PP
+Referenced by bg_green()\&.
+.SS "#define BG_BRIGHT_MAGENTA   (\fBBG_RED\fP|\fBBG_BLUE\fP|BACKGROUND_INTENSITY)"
+
+.PP
+Definition at line 93 of file Terminal\&.h\&.
+.PP
+Referenced by bg_magenta()\&.
+.SS "#define BG_BRIGHT_RED   (BACKGROUND_RED|BACKGROUND_INTENSITY)"
+
+.PP
+Definition at line 89 of file Terminal\&.h\&.
+.PP
+Referenced by bg_red()\&.
+.SS "#define BG_BRIGHT_WHITE   (\fBBG_WHITE\fP|BACKGROUND_INTENSITY)"
+
+.PP
+Definition at line 88 of file Terminal\&.h\&.
+.PP
+Referenced by bg_white()\&.
+.SS "#define BG_BRIGHT_YELLOW   (\fBBG_RED\fP|\fBBG_GREEN\fP|BACKGROUND_INTENSITY)"
+
+.PP
+Definition at line 94 of file Terminal\&.h\&.
+.PP
+Referenced by bg_yellow()\&.
+.SS "#define BG_CYAN   (\fBBG_GREEN\fP|\fBBG_BLUE\fP)"
+
+.PP
+Definition at line 83 of file Terminal\&.h\&.
+.SS "#define bg_default   \fBbgfg_default\fP"
+
+.PP
+Definition at line 274 of file Terminal\&.h\&.
+.SS "#define BG_GREEN   BACKGROUND_GREEN"
+
+.PP
+Definition at line 81 of file Terminal\&.h\&.
+.SS "#define BG_GREY   (\fBBG_BLACK\fP|BACKGROUND_INTENSITY)"
+
+.PP
+Definition at line 87 of file Terminal\&.h\&.
+.PP
+Referenced by bg_grey()\&.
+.SS "#define BG_MAGENTA   (\fBBG_RED\fP|\fBBG_BLUE\fP)"
+
+.PP
+Definition at line 84 of file Terminal\&.h\&.
+.SS "#define BG_MASK   ( BACKGROUND_BLUE|BACKGROUND_GREEN|BACKGROUND_RED|BACKGROUND_INTENSITY )"
+
+.PP
+Definition at line 59 of file Terminal\&.h\&.
+.PP
+Referenced by fg_black(), fg_blue(), fg_cyan(), fg_green(), fg_grey(), fg_magenta(), fg_red(), fg_white(), and fg_yellow()\&.
+.SS "#define BG_RED   BACKGROUND_RED"
+
+.PP
+Definition at line 80 of file Terminal\&.h\&.
+.SS "#define BG_WHITE   (\fBBG_RED\fP|\fBBG_GREEN\fP|\fBBG_BLUE\fP)"
+
+.PP
+Definition at line 86 of file Terminal\&.h\&.
+.SS "#define BG_YELLOW   (\fBBG_RED\fP|\fBBG_GREEN\fP)"
+
+.PP
+Definition at line 85 of file Terminal\&.h\&.
+.SS "#define FG_BLACK   0"
+
+.PP
+Definition at line 62 of file Terminal\&.h\&.
+.PP
+Referenced by fg_black()\&.
+.SS "#define FG_BLUE   FOREGROUND_BLUE"
+
+.PP
+Definition at line 65 of file Terminal\&.h\&.
+.SS "#define FG_BRIGHT_BLUE   (FOREGROUND_BLUE|FOREGROUND_INTENSITY)"
+
+.PP
+Definition at line 74 of file Terminal\&.h\&.
+.PP
+Referenced by fg_blue()\&.
+.SS "#define FG_BRIGHT_CYAN   (\fBFG_GREEN\fP|\fBFG_BLUE\fP|FOREGROUND_INTENSITY)"
+
+.PP
+Definition at line 75 of file Terminal\&.h\&.
+.PP
+Referenced by fg_cyan()\&.
+.SS "#define FG_BRIGHT_GREEN   (FOREGROUND_GREEN|FOREGROUND_INTENSITY)"
+
+.PP
+Definition at line 73 of file Terminal\&.h\&.
+.PP
+Referenced by fg_green()\&.
+.SS "#define FG_BRIGHT_MAGENTA   (\fBFG_RED\fP|\fBFG_BLUE\fP|FOREGROUND_INTENSITY)"
+
+.PP
+Definition at line 76 of file Terminal\&.h\&.
+.PP
+Referenced by fg_magenta()\&.
+.SS "#define FG_BRIGHT_RED   (FOREGROUND_RED|FOREGROUND_INTENSITY)"
+
+.PP
+Definition at line 72 of file Terminal\&.h\&.
+.PP
+Referenced by fg_red()\&.
+.SS "#define FG_BRIGHT_WHITE   (\fBFG_WHITE\fP|FOREGROUND_INTENSITY)"
+
+.PP
+Definition at line 71 of file Terminal\&.h\&.
+.PP
+Referenced by fg_white()\&.
+.SS "#define FG_BRIGHT_YELLOW   (\fBFG_RED\fP|\fBFG_GREEN\fP|FOREGROUND_INTENSITY)"
+
+.PP
+Definition at line 77 of file Terminal\&.h\&.
+.PP
+Referenced by fg_yellow()\&.
+.SS "#define FG_CYAN   (\fBFG_GREEN\fP|\fBFG_BLUE\fP)"
+
+.PP
+Definition at line 66 of file Terminal\&.h\&.
+.SS "#define fg_default   \fBbgfg_default\fP"
+
+.PP
+Definition at line 275 of file Terminal\&.h\&.
+.SS "#define FG_GREEN   FOREGROUND_GREEN"
+
+.PP
+Definition at line 64 of file Terminal\&.h\&.
+.SS "#define FG_GREY   (\fBFG_BLACK\fP|FOREGROUND_INTENSITY)"
+
+.PP
+Definition at line 70 of file Terminal\&.h\&.
+.PP
+Referenced by fg_grey()\&.
+.SS "#define FG_MAGENTA   (\fBFG_RED\fP|\fBFG_BLUE\fP)"
+
+.PP
+Definition at line 67 of file Terminal\&.h\&.
+.SS "#define FG_MASK   ( FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY )"
+
+.PP
+Definition at line 60 of file Terminal\&.h\&.
+.PP
+Referenced by bg_black(), bg_blue(), bg_cyan(), bg_green(), bg_grey(), bg_magenta(), bg_red(), bg_white(), and bg_yellow()\&.
+.SS "#define FG_RED   FOREGROUND_RED"
+
+.PP
+Definition at line 63 of file Terminal\&.h\&.
+.SS "#define FG_WHITE   (\fBFG_RED\fP|\fBFG_GREEN\fP|\fBFG_BLUE\fP)"
+
+.PP
+Definition at line 69 of file Terminal\&.h\&.
+.SS "#define FG_YELLOW   (\fBFG_RED\fP|\fBFG_GREEN\fP)"
+
+.PP
+Definition at line 68 of file Terminal\&.h\&.
+.SS "#define WIN32_LEAN_AND_MEAN"
+
+.PP
+Definition at line 15 of file Terminal\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "std::ostream& bg_black (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 280 of file Terminal\&.h\&.
+.PP
+References BG_BLACK, FG_MASK, Terminal::SetColor(), and terminal\&.
+.PP
+.nf
+281 {
+282          os\&.flush();
+283          terminal\&.SetColor(BG_BLACK, FG_MASK);
+284          return os;
+285 }
+.fi
+.SS "std::ostream& bg_blue (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 287 of file Terminal\&.h\&.
+.PP
+References BG_BRIGHT_BLUE, FG_MASK, Terminal::SetColor(), and terminal\&.
+.PP
+.nf
+288 {
+289          os\&.flush();
+290          terminal\&.SetColor(BG_BRIGHT_BLUE, FG_MASK);
+291          return os;
+292 }
+.fi
+.SS "std::ostream& bg_cyan (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 294 of file Terminal\&.h\&.
+.PP
+References BG_BRIGHT_CYAN, FG_MASK, Terminal::SetColor(), and terminal\&.
+.PP
+.nf
+295 {
+296          os\&.flush();
+297          terminal\&.SetColor(BG_BRIGHT_CYAN, FG_MASK);
+298          return os;
+299 }
+.fi
+.SS "std::ostream& bg_green (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 308 of file Terminal\&.h\&.
+.PP
+References BG_BRIGHT_GREEN, FG_MASK, Terminal::SetColor(), and terminal\&.
+.PP
+.nf
+309 {
+310          os\&.flush();
+311          terminal\&.SetColor(BG_BRIGHT_GREEN, FG_MASK);
+312          return os;
+313 }
+.fi
+.SS "std::ostream& bg_grey (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 315 of file Terminal\&.h\&.
+.PP
+References BG_GREY, FG_MASK, Terminal::SetColor(), and terminal\&.
+.PP
+.nf
+316 {
+317          os\&.flush();
+318          terminal\&.SetColor(BG_GREY, FG_MASK);
+319          return os;
+320 }
+.fi
+.SS "std::ostream& bg_magenta (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 322 of file Terminal\&.h\&.
+.PP
+References BG_BRIGHT_MAGENTA, FG_MASK, Terminal::SetColor(), and terminal\&.
+.PP
+.nf
+323 {
+324          os\&.flush();
+325          terminal\&.SetColor(BG_BRIGHT_MAGENTA, FG_MASK);
+326          return os;
+327 }
+.fi
+.SS "std::ostream& bg_red (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 329 of file Terminal\&.h\&.
+.PP
+References BG_BRIGHT_RED, FG_MASK, Terminal::SetColor(), and terminal\&.
+.PP
+.nf
+330 {
+331          os\&.flush();
+332          terminal\&.SetColor(BG_BRIGHT_RED, FG_MASK);
+333          return os;
+334 }
+.fi
+.SS "std::ostream& bg_white (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 336 of file Terminal\&.h\&.
+.PP
+References BG_BRIGHT_WHITE, FG_MASK, Terminal::SetColor(), and terminal\&.
+.PP
+.nf
+337 {
+338          os\&.flush();
+339          terminal\&.SetColor(BG_BRIGHT_WHITE, FG_MASK);
+340          return os;
+341 }
+.fi
+.SS "std::ostream& bg_yellow (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 343 of file Terminal\&.h\&.
+.PP
+References BG_BRIGHT_YELLOW, FG_MASK, Terminal::SetColor(), and terminal\&.
+.PP
+.nf
+344 {
+345          os\&.flush();
+346          terminal\&.SetColor(BG_BRIGHT_YELLOW, FG_MASK);
+347          return os;
+348 }
+.fi
+.SS "std::ostream& bgfg_default (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 301 of file Terminal\&.h\&.
+.PP
+References Terminal::SetDefault(), and terminal\&.
+.PP
+.nf
+302 {
+303          os\&.flush();
+304          terminal\&.SetDefault();
+305          return os;
+306 }
+.fi
+.SS "std::ostream& clear (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 352 of file Terminal\&.h\&.
+.PP
+References Terminal::Clear(), and terminal\&.
+.PP
+.nf
+353 {
+354          os\&.flush();
+355          terminal\&.Clear();
+356          return os;
+357 };
+.fi
+.SS "std::ostream& fg_black (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 361 of file Terminal\&.h\&.
+.PP
+References BG_MASK, FG_BLACK, Terminal::SetColor(), and terminal\&.
+.PP
+.nf
+362 {
+363          os\&.flush();
+364          terminal\&.SetColor(FG_BLACK, BG_MASK);
+365          return os;
+366 }
+.fi
+.SS "std::ostream& fg_blue (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 368 of file Terminal\&.h\&.
+.PP
+References BG_MASK, FG_BRIGHT_BLUE, Terminal::SetColor(), and terminal\&.
+.PP
+.nf
+369 {
+370          os\&.flush();
+371          terminal\&.SetColor(FG_BRIGHT_BLUE, BG_MASK);
+372          return os;
+373 }
+.fi
+.SS "std::ostream& fg_cyan (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 375 of file Terminal\&.h\&.
+.PP
+References BG_MASK, FG_BRIGHT_CYAN, Terminal::SetColor(), and terminal\&.
+.PP
+Referenced by IrcEngine::NotifyNewObject(), and IrcParser::ParseNextRecvQueueItem()\&.
+.PP
+.nf
+376 {
+377          os\&.flush();
+378          terminal\&.SetColor(FG_BRIGHT_CYAN, BG_MASK);
+379          return os;
+380 }
+.fi
+.SS "std::ostream& fg_green (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 382 of file Terminal\&.h\&.
+.PP
+References BG_MASK, FG_BRIGHT_GREEN, Terminal::SetColor(), and terminal\&.
+.PP
+Referenced by host_to_ipv4()\&.
+.PP
+.nf
+383 {
+384          os\&.flush();
+385          terminal\&.SetColor(FG_BRIGHT_GREEN, BG_MASK);
+386          return os;
+387 }
+.fi
+.SS "std::ostream& fg_grey (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 389 of file Terminal\&.h\&.
+.PP
+References BG_MASK, FG_GREY, Terminal::SetColor(), and terminal\&.
+.PP
+Referenced by Configuration::CreateDefault()\&.
+.PP
+.nf
+390 {
+391          os\&.flush();
+392          terminal\&.SetColor(FG_GREY, BG_MASK);
+393          return os;
+394 }
+.fi
+.SS "std::ostream& fg_magenta (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 396 of file Terminal\&.h\&.
+.PP
+References BG_MASK, FG_BRIGHT_MAGENTA, Terminal::SetColor(), and terminal\&.
+.PP
+Referenced by IrcParser::ParseNextRecvQueueItem(), and IrcConnection::SendBypass()\&.
+.PP
+.nf
+397 {
+398          os\&.flush();
+399          terminal\&.SetColor(FG_BRIGHT_MAGENTA, BG_MASK);
+400          return os;
+401 }
+.fi
+.SS "std::ostream& fg_red (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 403 of file Terminal\&.h\&.
+.PP
+References BG_MASK, FG_BRIGHT_RED, Terminal::SetColor(), and terminal\&.
+.PP
+Referenced by IrcConnection::AddChannel(), IrcChannel::AddNamesUser(), IrcConnection::AddToRecvQueue(), IrcChannel::AddUser(), IrcConnection::AutoChangeNick(), IrcConnection::Cleanup(), IrcParser::Cleanup(), Configuration::CreateDefault(), IrcFactory::DeleteIrcObject(), IrcChannel::DeleteUser(), IrcParser::ExtractIrcBufData(), Log::Flush(), IrcParser::Handle001(), IrcParser::Handle002(), IrcParser::Handle005(), IrcParser::Handle333(), IrcParser::Handle353(), IrcParser::Handle366(), IrcParser::HandleCap(), IrcParser::HandleKick(), IrcParser::HandleKill(), IrcParser::HandleMode(), IrcParser::HandlePrivmsg(), IrcParser::HandleQuit(), IrcParser::HandleTopic(), IrcParser::HasChannelPrefix(), host_to_ipv4(), ipv4_to_host(), IrcParser::IrcParser(), IrcParser::ModeHasArgument(), net_startup(), IrcEngine::NotifyListeners(), Log::Open(), IrcParser::ParseConnectionQueues(), IrcParser::ParseNextRecvQueueItem(), IrcParser::ParseParam(), IrcParser::ParseParameters(), IrcParser::ProcessNextSendQueueItem(), IrcParser::RunParser(), IrcNetwork::Setup(), IrcParser::SplitSender(), Runtime::ThreadStopping(), IrcParser::TriggerSync(), IrcNetwork::UpdateServerInfo(), and Runtime::WaitThenKillThread()\&.
+.PP
+.nf
+404 {
+405          os\&.flush();
+406          terminal\&.SetColor(FG_BRIGHT_RED, BG_MASK);
+407          return os;
+408 }
+.fi
+.SS "std::ostream& fg_white (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 410 of file Terminal\&.h\&.
+.PP
+References BG_MASK, FG_BRIGHT_WHITE, Terminal::SetColor(), and terminal\&.
+.PP
+Referenced by IrcEngine::NotifyNewObject(), and IrcParser::ParseNextRecvQueueItem()\&.
+.PP
+.nf
+411 {
+412          os\&.flush();
+413          terminal\&.SetColor(FG_BRIGHT_WHITE, BG_MASK);
+414          return os;
+415 }
+.fi
+.SS "std::ostream& fg_yellow (std::ostream &os)\fC [inline]\fP"
+
+.PP
+Definition at line 417 of file Terminal\&.h\&.
+.PP
+References BG_MASK, FG_BRIGHT_YELLOW, Terminal::SetColor(), and terminal\&.
+.PP
+Referenced by Runtime::WaitThenKillThread()\&.
+.PP
+.nf
+418 {
+419          os\&.flush();
+420          terminal\&.SetColor(FG_BRIGHT_YELLOW, BG_MASK);
+421          return os;
+422 }
+.fi
+.SH "Variable Documentation"
+.PP 
+.SS "class \fBTerminal\fP  terminal\fC [static]\fP"
+
+.PP
+Referenced by bg_black(), bg_blue(), bg_cyan(), bg_green(), bg_grey(), bg_magenta(), bg_red(), bg_white(), bg_yellow(), bgfg_default(), clear(), fg_black(), fg_blue(), fg_cyan(), fg_green(), fg_grey(), fg_magenta(), fg_red(), fg_white(), and fg_yellow()\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

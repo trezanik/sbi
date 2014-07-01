@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Building the Social Bot Interface</title>
+<link href="assets/building.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<h1>Building the Social Bot Interface</h1>
+
+<p>Because I want this project to be natively supported and buildable on a myriad of platforms, I do something the majority of projects don't: having multiple project files for different IDEs available from the outset. This will hopefully enable people with preferred IDEs or editors to keep using them, rather than having to go through a painful porting process.</p>
+<p>There are currently three supported ways of building the SBI project:</p>
+
+<table>
+	<thead>
+		<tr>
+			<td></td>
+			<td></td>
+			<td><a href="http://windows.microsoft.com/en-gb/windows/home"><img src="assets/logo-windows.png" alt="Windows" height="32" width="32" /></a></td>
+			<td><a href="https://www.kernel.org/"><img src="assets/logo-linux.png" alt="Linux" height="32" width="32" /></a></td>
+			<td><a href="http://www.freebsd.org/"><img src="assets/logo-freebsd.png" alt="FreeBSD" height="32" width="32" /></a></td>
+			<td><a href="http://www.openbsd.org/"><img src="assets/logo-openbsd.png" alt="OpenBSD" height="32" width="32" /></a></td>
+			<td><a href="https://www.apple.com/osx/"><img src="assets/logo-macosx.png" alt="Mac OSX" height="32" width="32" /></a></td>
+		</tr>
+	</thead>
+	<tr>
+		<td><a href="http://www.visualstudio.com/en-us/visual-studio-homepage-vs.aspx"><img src="assets/logo-vs2013.png" alt="" height="32" width="32" /></a></td>
+		<td>Visual Studio 2013</td>
+		<td><img src="assets/tick.png" alt="Yes" height="32" width="32" /></td>
+		<td><img src="assets/cross.png" alt="No" height="32" width="32" /></td>
+		<td><img src="assets/cross.png" alt="No" height="32" width="32" /></td>
+		<td><img src="assets/cross.png" alt="No" height="32" width="32" /></td>
+		<td><img src="assets/cross.png" alt="No" height="32" width="32" /></td>
+	</tr>
+	<tr>
+		<td><a href="http://qt-project.org/"><img src="assets/logo-qt.png" alt="" height="32" width="32" /></a></td>
+		<td>Qt Creator</td>
+		<td><img src="assets/tick.png" alt="Yes" height="32" width="32" /></td>
+		<td><img src="assets/tick.png" alt="Yes" height="32" width="32" /></td>
+		<td><img src="assets/qmark.png" alt="Unknown" height="32" width="32" /></td>
+		<td><img src="assets/qmark.png" alt="Unknown" height="32" width="32" /></td>
+		<td><img src="assets/qmark.png" alt="Unknown" height="32" width="32" /></td>
+	</tr>
+	<tr>
+		<td><img src="assets/logo-ruby.png" alt="" height="32" width="32" /></td>
+		<td>cbuild</td>
+		<td><img src="assets/tick.png" alt="Yes" height="32" width="32" /></td>
+		<td><img src="assets/tick.png" alt="Yes" height="32" width="32" /></td>
+		<td><img src="assets/qmark.png" alt="Unknown" height="32" width="32" /></td>
+		<td><img src="assets/qmark.png" alt="Unknown" height="32" width="32" /></td>
+		<td><img src="assets/qmark.png" alt="Unknown" height="32" width="32" /></td>
+	</tr>
+</table>
+
+<p>Operating systems with a question mark have not had attempted builds, but have no foreseen issues if the relevant software dependencies are installed.</p>
+<p>Please note this does not include third-party dependencies, and optional entities such as the Qt GUI library (default), which require other tools to be installed.</p>
+
+<h3>Visual Studio 2013</h3>
+<p><strong>Visual Studio 2013</strong> can only be run on Windows, so there can be no Linux/Unix support. Win32 is assumed by the source code and project files if Visual Studio is detected. Due to Visual Studio 2012's lack of certain C++11 features, it is not compatible by default; workarounds will likely work, but not be supported.</p>
+<p>For specific instructions, see <a href="building-Visual_Studio_2013.html">building with Visual Studio 2013</a>.</p>
+<p>Requires: Visual Studio 2013 (free Express or paid-for versions ok)</p>
+
+<h3>Qt Creator</h3>
+<p><strong>Qt Creator</strong> is supported on both Windows and Linux, and as a result the project can be built on either system using this. If using Windows, you will require a compiler: you can use mingw, a cygwin supported tool, etc., or even the CLI tools from Visual Studio 2013 itself. On Linux, install the Clang or GCC C++ compiler.</p>
+<p>For specific instructions, see <a href="building-Qt_Creator.html">building with Qt Creator</a>.</p>
+<p>Requires: Qt Creator 3.1 or newer (Qt 5.3+), C++11 compiler</p>
+
+<h3>cbuild</h3>
+<p><strong>cbuild</strong> is a custom-built build tool, designed to be lightweight, customizable, clean and simple. Written in Ruby, you can customize your projects build process by editing the project ruby script; if you desire changes in the system setup, you can modify the cbuild script directly. As noted before, you will still require a compiler installed for your operating system in order to execute. The build script will need modifying to point to the compiler paths (examples are provided).</p>
+<p>For specific instructions, see <a href="building-cbuild.html">building with cbuild</a>.</p>
+<p>Requires: Ruby 2.0 or newer, C++11 compiler</p>
+
+<h3>Others</h3>
+<p>Don't feel limited by what we have here. There's nothing stopping you from creating a custom makefile, using geany, Code::Blocks, KDevelop, or any other IDE there is out there. Hopefully the documentation for the above three projects will provide sufficient information to tailor your build environment to how you want it. If you do create any other alternatives, please consider sending them to me, and I can add them to the list!</p>
+
+</body>
+</html>

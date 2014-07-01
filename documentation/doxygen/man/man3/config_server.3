@@ -1,0 +1,62 @@
+.TH "config_server" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+config_server \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <config_structs\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBhostname\fP"
+.br
+.ti -1c
+.RI "std::string \fBip_address\fP"
+.br
+.ti -1c
+.RI "std::string \fBpassword\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBport\fP"
+.br
+.ti -1c
+.RI "bool \fBssl\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds the configuration for an IRC server to connect to by a connection\&.
+.PP
+Must reside within a std::shared_ptr\&. 
+.PP
+Definition at line 69 of file config_structs\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string config_server::hostname"
+
+.PP
+Definition at line 71 of file config_structs\&.h\&.
+.SS "std::string config_server::ip_address"
+
+.PP
+Definition at line 72 of file config_structs\&.h\&.
+.SS "std::string config_server::password"
+
+.PP
+Definition at line 73 of file config_structs\&.h\&.
+.SS "uint16_t config_server::port"
+
+.PP
+Definition at line 74 of file config_structs\&.h\&.
+.SS "bool config_server::ssl"
+
+.PP
+Definition at line 75 of file config_structs\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

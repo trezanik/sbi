@@ -1,0 +1,80 @@
+.TH "Runtime.cc" 3 "Mon Jun 23 2014" "Version 0.1" "Social Bot Interface" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Runtime.cc \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <cassert>\fP
+.br
+\fC#include <algorithm>\fP
+.br
+\fC#include <Windows\&.h>\fP
+.br
+\fC#include 'Runtime\&.h'\fP
+.br
+\fC#include 'Allocator\&.h'\fP
+.br
+\fC#include 'Log\&.h'\fP
+.br
+\fC#include 'Configuration\&.h'\fP
+.br
+\fC#include 'Terminal\&.h'\fP
+.br
+\fC#include 'utils\&.h'\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBWIN32_LEAN_AND_MEAN\fP"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBRuntime\fP & \fBruntime\fP = \fBRuntime::Instance\fP()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBAuthor:\fP
+.RS 4
+James Warren 
+.RE
+.PP
+\fBCopyright:\fP
+.RS 4
+James Warren, 2013-2014 
+.RE
+.PP
+\fBLicense:\fP
+.RS 4
+Zlib (see license\&.txt or http://opensource.org/licenses/Zlib) 
+.RE
+.PP
+
+.PP
+Definition in file \fBRuntime\&.cc\fP\&.
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define WIN32_LEAN_AND_MEAN"
+
+.PP
+Definition at line 14 of file Runtime\&.cc\&.
+.SH "Variable Documentation"
+.PP 
+.SS "\fBRuntime\fP& runtime = \fBRuntime::Instance\fP()"
+
+.PP
+Definition at line 32 of file Runtime\&.cc\&.
+.PP
+Referenced by app_exec(), app_init(), app_stop(), IrcConnection::Cleanup(), Configuration::Dump(), IrcConnection::EstablishConnection(), IrcObject::IrcObject(), main(), ObjectPool< IrcUser >::ReportReferencedObject(), IrcParser::RunParser(), and spawn_interface()\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Social Bot Interface from the source code\&.

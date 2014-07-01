@@ -12,6 +12,12 @@
 #include <ctime>		// time + date acquistion
 #include <cassert>		// debug assertions
 
+#if defined(__linux__)
+#	include <sys/stat.h>			// file ops
+#	include <fcntl.h>				// open() options
+#	include <string.h>  			// strrchr
+#endif
+
 #include "Terminal.h"		// colour output
 #include "Log.h"		// prototypes
 #include "utils.h"		// string formatting for reporting
@@ -101,8 +107,13 @@ Log::Flush()
 	{
 		char	errmsg[256];
 
+#if defined(_WIN32)
 		strerror_s(errmsg, sizeof(errmsg), ferror(_file));
-		std::cerr << fg_red << "fflush failed; " << errmsg << "\n";
+#else
+        strerror_r(errno, errmsg, sizeof(errmsg));
+#endif
+        std::cerr << fg_red << "fflush failed; " << errmsg << "\n";
+
 	}
 
 	// also output to console
@@ -201,15 +212,15 @@ Log::Open(
 	}
 #else
 	int	fd;
-	if ( (fd = open(LOG_NAME, O_WRONLY | O_CREAT, O_NOATIME | S_IRWXU | S_IRGRP | S_IROTH)) == -1 )
+    if ( (fd = open(filename, O_WRONLY | O_CREAT, O_NOATIME | S_IRWXU | S_IRGRP | S_IROTH)) == -1 )
 	{
-		std::cerr << fg_red << "Could not open the log file " << LOG_NAME << "; errno " << errno << "\n";
+        std::cerr << fg_red << "Could not open the log file " << filename << "; errno " << errno << "\n";
 		return false;
 	}
 
 	if ( (_file = fdopen(fd, "w")) == nullptr )
 	{
-		std::cerr << fg_red << "fdopen failed on the file descriptor for " << LOG_NAME << "; errno " << errno << "\n";
+        std::cerr << fg_red << "fdopen failed on the file descriptor for " << filename << "; errno " << errno << "\n";
 		return false;
 	}
 #endif

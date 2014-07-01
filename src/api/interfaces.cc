@@ -1,4 +1,3 @@
-#pragma once
 
 /**
  * @file	interfaces.cc
@@ -115,9 +114,12 @@ get_available_interfaces()
 
 	FindClose(search_handle);
 
-	return ret;
 #else
+
 #endif
+
+    // return the vector, empty or not
+    return ret;
 }
 
 
