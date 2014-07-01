@@ -3,31 +3,42 @@ Social Bot Interface by Trezanik
 For documentation, see the relevant file/subfolder in the 'documentation' folder.
 Doxygen provides the source code documentation.
 
-Folder Structure:
+Notable Folder Structure:
 + sbi
     + bin			# compiled binaries
         + Win32				# [Windows x86] platform
-            + Debug       		# debug build
-            + Release    		# release build
-        + linux-x86_64			# [Linux x64] platform
-            + 
+            + Debug       			# debug build
+            + Release    			# release build
+            - copy_debug_dlls.cmd		# copy debug dependencies
+            - copy_release_dlls.cmd		# copy release dependencies
+        + Win64				# [Windows x64] platform
+        + linux_x86-64			# [Linux x86-64] platform
+            + debug				# debug build
+                - libs_to_libpath.sh		# copy debug libraries into standard location
+            + release			# release build
+		- libs_to_libpath.sh		# copy release libraries into standard location
     + cbuild			# custom linux/unix compliation Ruby script
         - cbuild.rb			# build script core
-        - sbi.rb			# build script
+        - config.rb			# build configuration setup
+        - sbi.rb			# build script (always exec this)
         - policy-include_required_headers.rb	# policy script
         - policy-remove_unused_headers.rb	# policy script
     + documentation
+        + assets			# images, stylesheets for documentation
         + doxygen			# contains the doxygen source code documentation
             - gen_doxygen.cmd		# [Windows] Generates the doxygen documentation
             - gen_doxygen.sh		# [Linux/Unix] Generates the doxygen documentation
             - view_doxygen.cmd		# [Windows] Uses the default web browser to open doxygen index
             - custom.css		# Modified doxygen stylesheet
-            - sbi.doxygen		# Doxygen configuration for this project
-        - building.css				# build instructions stylesheet
+            - sbi.linux.doxygen		# Doxygen configuration for this project (linux)
+            - sbi.win32.doxygen		# Doxygen configuration for this project (Windows)
+        - building-cbuild.html			# cbuild build instructions
         - building-Qt_Creator.html		# Qt Creator build instructions
+        - building-SBI.html			# Main overview build instructions
         - building-Visual_Studio_2013.html	# Visual Studio 2013 build instructions
         - doxygen.html				# doxygen HTML index (uses iframe)
     + lib			# built libraries and exports
+    + qtcreator			# Qt Creator project files
     + resources			# application resources
         + icons
         + images
@@ -45,7 +56,11 @@ Folder Structure:
         + copy_json-spirit.cmd		# copies json-spirit headers + libraries into folder
         + copy_libconfig.cmd		# copies libconfig headers + libraries into folder
         + copy_openssl.cmd		# copies openssl headers + libraries into folder
-    + vs2012			# Visual Studio 2012 project files
+        + copy_boost.sh			# copies boost headers + libraries into folder
+        + copy_json-spirit.sh		# copies json-spirit headers + libraries into folder
+        + copy_libconfig.sh		# copies libconfig headers + libraries into folder
+        + copy_openssl.sh		# copies openssl headers + libraries into folder
     + vs2013			# Visual Studio 2013 project files
+	- GlobalProperties.props	# global property sheet
     - LICENCE			# Project/Source licence
     - README			# This readme
