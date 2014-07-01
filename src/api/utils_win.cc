@@ -237,13 +237,13 @@ get_loaded_modules()
 	for ( DWORD i = 0; i < module_count; i++ )
 	{
 		// errors not handled; not much we can do with them anyway..
-        if ( GetModuleFileNameEx(process_handle, modules[i], module_path, _countof(module_path)) > 0 )
+		if ( GetModuleFileNameEx(process_handle, modules[i], module_path, _countof(module_path)) > 0 )
 		{
 			mi = (ModuleInformation*)MALLOC(sizeof(ModuleInformation));
-            if ( mi == nullptr )
-            {
-                throw std::runtime_error("Memory allocation failed");
-            }
+			if ( mi == nullptr )
+			{
+				throw std::runtime_error("Memory allocation failed");
+			}
 
 			wcscpy_s(mi->name, module_path);
 			get_file_version_info(mi->name, &mi->fvi);

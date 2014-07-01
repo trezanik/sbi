@@ -40,9 +40,9 @@ get_current_binary_path(
 	}
 
 	// find the last trailing path separator
-    if (( r = strrchr(buffer, PATH_CHAR)) == nullptr )
+	if (( r = strrchr(buffer, PATH_CHAR)) == nullptr )
 	{
-        std::cerr << fg_red << "The buffer for the current path contained no path separators\n";
+		std::cerr << fg_red << "The buffer for the current path contained no path separators\n";
 		return 0;
 	}
 
@@ -60,51 +60,52 @@ segfault_handler(
     int32_t sig
 )
 {
-    /* well this looks very nice...
-     * http://stackoverflow.com/questions/4636456/stack-trace-for-c-using-gcc
-     */
+	/* well this looks very nice...
+	 * http://stackoverflow.com/questions/4636456/stack-trace-for-c-using-gcc
+	 */
 
-    const int32_t	array_size = 100;
-    void*	array[array_size];
-    char**	text;
-    int32_t	num_ptrs;
-    int32_t	i;
-    int32_t	fd;
+	const int32_t	array_size = 100;
+	void*	array[array_size];
+	char**	text;
+	int32_t	num_ptrs;
+	int32_t	i;
+	int32_t	fd;
 
-    num_ptrs = backtrace(array, array_size);
-    std::cerr << fg_red << "\n********************\n Segmentation Fault\n********************\n\n"
-        "Backtrace contains " << fg_magenta << num_ptrs << fg_red << " addresses:\n\n";
+	num_ptrs = backtrace(array, array_size);
+	std::cerr << fg_red 
+		<< "\n********************\n Segmentation Fault\n********************\n\n"
+		"Backtrace contains " << fg_magenta << num_ptrs << fg_red << " addresses:\n\n";
 
-    // all yellow foreground from here on
-    std::cerr << fg_yellow;
+	// all yellow foreground from here on
+	std::cerr << fg_yellow;
 
-    text = backtrace_symbols(array, num_ptrs);
-    if ( text == nullptr )
-    {
-        std::cerr << fg_yellow << "Nothing returned from backtrace_symbols\n";
-        exit(EXIT_FAILURE);
-    }
+	text = backtrace_symbols(array, num_ptrs);
+	if ( text == nullptr )
+	{
+		std::cerr << fg_yellow << "Nothing returned from backtrace_symbols\n";
+		exit(EXIT_FAILURE);
+	}
 
-    fd = open(".backtrace_segfault", O_WRONLY|O_CREAT, 0664);
+	fd = open(".backtrace_segfault", O_WRONLY|O_CREAT, 0664);
 
-    for ( i = 0; i < num_ptrs; i++ )
-    {
-        if ( fd != -1 )
-        {
-            write(fd, text[i], strlen(text[i]));
-            write(fd, "\n", 1);
-        }
+	for ( i = 0; i < num_ptrs; i++ )
+	{
+		if ( fd != -1 )
+		{
+			write(fd, text[i], strlen(text[i]));
+			write(fd, "\n", 1);
+		}
 
-        std::cerr << "\t" << text[i] << "\n";
-    }
+		std::cerr << "\t" << text[i] << "\n";
+	}
 
-    if ( fd != -1 )
-        close(fd);
+	if ( fd != -1 )
+		close(fd);
 
-    free(text);
+	free(text);
 
-    // this should cause all streams to be flushed and closed cleanly..
-    exit(EXIT_FAILURE);
+	// this should cause all streams to be flushed and closed cleanly..
+	exit(EXIT_FAILURE);
 }
 
 

@@ -155,8 +155,8 @@ Configuration::Load(
 	mb_to_utf8(w, _path.c_str(), _countof(w));
 	if ( !path_exists(w) )
 #	else
-    struct stat sts;
-    if ( stat(_path.c_str(), &sts) == -1 && errno == ENOENT )
+	struct stat sts;
+	if ( stat(_path.c_str(), &sts) == -1 && errno == ENOENT )
 #	endif
 	{
 		CreateDefault();
@@ -202,7 +202,7 @@ Configuration::Load(
 		}
 		else
 		{
-            switch ( log.level.data )
+			switch ( log.level.data )
 			{
 			case 1:	runtime.Logger()->SetLogLevel(ELogLevel::Error); break;
 			case 2: runtime.Logger()->SetLogLevel(ELogLevel::Warn); break;
@@ -381,46 +381,46 @@ Configuration::LoadUI()
 
 #else
 
-    str_format(mb, sizeof(mb),
-           "libui-%s.so",
-           ui.library.file_name.data.c_str());
+	str_format(mb, sizeof(mb),
+		"libui-%s.so",
+		ui.library.file_name.data.c_str());
 
-        LOG(ELogLevel::Info) << "Loading Dynamic Library '" << mb << "'\n";
+	LOG(ELogLevel::Info) << "Loading Dynamic Library '" << mb << "'\n";
 
-        void*	lib_handle;
-        char*	err;
+	void*	lib_handle;
+	char*	err;
 
-        lib_handle = dlopen(mb, RTLD_NOW);
-        if ( lib_handle == nullptr )
-        {
-            LOG(ELogLevel::Error) << "dlopen failed - error: " << dlerror() << "\n";
-            throw std::runtime_error("Failed to load the requested GUI library!");
-        }
+	lib_handle = dlopen(mb, RTLD_NOW);
+	if ( lib_handle == nullptr )
+	{
+		LOG(ELogLevel::Error) << "dlopen failed - error: " << dlerror() << "\n";
+		throw std::runtime_error("Failed to load the requested GUI library!");
+	}
 
-        for ( func_num = 0; func_num != funcarray_size; func_num++ )
-        {
-            pfunc[func_num] = (int32_t(__cdecl*)())dlsym(lib_handle, func_names[func_num]);
-            if (( err = dlerror()) != nullptr )
-            {
-                dlclose(lib_handle);
+	for ( func_num = 0; func_num != funcarray_size; func_num++ )
+	{
+		pfunc[func_num] = (int32_t(__cdecl*)())dlsym(lib_handle, func_names[func_num]);
+		if (( err = dlerror()) != nullptr )
+		{
+			dlclose(lib_handle);
 
-                LOG(ELogLevel::Error) << "Failed to load " << mb
-                                      << "; dlsym() reported '" << err
-                                      << "' with '" << func_names[--func_num] << "'\n";
-                throw std::runtime_error(err);
-            }
-        }
+			LOG(ELogLevel::Error) << "Failed to load " << mb
+				<< "; dlsym() reported '" << err
+				<< "' with '" << func_names[--func_num] << "'\n";
+			throw std::runtime_error(err);
+		}
+	}
 
-        ui.library.pfunc_destroy_interface = pfunc[0];
-        ui.library.pfunc_process_interface = pfunc[1];
-        ui.library.pfunc_spawn_interface = pfunc[2];
-        ui.library.module = lib_handle;
+	ui.library.pfunc_destroy_interface = pfunc[0];
+	ui.library.pfunc_process_interface = pfunc[1];
+	ui.library.pfunc_spawn_interface = pfunc[2];
+	ui.library.module = lib_handle;
 
-        // void* cast is needed to print addresses, not an int
-        LOG(ELogLevel::Debug) << "Library loaded successfully (" << ui.library.module << "). Functions:\n"
-            "\t* destroy_interface = " << (void*)ui.library.pfunc_destroy_interface << "\n"
-            "\t* process_interface = " << (void*)ui.library.pfunc_process_interface << "\n"
-            "\t* spawn_interface = " << (void*)ui.library.pfunc_spawn_interface << "\n";
+	// void* cast is needed to print addresses, not an int
+	LOG(ELogLevel::Debug) << "Library loaded successfully (" << ui.library.module << "). Functions:\n"
+		"\t* destroy_interface = " << (void*)ui.library.pfunc_destroy_interface << "\n"
+		"\t* process_interface = " << (void*)ui.library.pfunc_process_interface << "\n"
+		"\t* spawn_interface = " << (void*)ui.library.pfunc_spawn_interface << "\n";
 
 #endif	// _WIN32
 

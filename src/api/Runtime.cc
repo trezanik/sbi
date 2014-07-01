@@ -133,10 +133,10 @@ Runtime::GetObjectFromModule(
 		}
 
 		retval = (runtime_object_accessor*)MALLOC(sizeof(runtime_object_accessor));
-        if ( retval == nullptr )
-        {
-            throw std::runtime_error("Memory allocation failed");
-        }
+		if ( retval == nullptr )
+		{
+			throw std::runtime_error("Memory allocation failed");
+		}
 		CONSTRUCT(retval, runtime_object_accessor);
 
 #if _WIN32
@@ -252,7 +252,7 @@ Runtime::WaitThenKillThread(
 
 				wait_ret = WaitForSingleObject(t.thread_handle, timeout_ms);
 
-                if ( wait_ret != WAIT_OBJECT_0 && wait_ret != WAIT_TIMEOUT )
+				if ( wait_ret != WAIT_OBJECT_0 && wait_ret != WAIT_TIMEOUT )
 				{
 					if ( GetLastError() == ERROR_INVALID_HANDLE )
 					{

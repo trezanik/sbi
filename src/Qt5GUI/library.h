@@ -8,31 +8,6 @@
 
 
 
-#if 0
-#include <QtCore/qobject.h>
-#include <QtCore/qsignalmapper.h>
-#include <QtGui/qevent.h>
-#include <QtGui/qkeysequence.h>
-#include <QtGui/qsyntaxhighlighter.h>
-#include <QtGui/qpainter.h>
-#include <QtWidgets/QApplication.h>
-#include <QtWidgets/QLabel.h>
-#include <QtWidgets/QMainWindow.h>
-#include <QtWidgets/QMenu.h>
-#include <QtWidgets/QMenuBar.h>
-#include <QtWidgets/qsplitter.h>
-#include <QtWidgets/qstackedwidget.h>
-#include <QtWidgets/QStatusBar.h>
-#include <QtWidgets/qtabbar.h>
-#include <QtWidgets/qtabwidget.h>
-#include <QtWidgets/QTextEdit.h>
-#include <QtWidgets/QTreeView.h>
-#include <QtWidgets/QCheckBox.h>
-#include <QtWidgets/QMessageBox.h>
-#include <QtWidgets/QMdiArea.h>
-#include <QtWidgets/QMdiSubWindow.h>
-#endif
-
 #include <api/definitions.h>
 #include <api/types.h>
 

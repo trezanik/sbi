@@ -17,7 +17,6 @@
 #	pragma comment ( lib, "Secur32.lib" )
 #else
 #	include <sys/signal.h>
-//#	include <dlfcn.h>
 #	include <api/utils.h>		// sig_handler
 #endif
 
@@ -25,7 +24,7 @@
 #include <api/utils.h>			// utility functions
 #include <api/Runtime.h>		// application runtime
 #include <api/Log.h>			// logging
-#include <api/Terminal.h>			// output
+#include <api/Terminal.h>		// output
 #include <api/Allocator.h>		// memory debug log name
 #include <api/Configuration.h>		// configuration
 #include "app.h"			// prototypes
@@ -84,17 +83,14 @@ app_init(
 
 
 #if defined(__linux__)
-    // trap segmentation fault signals so we can print the call stack
-    struct sigaction    sa;
-    sa.sa_handler = segfault_handler;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = SA_SIGINFO;
+	// trap segmentation fault signals so we can print the call stack
+	struct sigaction    sa;
+	sa.sa_handler = segfault_handler;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_SIGINFO;
 
-    if ( sigaction(SIGSEGV, &sa, NULL) == -1 )
-        std::cerr << fg_red << "Unable to trap the SIGINT signal\n";
-
-    // symbols to dynamic tables
-    //dlopen(NULL, RTLD_NOW|RTLD_GLOBAL);
+	if ( sigaction(SIGSEGV, &sa, NULL) == -1 )
+		std::cerr << fg_red << "Unable to trap the SIGINT signal\n";
 #endif	// __linux__
 
 #if defined(_WIN32)

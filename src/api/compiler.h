@@ -33,14 +33,14 @@
 #	define CLANG_IS_V3_OR_LATER	(__clang_major__ >= 3)
 
 #	define CLANG_VER_IS_OR_LATER_THAN(maj,min) \
-        __clang_major__ > maj || \
-            (__clang_major__ == maj && (__clang_minor__ > min) || \
-                (__clang_minor__ == min))
+	__clang_major__ > maj || \
+		(__clang_major__ == maj && (__clang_minor__ > min) || \
+			(__clang_minor__ == min))
 
 #	define CLANG_VER_IS_OR_LATER_THAN_PATCH(maj,min,patch) \
-        __clang_major__ > maj || \
-            (__clang_major__ == maj && (__clang_minor__ > min) || \
-                (__clang_minor__ == min && __clang_patchlevel__ > patch))
+	__clang_major__ > maj || \
+		(__clang_major__ == maj && (__clang_minor__ > min) || \
+			(__clang_minor__ == min && __clang_patchlevel__ > patch))
 #endif
 
 
@@ -140,43 +140,9 @@
 #		if defined(USING_BOOST)
 #			include <boost/static_assert.hpp>
 #			define static_assert	BOOST_STATIC_ASSERT_MSG
+#		else
+#			error Complete me
 #		endif
-#if 0
-		namespace ct_assert
-		{
-			template <bool> struct STATIC_ASSERT_FAILURE;
-			template <> struct STATIC_ASSERT_FAILURE<true> {
-				enum { value = 1 };
-			};
-			template<int x> struct static_assert_test{};
-		}
-#		define COMPILETIME_ASSERT(x)						\
-			typedef ::ct_assert::static_assert_test<			\
-			sizeof(::ct_assert::STATIC_ASSERT_FAILURE< (bool)( x ) >)>	\
-			JOIN(_static_assert_typedef, __LINE__)
-#		define JOIN(X, Y)		JOIN2(X,Y)
-#		define JOIN2(X, Y)		X##Y
-#endif
-#if 0
-#		define static_assert(exp,msg)	\
-	typedef char static_assert_failure ## [(exp) ? 1 : -1 ];
-#endif
-#if 0
-		//namespace ct_assert
-		//{
-			// empty default template
-			template <bool b>
-			struct CompileTimeAssert {};
-
-			// template specialized on true
-			template <>
-			struct CompileTimeAssert<true>
-			{
-				static void ctassert() {}
-			};
-		//}
-#		define static_assert(exp,msg)	CompileTimeAssert<exp>()
-#endif
 #	endif
 #endif  // IS_VISUAL_STUDIO
 

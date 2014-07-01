@@ -14,7 +14,7 @@
 
 #if defined(__linux__)
 #	include <sys/stat.h>			// file ops
-#	include <fcntl.h>				// open() options
+#	include <fcntl.h>			// open() options
 #	include <string.h>  			// strrchr
 #endif
 
@@ -110,10 +110,9 @@ Log::Flush()
 #if defined(_WIN32)
 		strerror_s(errmsg, sizeof(errmsg), ferror(_file));
 #else
-        strerror_r(errno, errmsg, sizeof(errmsg));
+		strerror_r(errno, errmsg, sizeof(errmsg));
 #endif
-        std::cerr << fg_red << "fflush failed; " << errmsg << "\n";
-
+		std::cerr << fg_red << "fflush failed; " << errmsg << "\n";
 	}
 
 	// also output to console
@@ -212,15 +211,15 @@ Log::Open(
 	}
 #else
 	int	fd;
-    if ( (fd = open(filename, O_WRONLY | O_CREAT, O_NOATIME | S_IRWXU | S_IRGRP | S_IROTH)) == -1 )
+	if ( (fd = open(filename, O_WRONLY | O_CREAT, O_NOATIME | S_IRWXU | S_IRGRP | S_IROTH)) == -1 )
 	{
-        std::cerr << fg_red << "Could not open the log file " << filename << "; errno " << errno << "\n";
+		std::cerr << fg_red << "Could not open the log file " << filename << "; errno " << errno << "\n";
 		return false;
 	}
 
 	if ( (_file = fdopen(fd, "w")) == nullptr )
 	{
-        std::cerr << fg_red << "fdopen failed on the file descriptor for " << filename << "; errno " << errno << "\n";
+		std::cerr << fg_red << "fdopen failed on the file descriptor for " << filename << "; errno " << errno << "\n";
 		return false;
 	}
 #endif
