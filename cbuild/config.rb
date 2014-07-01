@@ -18,7 +18,9 @@ BUILDCONFIG_FILE = "../src/build_config.h"
 CLEAN_PROJECT = false
 FORCE_REBUILD = false
 CLEAR_CACHES = false
-
+if RUBY_PLATFORM =~ /mswin32/ then
+	IS_WINDOWS_BUILD = true
+end
 
 def print_help()
 	puts "Specify options on the command line on invocation to alter the build (like ./configure parameters do)."
@@ -189,7 +191,11 @@ if USING_MEMORY_DEBUGGING
 	content.push("#define USING_MEMORY_DEBUGGING");
 	content.push("");
 end
-
+if IS_WINDOWS_BUILD
+	content.push("// prevent windows warnings with certain headers");
+	content.push("#define _WIN32_WINNT 0x0600");
+	content.push("");
+end
 
 #******************************************************************************
 # Definition conlicts (put at end of file for less visibility)
