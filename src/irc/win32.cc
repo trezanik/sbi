@@ -6,7 +6,7 @@
  * @file	win32.cc
  * @author	James Warren
  * @copyright	James Warren, 2013
- * @license	Zlib (see license.txt or http://opensource.org/licenses/Zlib)
+ * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)
  */
 
 

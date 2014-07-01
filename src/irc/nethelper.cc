@@ -3,7 +3,7 @@
  * @file	nethelper.cc
  * @author	James Warren
  * @copyright	James Warren, 2013
- * @license	Zlib (see license.txt or http://opensource.org/licenses/Zlib)
+ * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)
  * @todo	host_to_ipv6 & ipv6_to_host addition
  */
 

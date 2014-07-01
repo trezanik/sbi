@@ -3,7 +3,7 @@
  * @file	Configuration.cc
  * @author	James Warren
  * @copyright	James Warren, 2013-2014
- * @license	Zlib (see license.txt or http://opensource.org/licenses/Zlib)
+ * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)
  */
 
 
@@ -33,12 +33,12 @@
 #include <stdexcept>			// std::runtime_error
 
 #if defined(__linux__)
-#	include <sys/stat.h>			// file ops
-#	include <fcntl.h>				// open() options
-#	include <dlfcn.h>				// dynamic library loading
+#	include <sys/stat.h>		// file ops
+#	include <fcntl.h>		// open() options
+#	include <dlfcn.h>		// dynamic library loading
 #endif
 
-#include "Configuration.h"			// prototypes, definitions
+#include "Configuration.h"		// prototypes, definitions
 #include "Allocator.h"
 #include "Terminal.h"
 #include "Log.h"

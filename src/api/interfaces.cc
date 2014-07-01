@@ -11,6 +11,9 @@
 #endif
 #if defined(_WIN32)
 #	include <Windows.h>
+#elif defined(__linux__)
+#	include <dlfcn.h>
+#	include <dirent.h>
 #endif
 #include "interfaces.h"		// prototypes
 #include "Runtime.h"		// needed for Log
@@ -116,10 +119,93 @@ get_available_interfaces()
 
 #else
 
+	void*		lib_handle;
+	char*		err;
+	bool		push_back = false;
+	DIR*		dir = opendir(".");
+	struct dirent*	file = NULL;
+
+	if ( dir == nullptr )
+	{
+		LOG(ELogLevel::Error) << "opendir failed - error: " << errno() << "\n";
+		return ret;
+	}
+
+	while (( file = readdir(dir)) != nullptr )
+	{
+		if ( strrchr(file->d_name, ".so") == nullptr )
+			continue;
+
+		if (( lib_handle = dlopen(file->d_name, RTLD_NOW)) == nullptr )
+		{
+			LOG(ELogLevel::Error) << "dlopen failed - error: " << dlerror() << "\n";
+			continue;
+		}
+
+		for ( func_num = 0; func_num != funcarray_size; func_num++ )
+		{
+			if ( func_num == 0 )		// destroy_interface
+			{
+				pf_destroyinterface = (fp_interface)dlsym(lib_handle, func_names[func_num]);
+				if (( err = dlerror()) != nullptr )
+				{
+					dlclose(lib_handle);
+
+					LOG(ELogLevel::Error) << "Failed to load " << mb
+						<< "; dlsym() reported '" << err
+						<< "' with '" << func_names[--func_num] << "'\n";
+					push_back = false;
+					break;
+				}
+			}
+			else if ( func_num == 1 )	// instance
+			{
+				pf_instance = (fp_instance)dlsym(lib_handle, func_names[func_num]);
+				if (( err = dlerror()) != nullptr )
+				{
+					dlclose(lib_handle);
+
+					LOG(ELogLevel::Error) << "Failed to load " << mb
+						<< "; dlsym() reported '" << err
+						<< "' with '" << func_names[--func_num] << "'\n";
+					push_back = false;
+					break;
+				}
+			}
+			else if ( func_num == 2 )	// spawn_interface
+			{
+				pf_spawninterface = (fp_interface)dlsym(lib_handle, func_names[func_num]);
+				if (( err = dlerror()) != nullptr )
+				{
+					dlclose(lib_handle);
+
+					LOG(ELogLevel::Error) << "Failed to load " << mb
+						<< "; dlsym() reported '" << err
+						<< "' with '" << func_names[--func_num] << "'\n";
+					push_back = false;
+					break;
+				}
+			}
+			else
+			{
+				// unknown
+				throw std::runtime_error("Incomplete handler for interface function pointers");
+			}
+		}
+
+		if ( push_back )
+		{
+			ret.push_back(mb);
+			push_back = false;
+		}
+	}
+
+	closedir(dir);
+
 #endif
 
-    // return the vector, empty or not
-    return ret;
+	// return the vector, empty or not
+	return ret;
 }
 
 
@@ -128,6 +214,8 @@ std::vector<std::string>
 get_available_modules()
 {
 	std::vector<std::string>	ret;
+
+
 
 	return ret;
 }

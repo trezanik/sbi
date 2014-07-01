@@ -3,7 +3,7 @@
  * @file	library.cc
  * @author	James Warren
  * @copyright	James Warren, 2013-2014
- * @license	Zlib (see license.txt or http://opensource.org/licenses/Zlib)
+ * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)
  */
 
 
@@ -58,14 +58,14 @@ destroy_interface()
 
 	if ( g_ui->GetWindowParameters(x, y, w, h) )
 	{
-		if ( g_ui->ui.flags & UIF_SaveLastPosition )
+		if ( g_ui->ui.flags & EUIFlags::SaveLastPosition )
 		{
 			ci_child = pdoc->CreateOrGetChildItem(ci, "height");
 			ci_child->SetData(std::to_string(h).c_str());
 			ci_child = pdoc->CreateOrGetChildItem(ci, "width");
 			ci_child->SetData(std::to_string(w).c_str());
 		}
-		if ( g_ui->ui.flags & UIF_SaveLastSize )
+		if ( g_ui->ui.flags & EUIFlags::SaveLastSize )
 		{
 			ci_child = pdoc->CreateOrGetChildItem(ci, "x");
 			ci_child->SetData(std::to_string(x).c_str());
