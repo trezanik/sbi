@@ -142,7 +142,6 @@ UI::CreateDefaultWindows()
 	// on Windows, 0 argc & nullptr argv work fine
 	int32_t		argc = 0;
 	char**		argv = nullptr;
-	_app = new QApplication(argc, argv);
 #else
 	/* on Linux, 0 argc & nullptr argv will cause strlen segfault (and this is
 	 * actually standards-compliant); vars must also always exist, so can't let
