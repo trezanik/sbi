@@ -13,6 +13,7 @@
 #include "UI.h"					// UI core
 #include <api/version.h>
 #include <api/interfaces.h>
+#include <api/utils.h>
 
 
 
@@ -41,8 +42,9 @@ InterfacesLoadDialog::SetModel(
 )
 {
 	using namespace APP_NAMESPACE;
-	std::vector<std::string>	avail_interfaces;
-	QTreeWidgetItem*		toplvl = new QTreeWidgetItem;
+	std::vector<std::shared_ptr<AvailableInterfaceDetails>>	avail_interfaces;
+	char			textstr[1024];
+	QTreeWidgetItem*	toplvl = new QTreeWidgetItem;
 	
 	toplvl->setText(0, tr("Current Directory"));
 
@@ -53,7 +55,10 @@ InterfacesLoadDialog::SetModel(
 	{
 		QTreeWidgetItem*	twi = new QTreeWidgetItem;
 
-		twi->setText(0, t.c_str());
+		str_format(textstr, sizeof(textstr), 
+			   "%s (" PRINT_POINTER ")", 
+			   t->file_name.c_str(), t->library_handle);
+		twi->setText(0, textstr);
 		toplvl->addChild(twi);
 	}
 

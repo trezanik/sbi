@@ -7,6 +7,7 @@
  */
 
 
+
 #if defined(USING_BOOST)
 #endif
 #if defined(_WIN32)
@@ -14,6 +15,9 @@
 #elif defined(__linux__)
 #	include <dlfcn.h>
 #	include <dirent.h>
+#	include <unistd.h>		// getcwd
+#	include <stdexcept>		// std::runtime_error
+#	include <string.h>		// strchr
 #endif
 #include "interfaces.h"		// prototypes
 #include "Runtime.h"		// needed for Log
@@ -27,10 +31,32 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 
 
 
-std::vector<std::string>
+AvailableInterfaceDetails::AvailableInterfaceDetails()
+{
+	library_handle = nullptr;
+	pf_destroy_interface = nullptr;
+	pf_instance = nullptr;
+	pf_spawn_interface = nullptr;
+}
+
+
+
+AvailableInterfaceDetails::~AvailableInterfaceDetails()
+{
+#if defined(_WIN32)
+	FreeLibrary((HMODULE)library_handle);
+#elif defined(__linux__)
+	dlclose(library_handle);
+#endif
+}
+
+
+
+std::vector<std::shared_ptr<AvailableInterfaceDetails>>
 get_available_interfaces()
 {
-	std::vector<std::string>	ret;
+	std::vector<std::shared_ptr<AvailableInterfaceDetails>>	ret;
+	AvailableInterfaceDetails		aid;
 	uint32_t	func_num = 0;
 	char*		func_names[] = {
 		"destroy_interface",
@@ -38,12 +64,6 @@ get_available_interfaces()
 		"spawn_interface"
 	};
 	uint32_t	funcarray_size = sizeof(func_names) / sizeof(char*);
-	// as noted in the header, return value is actually EInterfaceStatus
-	typedef int32_t (*fp_interface)();
-	typedef void* (*fp_instance)(void*);
-	fp_interface	pf_destroyinterface;
-	fp_instance	pf_instance;
-	fp_interface	pf_spawninterface;
 
 #if defined(USING_BOOST)
 #elif defined(_WIN32)
@@ -74,7 +94,7 @@ get_available_interfaces()
 		{
 			if ( func_num == 0 )		// destroy_interface
 			{
-				if ( (pf_destroyinterface = (fp_interface)GetProcAddress(module, func_names[func_num])) == nullptr )
+				if ( (aid.pf_destroy_interface = (fp_interface)GetProcAddress(module, func_names[func_num])) == nullptr )
 				{
 					FreeLibrary(module);
 					push_back = false;
@@ -83,7 +103,7 @@ get_available_interfaces()
 			}
 			else if ( func_num == 1 )	// instance
 			{
-				if ( (pf_instance = (fp_instance)GetProcAddress(module, func_names[func_num])) == nullptr )
+				if ( (aid.pf_instance = (fp_instance)GetProcAddress(module, func_names[func_num])) == nullptr )
 				{
 					FreeLibrary(module);
 					push_back = false;
@@ -92,7 +112,7 @@ get_available_interfaces()
 			}
 			else if ( func_num == 2 )	// spawn_interface
 			{
-				if ( (pf_spawninterface = (fp_interface)GetProcAddress(module, func_names[func_num])) == nullptr )
+				if ( (aid.pf_spawn_interface = (fp_interface)GetProcAddress(module, func_names[func_num])) == nullptr )
 				{
 					FreeLibrary(module);
 					push_back = false;
@@ -109,7 +129,11 @@ get_available_interfaces()
 		if ( push_back )
 		{
 			wide_to_mb(mb, wfd.cFileName, _countof(mb));
-			ret.push_back(mb);
+
+			aid.file_name		= mb;
+			aid.library_handle	= (void*)module;
+
+			ret.push_back(std::make_shared<AvailableInterfaceDetails>(aid));
 			push_back = false;
 		}
 		
@@ -122,21 +146,37 @@ get_available_interfaces()
 	void*		lib_handle;
 	char*		err;
 	bool		push_back = false;
-	DIR*		dir = opendir(".");
-	struct dirent*	file = NULL;
+	DIR*		dir;
+	struct dirent*	file = nullptr;
+	char		curdir[1024];
+	char*		filename;
+	char*		p;
+
+	if ( getcwd(curdir, sizeof(curdir)) == nullptr )
+	{
+		LOG(ELogLevel::Error) << "getcwd failed - error: " << errno << "\n";
+		return ret;
+	}
+
+	dir = opendir(curdir);
 
 	if ( dir == nullptr )
 	{
-		LOG(ELogLevel::Error) << "opendir failed - error: " << errno() << "\n";
+		LOG(ELogLevel::Error) << "opendir failed - error: " << errno << "\n";
 		return ret;
 	}
 
 	while (( file = readdir(dir)) != nullptr )
 	{
-		if ( strrchr(file->d_name, ".so") == nullptr )
+		// here you go, a strrstr equivalent ;) (...to validate file extension)
+		if (( p = strrchr(file->d_name, '.')) != nullptr )
+			continue;
+		if ( strcmp(p, ".so") != 0 || *(p+3) != '\0' )
 			continue;
 
-		if (( lib_handle = dlopen(file->d_name, RTLD_NOW)) == nullptr )
+		filename = file->d_name;
+
+		if (( lib_handle = dlopen(filename, RTLD_NOW)) == nullptr )
 		{
 			LOG(ELogLevel::Error) << "dlopen failed - error: " << dlerror() << "\n";
 			continue;
@@ -151,7 +191,7 @@ get_available_interfaces()
 				{
 					dlclose(lib_handle);
 
-					LOG(ELogLevel::Error) << "Failed to load " << mb
+					LOG(ELogLevel::Error) << "Failed to load " << filename
 						<< "; dlsym() reported '" << err
 						<< "' with '" << func_names[--func_num] << "'\n";
 					push_back = false;
@@ -165,7 +205,7 @@ get_available_interfaces()
 				{
 					dlclose(lib_handle);
 
-					LOG(ELogLevel::Error) << "Failed to load " << mb
+					LOG(ELogLevel::Error) << "Failed to load " << filename
 						<< "; dlsym() reported '" << err
 						<< "' with '" << func_names[--func_num] << "'\n";
 					push_back = false;
@@ -179,7 +219,7 @@ get_available_interfaces()
 				{
 					dlclose(lib_handle);
 
-					LOG(ELogLevel::Error) << "Failed to load " << mb
+					LOG(ELogLevel::Error) << "Failed to load " << filename
 						<< "; dlsym() reported '" << err
 						<< "' with '" << func_names[--func_num] << "'\n";
 					push_back = false;
@@ -195,7 +235,7 @@ get_available_interfaces()
 
 		if ( push_back )
 		{
-			ret.push_back(mb);
+			ret.push_back(filename);
 			push_back = false;
 		}
 	}
@@ -210,10 +250,10 @@ get_available_interfaces()
 
 
 
-std::vector<std::string>
+std::vector<std::shared_ptr<AvailableModuleDetails>>
 get_available_modules()
 {
-	std::vector<std::string>	ret;
+	std::vector<std::shared_ptr<AvailableModuleDetails>>	ret;
 
 
 
