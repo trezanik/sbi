@@ -6,6 +6,7 @@ CONFIG -= qt
 #---------------------
 # BEGIN customizations
 #---------------------
+QMAKE_CXX = clang++
 QMAKE_CXXFLAGS += \
 	-std=c++11 \
 	-Wall
@@ -14,6 +15,7 @@ QMAKE_CXXFLAGS += \
 DEFINES += _DEBUG
 DEPENDPATH += ../../src
 INCLUDEPATH += ../../src
+LIBS += -lapi -lpthread -ldl
 
 #>>> libconfig @todo : remove this dependency of a child; definition source???
 DEFINES += USING_LIBCONFIG
@@ -30,14 +32,12 @@ CONFIG(debug, debug|release) {
 	DESTDIR = ../../bin/linux_x86-64/debug
 	OBJECTS_DIR = debug/obj
 	# Dependencies
-	LIBS += -L../../lib/linux_x86-64/debug/ \
-		-lapi \
-		-lpthread
+	LIBS += -L../../lib/linux_x86-64/debug/
 } else {
 	DESTDIR = ../../bin/linux_x86-64/release
 	OBJECTS_DIR = release/obj
 	# Dependencies
-	LIBS += -L../../lib/linux_x86-64/release/ -lapi
+	LIBS += -L../../lib/linux_x86-64/release/
 }
 #-------------------
 # END customizations
