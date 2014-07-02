@@ -20,6 +20,8 @@ FORCE_REBUILD = false
 CLEAR_CACHES = false
 if RUBY_PLATFORM =~ /mswin32/ then
 	IS_WINDOWS_BUILD = true
+else
+	IS_WINDOWS_BUILD = false
 end
 
 def print_help()
