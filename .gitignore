@@ -1,0 +1,54 @@
+
+# custom & hidden files/folders..
+.*
+# ..except this file itself
+!.gitignore
+
+# temporary files
+*.log
+
+# Doxygen documentation (generated)
+documentation/doxygen/html
+documentation/doxygen/latex
+
+# generated files (keep the folders though)
+**/generated/*
+
+#########################
+# Windows/Visual Studio #
+#########################
+
+# Visual Studio up to 2013
+*.cd
+*.exe
+*.dll
+*.idb
+*.ilk
+*.obj
+*.opensdf
+*.pdb
+*.psess
+*.sdf
+*.suo
+*.tlog
+*.vsp
+*.lastbuildstate
+**/api/Debug
+**/api/Release
+**/irc/Debug
+**/irc/Release
+**/Qt5GUI/Debug
+**/Qt5GUI/Release
+**/sbi/Debug
+**/sbi/Release
+**/ipch
+
+#############################
+# Linux/gcc/clang/qtcreator #
+#############################
+
+bin/**/sbi
+lib/**/*.so
+*/debug/**/*.[ao]
+*/release/**/*.[ao]
+
