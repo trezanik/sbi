@@ -7,6 +7,7 @@
  */
 
 
+
 #if defined(USING_BOOST)
 #endif
 #if defined(_WIN32)
@@ -14,6 +15,9 @@
 #elif defined(__linux__)
 #	include <dlfcn.h>
 #	include <dirent.h>
+#	include <unistd.h>		// getcwd
+#	include <stdexcept>		// std::runtime_error
+#	include <string.h>		// strchr
 #endif
 #include "interfaces.h"		// prototypes
 #include "Runtime.h"		// needed for Log
@@ -122,21 +126,37 @@ get_available_interfaces()
 	void*		lib_handle;
 	char*		err;
 	bool		push_back = false;
-	DIR*		dir = opendir(".");
-	struct dirent*	file = NULL;
+	DIR*		dir;
+	struct dirent*	file = nullptr;
+	char		curdir[1024];
+	char*		filename;
+	char*		p;
+
+	if ( getcwd(curdir, sizeof(curdir)) == nullptr )
+	{
+		LOG(ELogLevel::Error) << "getcwd failed - error: " << errno << "\n";
+		return ret;
+	}
+
+	dir = opendir(curdir);
 
 	if ( dir == nullptr )
 	{
-		LOG(ELogLevel::Error) << "opendir failed - error: " << errno() << "\n";
+		LOG(ELogLevel::Error) << "opendir failed - error: " << errno << "\n";
 		return ret;
 	}
 
 	while (( file = readdir(dir)) != nullptr )
 	{
-		if ( strrchr(file->d_name, ".so") == nullptr )
+		// here you go, a strrstr equivalent ;) (...to validate file extension)
+		if (( p = strrchr(file->d_name, '.')) != nullptr )
+			continue;
+		if ( strcmp(p, ".so") != 0 || *(p+3) != '\0' )
 			continue;
 
-		if (( lib_handle = dlopen(file->d_name, RTLD_NOW)) == nullptr )
+		filename = file->d_name;
+
+		if (( lib_handle = dlopen(filename, RTLD_NOW)) == nullptr )
 		{
 			LOG(ELogLevel::Error) << "dlopen failed - error: " << dlerror() << "\n";
 			continue;
@@ -151,7 +171,7 @@ get_available_interfaces()
 				{
 					dlclose(lib_handle);
 
-					LOG(ELogLevel::Error) << "Failed to load " << mb
+					LOG(ELogLevel::Error) << "Failed to load " << filename
 						<< "; dlsym() reported '" << err
 						<< "' with '" << func_names[--func_num] << "'\n";
 					push_back = false;
@@ -165,7 +185,7 @@ get_available_interfaces()
 				{
 					dlclose(lib_handle);
 
-					LOG(ELogLevel::Error) << "Failed to load " << mb
+					LOG(ELogLevel::Error) << "Failed to load " << filename
 						<< "; dlsym() reported '" << err
 						<< "' with '" << func_names[--func_num] << "'\n";
 					push_back = false;
@@ -179,7 +199,7 @@ get_available_interfaces()
 				{
 					dlclose(lib_handle);
 
-					LOG(ELogLevel::Error) << "Failed to load " << mb
+					LOG(ELogLevel::Error) << "Failed to load " << filename
 						<< "; dlsym() reported '" << err
 						<< "' with '" << func_names[--func_num] << "'\n";
 					push_back = false;
@@ -195,7 +215,7 @@ get_available_interfaces()
 
 		if ( push_back )
 		{
-			ret.push_back(mb);
+			ret.push_back(filename);
 			push_back = false;
 		}
 	}
