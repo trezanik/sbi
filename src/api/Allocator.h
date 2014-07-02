@@ -13,11 +13,6 @@
 #include <mutex>			// C++11 mutex, locking
 #include <vector>			// storage container
 
-#if !defined(_WIN32)
-#	define __STDC_FORMAT_MACROS
-#	include <cinttypes>		// for PRIxPTR
-#endif
-
 #include "Runtime.h"			// technical dependency for macros
 #include "char_helper.h"		// defintions, text handling
 
@@ -34,18 +29,7 @@ class Object;
 #define MEM_MAX_FILENAME_LENGTH		31
 #define MEM_MAX_FUNCTION_LENGTH		31
 
-/* don't ask. I did this a while ago and had issues (I believe it was with
- * visual studio, as usual), this is what I came up with for a workaround, and
- * it works, so... */
-#if defined(_WIN64)
-#	define PRINT_POINTER	"%016p"
-#elif defined(_WIN32)
-#	define PRINT_POINTER	"%08p"
-#elif defined(__x86_64__)
-#	define PRINT_POINTER	"%016" PRIxPTR " "
-#else
-#	define PRINT_POINTER	"%08" PRIxPTR
-#endif
+
 
 
 /**
