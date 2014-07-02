@@ -17,6 +17,7 @@ DEFINES += QT5GUI_LIBRARY
 #---------------------
 # BEGIN customizations
 #---------------------
+QMAKE_CXX = clang++
 QMAKE_CXXFLAGS += \
 	-std=c++11 \
 	-Wall \
@@ -24,6 +25,14 @@ QMAKE_CXXFLAGS += \
 DEFINES += _DEBUG USING_LIBCONFIG
 DEPENDPATH += ../../src
 INCLUDEPATH += ../../src
+
+#>>> libconfig
+DEFINES += USING_LIBCONFIG
+contains(DEFINES,USING_LIBCONFIG){
+	INCLUDEPATH += ../../third-party/libconfig
+	LIBS += -L../../third-party/libconfig/lib/ -lconfig++
+}
+#<<<
 
 # Warning: assumes build directory sbi-all = '$project/qtcreator'
 # library -> '$project/lib/linux_x86-64/debug/libui-qt5.so'

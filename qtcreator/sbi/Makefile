@@ -11,14 +11,14 @@ MAKEFILE      = Makefile
 ####### Compiler, tools and options
 
 CC            = gcc
-CXX           = g++
+CXX           = clang++
 DEFINES       = -D_DEBUG -DUSING_LIBCONFIG
 CFLAGS        = -pipe -g -Wall -W -fPIE $(DEFINES)
 CXXFLAGS      = -pipe -std=c++11 -Wall -g -Wall -W -fPIE $(DEFINES)
 INCPATH       = -I../../../Qt/5.3/gcc_64/mkspecs/linux-g++ -I. -I../../src -I../../third-party/libconfig
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/home/torze/projects/Qt/5.3/gcc_64
-LIBS          = $(SUBLIBS) -L../../third-party/libconfig/lib/ -lconfig++ -L../../lib/linux_x86-64/debug/ -lapi -lpthread 
+LIBS          = $(SUBLIBS) -lapi -lpthread -ldl -L../../third-party/libconfig/lib/ -lconfig++ -L../../lib/linux_x86-64/debug/ 
 AR            = ar cqs
 RANLIB        = 
 QMAKE         = /home/torze/projects/Qt/5.3/gcc_64/bin/qmake
@@ -427,15 +427,16 @@ compiler_clean:
 
 ####### Compile
 
-debug/obj/app.o: ../../src/sbi/app.cc ../../src/api/char_helper.h \
+debug/obj/app.o: ../../src/sbi/app.cc ../../src/api/utils.h \
+		../../src/api/char_helper.h \
 		../../src/api/compiler.h \
 		../../src/api/definitions.h \
 		../../src/api/types.h \
-		../../src/api/utils.h \
 		../../src/api/utils_win.h \
 		../../src/api/utils_linux.h \
 		../../src/api/Runtime.h \
 		../../src/api/Log.h \
+		../../src/api/Terminal.h \
 		../../src/api/Allocator.h \
 		../../src/api/Configuration.h \
 		../../src/sbi/app.h \
@@ -450,10 +451,10 @@ debug/obj/getopt.o: ../../src/sbi/getopt.cc ../../src/sbi/getopt.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug/obj/getopt.o ../../src/sbi/getopt.cc
 
 debug/obj/main.o: ../../src/sbi/main.cc ../../src/api/types.h \
-		../../src/api/compiler.h \
 		../../src/api/definitions.h \
 		../../src/api/Runtime.h \
 		../../src/api/char_helper.h \
+		../../src/api/compiler.h \
 		../../src/api/Log.h \
 		../../src/sbi/app.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug/obj/main.o ../../src/sbi/main.cc
