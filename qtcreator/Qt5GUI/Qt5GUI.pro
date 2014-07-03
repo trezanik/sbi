@@ -8,7 +8,8 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Qt5GUI
+# our GUI libraries have a specific naming format (libui-NAME.so)
+TARGET = ui-qt5
 TEMPLATE = lib
 
 DEFINES += QT5GUI_LIBRARY
