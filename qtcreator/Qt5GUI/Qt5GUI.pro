@@ -26,6 +26,9 @@ QMAKE_CXXFLAGS += \
 DEFINES += _DEBUG USING_LIBCONFIG
 DEPENDPATH += ../../src
 INCLUDEPATH += ../../src
+MOC_DIR = ../../src/Qt5GUI/generated
+UI_DIR = ../../src/Qt5GUI/generated
+RCC_DIR = ../../src/Qt5GUI/generated
 
 #>>> libconfig
 DEFINES += USING_LIBCONFIG
@@ -41,16 +44,12 @@ contains(DEFINES,USING_LIBCONFIG){
 CONFIG(debug, debug|release) {
 	DESTDIR = ../../lib/linux_x86-64/debug
 	OBJECTS_DIR = debug/obj
-	MOC_DIR = ../../src/Qt5GUI/generated
-	UI_DIR = ../../src/Qt5GUI/generated
 	# Dependencies
 	LIBS += -L../../lib/linux_x86-64/debug/ \
 		-lapi
 } else {
 	DESTDIR = ../../lib/linux_x86-64/release
 	OBJECTS_DIR = release/obj
-	MOC_DIR = ../../src/Qt5GUI/generated
-	UI_DIR = ../../src/Qt5GUI/generated
 	# Dependencies
 	LIBS += -L../../lib/linux_x86-64/release/ \
 		-lapi
@@ -83,3 +82,6 @@ FORMS += ../../src/Qt5GUI/forms/AboutDialog.ui \
     ../../src/Qt5GUI/forms/ModulesLoadDialog.ui \
     ../../src/Qt5GUI/forms/ModulesUnloadDialog.ui \
     ../../src/Qt5GUI/forms/UI.ui
+
+RESOURCES += \
+    ../../src/Qt5GUI/sbi.qrc
