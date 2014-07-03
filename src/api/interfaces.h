@@ -23,8 +23,8 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 
 
 // as noted in the interface header, return value is actually EInterfaceStatus
-typedef int32_t	(*fp_interface)();
-typedef void*	(*fp_instance)(void*);
+typedef int32_t	(__stdcall *fp_interface)();
+typedef void*	(__stdcall *fp_instance)(void*);
 
 
 

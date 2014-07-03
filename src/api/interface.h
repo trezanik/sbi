@@ -34,6 +34,9 @@ extern "C" {
  */
 SBI_ALWAYS_EXPORT
 int
+#if defined(_WIN32)
+__stdcall
+#endif
 destroy_interface();
 
 
@@ -50,6 +53,9 @@ destroy_interface();
  */
 SBI_ALWAYS_EXPORT
 void*
+#if defined(_WIN32)
+__stdcall
+#endif
 instance(
 	void* params
 );
@@ -74,6 +80,9 @@ instance(
  */
 SBI_ALWAYS_EXPORT
 int
+#if defined(_WIN32)
+__stdcall
+#endif
 spawn_interface();
 
 
