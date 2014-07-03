@@ -172,7 +172,7 @@ get_available_interfaces()
 	while (( file = readdir(dir)) != nullptr )
 	{
 		// here you go, a strrstr equivalent ;) (...to validate file extension)
-		if (( p = strrchr(file->d_name, '.')) != nullptr )
+		if (( p = strrchr(file->d_name, '.')) == nullptr )
 			continue;
 		if ( strcmp(p, ".so") != 0 || *(p+3) != '\0' )
 			continue;
