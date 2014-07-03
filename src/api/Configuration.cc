@@ -68,7 +68,7 @@ Configuration::CreateDefault()
 	}
 #else
 	int	fd;
-	if ( (fd = open(_path.c_str(), O_WRONLY | O_CREAT, O_NOATIME | S_IRWXU | S_IRGRP | S_IROTH)) == -1 )
+	if ( (fd = open(_path.c_str(), O_WRONLY | O_CREAT, O_NOATIME | S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == -1 )
 	{
 		std::cerr << fg_red << "Could not open " << _path << " to apply the default configuration file; errno " << errno << "\n";
 		return false;
