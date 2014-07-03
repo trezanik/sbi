@@ -48,7 +48,9 @@ documentation/doxygen/latex
 #############################
 
 bin/**/sbi
-lib/**/*.so
+lib/**/*.so*
 */debug/**/*.[ao]
 */release/**/*.[ao]
+qtcreator/**/Makefile*
+
 
