@@ -211,7 +211,7 @@ Log::Open(
 	}
 #else
 	int	fd;
-	if ( (fd = open(filename, O_WRONLY | O_CREAT, O_NOATIME | S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == -1 )
+	if ( (fd = open(filename, O_WRONLY|O_CREAT|O_TRUNC, O_NOATIME|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)) == -1 )
 	{
 		std::cerr << fg_red << "Could not open the log file " << filename << "; errno " << errno << "\n";
 		return false;
