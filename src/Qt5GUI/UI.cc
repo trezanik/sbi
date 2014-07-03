@@ -283,18 +283,22 @@ UI::LoadConfig(
 	if ( !cfg.lookupValue("ui.main_window.pos_x", (int32_t&)ui.main_window.x) )
 	{
 		LOG(ELogLevel::Warn) << "No main window x position specified\n";
+		ui.main_window.x = 0;
 	}
 	if ( !cfg.lookupValue("ui.main_window.pos_y", (int32_t&)ui.main_window.y) )
 	{
 		LOG(ELogLevel::Warn) << "No main window y position specified\n";
+		ui.main_window.y = 0;
 	}
 	if ( !cfg.lookupValue("ui.main_window.width", (int32_t&)ui.main_window.width) )
 	{
 		LOG(ELogLevel::Warn) << "No main window width specified\n";
+		ui.main_window.width = 768;
 	}
 	if ( !cfg.lookupValue("ui.main_window.height", (int32_t&)ui.main_window.height) )
 	{
 		LOG(ELogLevel::Warn) << "No main window height specified\n";
+		ui.main_window.height = 1024;
 	}
 	if ( !cfg.lookupValue("ui.main_window.title", ui.main_window.title) )
 	{
