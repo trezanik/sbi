@@ -9,7 +9,7 @@ cd $(dirname $(readlink -f $0))
 QT_PATH=../../../Qt/5.3/gcc_64/bin
 GEN_PATH=./generated
 
-$QT_PATH/rcc.exe -name core "./sbi.qrc" -o "$GEN_PATH/qrc_sbi.cc"
+$QT_PATH/rcc -name core "./sbi.qrc" -o "$GEN_PATH/qrc_sbi.cc"
 
 
 cd $ORIG_DIR
