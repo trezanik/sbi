@@ -43,11 +43,14 @@ AvailableInterfaceDetails::AvailableInterfaceDetails()
 
 AvailableInterfaceDetails::~AvailableInterfaceDetails()
 {
+	if ( library_handle != nullptr )
+	{
 #if defined(_WIN32)
-	FreeLibrary((HMODULE)library_handle);
+		FreeLibrary((HMODULE)library_handle);
 #elif defined(__linux__)
-	dlclose(library_handle);
+		dlclose(library_handle);
 #endif
+	}
 }
 
 
@@ -186,7 +189,7 @@ get_available_interfaces()
 		{
 			if ( func_num == 0 )		// destroy_interface
 			{
-				pf_destroyinterface = (fp_interface)dlsym(lib_handle, func_names[func_num]);
+				aid.pf_destroy_interface = (fp_interface)dlsym(lib_handle, func_names[func_num]);
 				if (( err = dlerror()) != nullptr )
 				{
 					dlclose(lib_handle);
@@ -200,7 +203,7 @@ get_available_interfaces()
 			}
 			else if ( func_num == 1 )	// instance
 			{
-				pf_instance = (fp_instance)dlsym(lib_handle, func_names[func_num]);
+				aid.pf_instance = (fp_instance)dlsym(lib_handle, func_names[func_num]);
 				if (( err = dlerror()) != nullptr )
 				{
 					dlclose(lib_handle);
@@ -214,7 +217,7 @@ get_available_interfaces()
 			}
 			else if ( func_num == 2 )	// spawn_interface
 			{
-				pf_spawninterface = (fp_interface)dlsym(lib_handle, func_names[func_num]);
+				aid.pf_spawn_interface = (fp_interface)dlsym(lib_handle, func_names[func_num]);
 				if (( err = dlerror()) != nullptr )
 				{
 					dlclose(lib_handle);
@@ -235,7 +238,10 @@ get_available_interfaces()
 
 		if ( push_back )
 		{
-			ret.push_back(filename);
+			aid.file_name		= filename;
+			aid.library_handle	= lib_handle;
+
+			ret.push_back(std::make_shared<AvailableInterfaceDetails>(aid));
 			push_back = false;
 		}
 	}
