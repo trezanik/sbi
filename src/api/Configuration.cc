@@ -33,7 +33,10 @@
 #include <stdexcept>			// std::runtime_error
 
 #if defined(__linux__)
+#	include <sys/types.h>
 #	include <sys/stat.h>		// file ops
+#	include <errno.h>
+#	include <string.h>
 #	include <fcntl.h>		// open() options
 #	include <dlfcn.h>		// dynamic library loading
 #endif
@@ -67,8 +70,40 @@ Configuration::CreateDefault()
 		return false;
 	}
 #else
+	int	status;
 	int	fd;
-	if ( (fd = open(_path.c_str(), O_WRONLY | O_CREAT, O_NOATIME | S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == -1 )
+
+	// create the folder (there's no mkpath/mkdir -p by default sadly)
+	{
+		char	path[1024];
+		char	mkpath[1024] = { '\0' };
+		char*	p;
+		char*	ctx;
+		// str_token modifies buffer, so copy it
+		strlcpy(path, _path.c_str(), sizeof(path));
+		mkpath[0] = PATH_CHAR;
+		p = str_token(path, PATH_CHARSTR, &ctx);
+		while ( p != nullptr )
+		{
+			// if final entry (filename), bail
+			if ( strlen(ctx) == 0 )
+				break;
+			// append subfolder to existing path
+			strlcat(mkpath, p, sizeof(mkpath));
+			strlcat(mkpath, PATH_CHARSTR, sizeof(mkpath));
+			// create it, skip error handling if it exists
+			if ( mkdir(mkpath, S_IRWXU|S_IRWXG|S_IROTH|S_IXOTH) != 0 && errno != EEXIST )
+			{
+				std::cerr << fg_red << "Failed to create the required path: '"
+					  << _path << "'; errno " << errno << " when creating '"
+					  << p << "'\n";
+				return false;
+			}
+			p = str_token(nullptr, PATH_CHARSTR, &ctx);
+		}
+	}
+
+	if ( (fd = open(_path.c_str(), O_WRONLY|O_CREAT, O_NOATIME|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)) == -1 )
 	{
 		std::cerr << fg_red << "Could not open " << _path << " to apply the default configuration file; errno " << errno << "\n";
 		return false;
@@ -78,11 +113,16 @@ Configuration::CreateDefault()
 	{
 		std::cerr << fg_red << "fdopen failed on the file descriptor for " << _path << "; errno " << errno << "\n";
 		return false;
-    }
+	}
 #endif
 
 	char*	config_array[] = {
 #if defined(USING_LIBCONFIG)
+		"app =",
+		"{",
+		"	first_run = 0;",
+		"	clean_shutdown = 1;",
+		"};",
 		"log =",
 		"{",
 		"	path = \"app.log\";"
@@ -94,8 +134,19 @@ Configuration::CreateDefault()
 		"	enable_terminal = 1;",
 		"	command_prefix = \"/\";",
 		"	library	= {",
+#	if defined(_WIN32)
 		"		// looks for 'libui-NAME.dll' ",
+#	else
+		"		// looks for 'libui-NAME.so' ",
+#	endif
 		"		name : \"qt5\";",
+		"	};",
+		"	main_window = {",
+		"		pos_x = 0;",
+		"		pos_y = 0;",
+		"		width = 800;",
+		"		height = 600;",
+		"		title = \"Qt5 GUI\";",
 		"	};",
 		"};",
 	};
@@ -146,6 +197,20 @@ Configuration::Load(
 {
 	if ( specific_path != nullptr )
 		_path = specific_path;
+#if !defined(_WIN32)
+	else
+	{
+		/* Windows build expects config, log, libraries in the current
+		 * binary path (portable mode).
+		 * Linux/Unix pathing is different and standardized, so we obey
+		 * it - /home/$user/.config/sbi holds the cfg and log,
+		 * /usr/local/lib/sbi contains the libraries. */
+		char	path[1024];
+		str_format(path, sizeof(path), "%s/.config/sbi/sbi.cfg",
+			   getenv("HOME"));
+		_path = path;
+	}
+#endif
 
 #if defined(USING_LIBCONFIG)
 	libconfig::Config	cfg;

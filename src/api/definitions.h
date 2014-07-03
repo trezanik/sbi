@@ -60,9 +60,11 @@
 // Path separator character
 #if defined(_WIN32)
 #	define PATH_CHAR	'\\'
+#	define PATH_CHARSTR	"\\"
 #	define LINE_END		"\r\n"
 #else
 #	define PATH_CHAR	'/'
+#	define PATH_CHARSTR	"/"
 #	define LINE_END		"\n"
 #endif
 
