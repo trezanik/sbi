@@ -40,12 +40,16 @@ contains(DEFINES,USING_LIBCONFIG){
 CONFIG(debug, debug|release) {
 	DESTDIR = ../../lib/linux_x86-64/debug
 	OBJECTS_DIR = debug/obj
+	MOC_DIR = ../../src/Qt5GUI/generated
+	UI_DIR = ../../src/Qt5GUI/generated
 	# Dependencies
 	LIBS += -L../../lib/linux_x86-64/debug/ \
 		-lapi
 } else {
 	DESTDIR = ../../lib/linux_x86-64/release
 	OBJECTS_DIR = release/obj
+	MOC_DIR = ../../src/Qt5GUI/generated
+	UI_DIR = ../../src/Qt5GUI/generated
 	# Dependencies
 	LIBS += -L../../lib/linux_x86-64/release/ \
 		-lapi
@@ -55,14 +59,7 @@ CONFIG(debug, debug|release) {
 #-------------------
 
 
-SOURCES += ../../src/Qt5GUI/generated/moc_AboutDialog.cc \
-    ../../src/Qt5GUI/generated/moc_InterfacesLoadDialog.cc \
-    ../../src/Qt5GUI/generated/moc_InterfacesUnloadDialog.cc \
-    ../../src/Qt5GUI/generated/moc_ModulesLoadDialog.cc \
-    ../../src/Qt5GUI/generated/moc_ModulesUnloadDialog.cc \
-    ../../src/Qt5GUI/generated/moc_UI.cc \
-    ../../src/Qt5GUI/generated/qrc_sbi.cc \
-    ../../src/Qt5GUI/AboutDialog.cc \
+SOURCES += ../../src/Qt5GUI/AboutDialog.cc \
     ../../src/Qt5GUI/InterfacesLoadDialog.cc \
     ../../src/Qt5GUI/InterfacesUnloadDialog.cc \
     ../../src/Qt5GUI/library.cc \
@@ -70,15 +67,7 @@ SOURCES += ../../src/Qt5GUI/generated/moc_AboutDialog.cc \
     ../../src/Qt5GUI/ModulesUnloadDialog.cc \
     ../../src/Qt5GUI/UI.cc
 
-HEADERS += ../../src/Qt5GUI/generated/ui_AboutDialog.h \
-    ../../src/Qt5GUI/generated/ui_example.h \
-    ../../src/Qt5GUI/generated/ui_InterfacesLoadDialog.h \
-    ../../src/Qt5GUI/generated/ui_InterfacesUnloadDialog.h \
-    ../../src/Qt5GUI/generated/ui_ModulesLoadDialog.h \
-    ../../src/Qt5GUI/generated/ui_ModulesUnloadDialog.h \
-    ../../src/Qt5GUI/generated/ui_UI.h \
-    ../../src/Qt5GUI/generated/ui_widget_Default.h \
-    ../../src/Qt5GUI/AboutDialog.h \
+HEADERS += ../../src/Qt5GUI/AboutDialog.h \
     ../../src/Qt5GUI/InterfacesLoadDialog.h \
     ../../src/Qt5GUI/InterfacesUnloadDialog.h \
     ../../src/Qt5GUI/library.h \
