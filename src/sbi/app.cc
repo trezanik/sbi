@@ -18,6 +18,7 @@
 #else
 #	include <sys/signal.h>
 #	include <api/utils.h>		// sig_handler
+#	include <pwd.h>			// get user name
 #endif
 
 #include <api/char_helper.h>		// ansi/wide conversion
@@ -81,8 +82,15 @@ app_init(
 	uint64_t	start_time = get_ms_time();
 	uint64_t	end_time;
 
+	/* important: NO LOGGING until runtime.Config()->Load() returns.
+	 * The config determines the destination path; logging before this will
+	 * not work.
+	 * Consider creating in user profile, then moving to config path.. */
 
 #if defined(__linux__)
+	char		curdir[1024];
+	char		curpath[1024];
+
 	// trap segmentation fault signals so we can print the call stack
 	struct sigaction    sa;
 	sa.sa_handler = segfault_handler;
@@ -91,6 +99,11 @@ app_init(
 
 	if ( sigaction(SIGSEGV, &sa, NULL) == -1 )
 		std::cerr << fg_red << "Unable to trap the SIGINT signal\n";
+
+	if ( getcwd(curdir, sizeof(curdir)) == nullptr )
+		std::cerr << fg_red << "getcwd failed - error: " << errno << "\n";
+
+	get_current_binary_path(curpath, sizeof(curpath));
 #endif	// __linux__
 
 #if defined(_WIN32)
@@ -129,10 +142,7 @@ app_init(
 		// Log configuration
 		runtime.Config()->Dump();
 	}
-	// Now load the GUI module (not really for Config() - relocate it)
-	runtime.Config()->LoadUI();
 
-	
 
 #if defined(_WIN32)
 	{
@@ -146,10 +156,33 @@ app_init(
 		GetCurrentDirectory(_countof(cur_path), cur_path);
 		LOG(ELogLevel::Debug) << "Current Directory: " << cur_path << "\n";
 	}
+#elif defined(__linux__)
+	{
+		/* get running user (we use env to get $HOME, good for
+		 * troubleshooting path issues) */
+		uid_t	uid;
+		passwd*	pw;
+		uid = getuid();
+		if (( pw = getpwuid(uid)) == nullptr )
+		{
+			LOG(ELogLevel::Debug) << "Running as user id: "
+					      << (unsigned)uid << "\n";
+		}
+		else
+		{
+			LOG(ELogLevel::Debug) << "Running as user: "
+					      << pw->pw_name << " (id="
+					      << (unsigned)uid << ")\n";
+		}
+
+		LOG(ELogLevel::Debug) << "Current Directory: " << curdir << "\n";
+		LOG(ELogLevel::Debug) << "Application Directory: " << curpath << "\n";
+	}
 #endif	// _WIN32
 
 
-	
+	// Now load the GUI module (not really for Config() - relocate it)
+	runtime.Config()->LoadUI();
 
 
 #if defined(_WIN32)
