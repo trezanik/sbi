@@ -84,4 +84,4 @@ FORMS += ../../src/Qt5GUI/forms/AboutDialog.ui \
     ../../src/Qt5GUI/forms/UI.ui
 
 RESOURCES += \
-    ../../src/Qt5GUI/sbi.qrc
+    ../../resources/sbi.qrc
