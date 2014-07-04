@@ -214,6 +214,7 @@ Configuration::Load(
 
 #if defined(USING_LIBCONFIG)
 	libconfig::Config	cfg;
+	libconfig::Setting&	set;
 
 #	if defined(_WIN32)
 	wchar_t		w[MAX_PATH];
@@ -279,6 +280,36 @@ Configuration::Load(
 		}
 
 		// from here on, we can log in whatever way we desire.
+	}
+	/*---------------------------------------------------------------------
+	 * interfaces
+	 *--------------------------------------------------------------------*/
+	{
+		set = cfg.lookup("interfaces.search_path");
+		if ( set.isList() )
+		{
+			int32_t		count = set.getLength();
+			std::string	identifier;
+
+			LOG(ELogLevel::Debug) << "interfaces.search_path supplied\n";
+
+			for ( int32_t i = 0; i < count; i++ )
+			{
+				const Setting&	path = set[i];
+
+				///// we don't know the string text in advance
+				if ( !path.lookupValue("", identifier) )
+				{
+
+				}
+			}
+		}
+	}
+	/*---------------------------------------------------------------------
+	 * modules
+	 *--------------------------------------------------------------------*/
+	{
+
 	}
 	/*---------------------------------------------------------------------
 	 * ui
