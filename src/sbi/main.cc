@@ -15,6 +15,7 @@
 
 #include <api/types.h>		// Standard data types
 #include <api/Runtime.h>	// application runtime
+#include <api/Terminal.h>	// Output colour
 #include <api/Log.h>		// Logging class
 #include "app.h"		// Core Application
 
@@ -50,19 +51,19 @@ main(
 	}
 	catch ( std::runtime_error& e )
 	{
-		std::cerr << "Initialization runtime error:\n\t" << e.what() << "\n";
+		std::cerr << fg_red << "Initialization runtime error:\n\t" << e.what() << "\n";
 		LOG(ELogLevel::Error) << "Initialization runtime error:\n\t" << e.what() << "\n";
 		goto abort;
 	}
 	catch ( std::exception& e )
 	{
-		std::cerr << "Uncaught exception in initialization:\n\t" << e.what() << "\n";
+		std::cerr << fg_red << "Uncaught exception in initialization:\n\t" << e.what() << "\n";
 		LOG(ELogLevel::Error) << "Uncaught exception in initialization:\n\t" << e.what() << "\n";
 		goto abort;
 	}
 	catch ( ... )
 	{
-		std::cerr << "Unhandled exception in initialization";
+		std::cerr << fg_red << "Unhandled exception in initialization";
 		LOG(ELogLevel::Error) << "Unhandled exception in initialization";
 		goto abort;
 	}
@@ -76,19 +77,19 @@ main(
 	 * not throw exceptions ourselves outside of this */
 	catch ( std::runtime_error& e )
 	{
-		std::cerr << "runtime error:\n\t" << e.what() << "\n";
+		std::cerr << fg_red << "runtime error:\n\t" << e.what() << "\n";
 		LOG(ELogLevel::Error) << "runtime error:\n\t" << e.what() << "\n";
 		goto abort;
 	}
 	catch ( std::exception& e )
 	{
-		std::cerr << "Uncaught exception in execution:\n\t" << e.what() << "\n";
+		std::cerr << fg_red << "Uncaught exception in execution:\n\t" << e.what() << "\n";
 		LOG(ELogLevel::Error) << "Uncaught exception in execution:\n\t" << e.what() << "\n";
 		goto abort;
 	}
 	catch ( ... )
 	{
-		std::cerr << "Unhandled exception in execution";
+		std::cerr << fg_red << "Unhandled exception in execution";
 		LOG(ELogLevel::Error) << "Unhandled exception in execution";
 		goto abort;
 	}
@@ -100,19 +101,19 @@ main(
 	}
 	catch ( std::runtime_error& e )
 	{
-		std::cerr << "Shutdown runtime error:\n\t" << e.what() << "\n";
+		std::cerr << fg_red << "Shutdown runtime error:\n\t" << e.what() << "\n";
 		LOG(ELogLevel::Error) << "Shutdown runtime error:\n\t" << e.what() << "\n";
 		goto abort;
 	}
 	catch ( std::exception& e )
 	{
-		std::cerr << "Uncaught exception in shutdown:\n\t" << e.what() << "\n";
+		std::cerr << fg_red << "Uncaught exception in shutdown:\n\t" << e.what() << "\n";
 		LOG(ELogLevel::Error) << "Uncaught exception in shutdown:\n\t" << e.what() << "\n";
 		goto abort;
 	}
 	catch ( ... )
 	{
-		std::cerr << "Unhandled exception in shutdown\n";
+		std::cerr << fg_red << "Unhandled exception in shutdown\n";
 		LOG(ELogLevel::Error) << "Unhandled exception in shutdown\n";
 		goto abort;
 	}
