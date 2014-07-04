@@ -9,6 +9,7 @@
 
 
 #include <string>
+#include <map>
 #include "char_helper.h"
 
 #if defined(_WIN32)
@@ -20,6 +21,10 @@
 #if defined(USING_JSON)
 struct json_object;
 #endif
+
+
+typedef std::map<std::string, std::string>	keyval_str;
+
 
 
 
@@ -151,6 +156,17 @@ public:
 		proxy<std::string>		path;
 		proxy<uint32_t>			level;
 	} log;
+
+	struct {
+		proxy<bool>			search_curdir;
+		proxy<keyval_str>		search_paths;
+	} interfaces;
+
+	struct
+	{
+		proxy<bool>			search_curdir;
+		proxy<keyval_str>		search_paths;
+	} modules;
 
 	struct {
 		proxy<std::string>			command_prefix;

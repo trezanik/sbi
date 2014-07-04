@@ -11,6 +11,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <map>
 
 #include "interface_status.h"
 #include "definitions.h"
@@ -26,6 +27,14 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 typedef int32_t	(__stdcall *fp_interface)();
 typedef void*	(__stdcall *fp_instance)(void*);
 
+struct AvailableInterfaceDetails;
+struct AvailableModuleDetails;
+
+// shorthand for the rather long pointer-vector types
+typedef std::vector<std::shared_ptr<AvailableInterfaceDetails>>		interfaces_vector_t;
+
+
+
 
 
 /**
@@ -36,6 +45,8 @@ typedef void*	(__stdcall *fp_instance)(void*);
 */
 struct AvailableInterfaceDetails
 {
+	// path identifier (GUI layout)
+	std::string	group;
 	// library file name (no directory)
 	std::string	file_name;
 	// pointer to the loaded library
@@ -61,7 +72,7 @@ struct AvailableModuleDetails
 
 
 SBI_API
-std::vector<std::shared_ptr<AvailableInterfaceDetails>>
+interfaces_vector_t
 get_available_interfaces();
 
 

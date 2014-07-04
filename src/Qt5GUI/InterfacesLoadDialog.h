@@ -38,6 +38,7 @@ private:
 	std::unique_ptr<Ui_InterfacesLoadDialog>	_dlg;
 	/** storage of available interfaces that can be loaded */
 	std::vector<std::shared_ptr<APP_NAMESPACE::AvailableInterfaceDetails>>	_avail_interfaces;
+	// ^= interfaces_vector_t w/ namespace;
 
 private slots:
 

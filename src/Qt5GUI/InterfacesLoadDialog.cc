@@ -14,6 +14,8 @@
 #include <api/version.h>
 #include <api/utils.h>
 #include <api/Log.h>
+#include <api/Configuration.h>
+#include <api/Runtime.h>
 
 
 using namespace APP_NAMESPACE;
@@ -69,6 +71,7 @@ InterfacesLoadDialog::OnLoadInterface()
 
 	for ( auto t : _avail_interfaces )
 	{
+#if 0
 		if ( t->file_name.compare(item_text) == 0 )
 		{
 			// got the file; execute the spawn function
@@ -83,6 +86,7 @@ InterfacesLoadDialog::OnLoadInterface()
 			// let items be deleted on dialog closure automatically
 			return;
 		}
+#endif
 	}
 
 	LOG(ELogLevel::Error) << "None of the interface items matched the one to load ("
@@ -117,9 +121,11 @@ InterfacesLoadDialog::SetModel(
 	const UI* model
 )
 {
-	QTreeWidgetItem*	toplvl = new QTreeWidgetItem;
-	
-	toplvl->setText(0, tr("Current Directory"));
+	std::vector<QTreeWidgetItem*>	root_items;
+	QTreeWidgetItem*		current_top = nullptr;
+	QTreeWidgetItem*		toplvl = nullptr;
+	QByteArray			ba;
+	Configuration*			cfg = runtime.Config();
 
 	// we're loading, use this opportunity to populate interfaces
 	_avail_interfaces = get_available_interfaces();
@@ -128,12 +134,65 @@ InterfacesLoadDialog::SetModel(
 	{
 		QTreeWidgetItem*	twi = new QTreeWidgetItem;
 
+		/* get source, add as top level item if it doesn't exist, else
+		 * use the existing one if it's still the same name */
+
+		if ( current_top != nullptr )
+		{
+			ba = current_top->text(0).toUtf8();
+
+			if ( strcmp(ba.data(), t->group.c_str()) != 0 )
+			{
+				toplvl = new QTreeWidgetItem;
+				current_top = toplvl;
+				toplvl->setText(0, t->group.c_str());
+				root_items.push_back(toplvl);
+				
+			}
+		}
+		else if ( toplvl == nullptr || current_top != toplvl )
+		{
+			toplvl = new QTreeWidgetItem;
+			current_top = toplvl;
+			toplvl->setText(0, t->group.c_str());
+			root_items.push_back(toplvl);
+		}
+
+		// add the interface to a new item, current top level
 		twi->setText(0, t->file_name.c_str());
 		toplvl->addChild(twi);
 	}
 
-	_dlg->tree_available->addTopLevelItem(toplvl);
-	//_dlg->tree_available->insertTopLevelItem(twi,i);
+	// add search paths even if they contain no entries (for GUI)
+	for ( auto c : cfg->interfaces.search_paths.data )
+	{
+		bool	present = false;
+
+		for ( auto i : root_items )
+		{
+			ba = i->text(0).toUtf8();
+
+			if ( strcmp(c[0].c_str(), ba.data()) == 0 )
+			{
+				present = true;
+				break;
+			}
+		}
+
+		if ( !present )
+		{
+			toplvl = new QTreeWidgetItem;
+			toplvl->setText(0, c.c_str());
+			root_items.push_back(toplvl);
+		}
+	}
+		
+	// add all the actual root items to the tree
+	for ( auto i : root_items )
+	{
+		_dlg->tree_available->addTopLevelItem(i);
+	}
+		
 	_dlg->tree_available->expandAll();
 }
 

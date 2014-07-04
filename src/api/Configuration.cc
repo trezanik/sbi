@@ -214,7 +214,6 @@ Configuration::Load(
 
 #if defined(USING_LIBCONFIG)
 	libconfig::Config	cfg;
-	libconfig::Setting&	set;
 
 #	if defined(_WIN32)
 	wchar_t		w[MAX_PATH];
@@ -240,6 +239,7 @@ Configuration::Load(
 	catch ( libconfig::ParseException& e )
 	{
 		// error parsing the file.
+		std::cerr << fg_red << e.getError() << " parsing " << e.getFile() << ":" << e.getLine() << "\n";
 		throw;
 	}
 
@@ -285,31 +285,65 @@ Configuration::Load(
 	 * interfaces
 	 *--------------------------------------------------------------------*/
 	{
-		set = cfg.lookup("interfaces.search_path");
-		if ( set.isList() )
+		cfg.lookupValue("interfaces.search_current_directory", (int32_t&)interfaces.search_curdir.data);
+
+		if ( cfg.exists("interfaces.search_paths") )
 		{
+			const libconfig::Setting&	set = cfg.lookup("interfaces.search_paths");
 			int32_t		count = set.getLength();
 			std::string	identifier;
+			std::string	value;
 
-			LOG(ELogLevel::Debug) << "interfaces.search_path supplied\n";
+			//LOG(ELogLevel::Debug) << "interfaces.search_paths supplied\n";
 
 			for ( int32_t i = 0; i < count; i++ )
 			{
-				const Setting&	path = set[i];
+				const libconfig::Setting&	path = set[i];
 
-				///// we don't know the string text in advance
-				if ( !path.lookupValue("", identifier) )
+				identifier = path.getName();
+
+				if ( !set.lookupValue(identifier, value) )
 				{
-
+					LOG(ELogLevel::Error) << "Failed to lookup value for " << identifier.c_str() << "\n";
+				}
+				else
+				{
+					interfaces.search_paths.data.insert(std::make_pair(identifier, value));
 				}
 			}
+
 		}
 	}
 	/*---------------------------------------------------------------------
 	 * modules
 	 *--------------------------------------------------------------------*/
 	{
+		cfg.lookupValue("modules.search_current_directory", (int32_t&)modules.search_curdir.data);
 
+		if ( cfg.exists("modules.search_paths") )
+		{
+			const libconfig::Setting&	set = cfg.lookup("modules.search_paths");
+			int32_t		count = set.getLength();
+			std::string	identifier;
+			std::string	value;
+
+			for ( int32_t i = 0; i < count; i++ )
+			{
+				const libconfig::Setting&	path = set[i];
+
+				identifier = path.getName();
+
+				if ( !set.lookupValue(identifier, value) )
+				{
+					LOG(ELogLevel::Error) << "Failed to lookup value for " << identifier.c_str() << "\n";
+				}
+				else
+				{
+					modules.search_paths.data.insert(std::make_pair(identifier, value));
+				}
+			}
+
+		}
 	}
 	/*---------------------------------------------------------------------
 	 * ui

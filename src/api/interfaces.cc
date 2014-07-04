@@ -55,11 +55,11 @@ AvailableInterfaceDetails::~AvailableInterfaceDetails()
 
 
 
-std::vector<std::shared_ptr<AvailableInterfaceDetails>>
+interfaces_vector_t
 get_available_interfaces()
 {
-	std::vector<std::shared_ptr<AvailableInterfaceDetails>>	ret;
-	AvailableInterfaceDetails		aid;
+	interfaces_vector_t		ret;
+	AvailableInterfaceDetails	aid;
 	uint32_t	func_num = 0;
 	char*		func_names[] = {
 		"destroy_interface",
@@ -135,6 +135,7 @@ get_available_interfaces()
 
 			aid.file_name		= mb;
 			aid.library_handle	= (void*)module;
+			aid.group		= "Current Directory";
 
 			ret.push_back(std::make_shared<AvailableInterfaceDetails>(aid));
 			push_back = false;

@@ -24,9 +24,6 @@ std::unique_ptr<IrcEngine>	irc_engine;
 
 
 int
-#if defined(_WIN32)
-__stdcall
-#endif
 destroy_interface()
 {
 	irc_engine.release();
@@ -37,9 +34,6 @@ destroy_interface()
 
 
 void*
-#if defined(_WIN32)
-__stdcall
-#endif
 instance(
 	void* params
 )
@@ -53,9 +47,6 @@ instance(
 
 
 int
-#if defined(_WIN32)
-__stdcall
-#endif
 spawn_interface()
 {
 	// add custom menu options, load modules, etc.
