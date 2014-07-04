@@ -45,6 +45,7 @@ Notable Folder Structure:
         + movies
         + src
         - sbi.rc		# visual studio resource script
+        - sbi.qrc		# qt creator resource script
     + src			# application source code
 	+ api				# application api
 	+ irc				# IRC interface
