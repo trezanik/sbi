@@ -9,7 +9,7 @@
 
 
 #include <memory>
-#include <QtWidgets/qdialog>
+#include <QtWidgets/QDialog>
 #include <QtWidgets/qtreewidget.h>
 #include <api/definitions.h>		// namespace
 #include <api/interfaces.h>		// AvailableInterfaceDetails
