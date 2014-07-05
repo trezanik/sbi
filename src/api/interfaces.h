@@ -24,15 +24,15 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 
 
 // as noted in the interface header, return value is actually EInterfaceStatus
-typedef int32_t	(__stdcall *fp_interface)();
-typedef void*	(__stdcall *fp_instance)(void*);
+typedef int32_t	(__cdecl *fp_interface)();
+typedef void*	(__cdecl *fp_instance)(void*);
 
 struct AvailableInterfaceDetails;
 struct AvailableModuleDetails;
 
 // shorthand for the rather long pointer-vector types
 typedef std::vector<std::shared_ptr<AvailableInterfaceDetails>>		interfaces_vector_t;
-
+typedef std::vector<std::shared_ptr<AvailableModuleDetails>>		modules_vector_t;
 
 
 
@@ -78,7 +78,7 @@ get_available_interfaces();
 
 
 SBI_API
-std::vector<std::shared_ptr<AvailableModuleDetails>>
+modules_vector_t
 get_available_modules();
 
 
