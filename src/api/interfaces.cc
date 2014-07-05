@@ -59,7 +59,6 @@ interfaces_vector_t
 get_available_interfaces()
 {
 	interfaces_vector_t		ret;
-	AvailableInterfaceDetails	aid;
 	uint32_t	func_num = 0;
 	char*		func_names[] = {
 		"destroy_interface",
@@ -92,12 +91,15 @@ get_available_interfaces()
 		}
 
 		push_back = true;
+		
+		// put here for automatic cleanup when out of scope unless stored
+		std::shared_ptr<AvailableInterfaceDetails>	aid(new AvailableInterfaceDetails);
 
 		for ( func_num = 0; func_num != funcarray_size; func_num++ )
 		{
 			if ( func_num == 0 )		// destroy_interface
 			{
-				if ( (aid.pf_destroy_interface = (fp_interface)GetProcAddress(module, func_names[func_num])) == nullptr )
+				if ( (aid->pf_destroy_interface = (fp_interface)GetProcAddress(module, func_names[func_num])) == nullptr )
 				{
 					FreeLibrary(module);
 					push_back = false;
@@ -106,7 +108,7 @@ get_available_interfaces()
 			}
 			else if ( func_num == 1 )	// instance
 			{
-				if ( (aid.pf_instance = (fp_instance)GetProcAddress(module, func_names[func_num])) == nullptr )
+				if ( (aid->pf_instance = (fp_instance)GetProcAddress(module, func_names[func_num])) == nullptr )
 				{
 					FreeLibrary(module);
 					push_back = false;
@@ -115,7 +117,7 @@ get_available_interfaces()
 			}
 			else if ( func_num == 2 )	// spawn_interface
 			{
-				if ( (aid.pf_spawn_interface = (fp_interface)GetProcAddress(module, func_names[func_num])) == nullptr )
+				if ( (aid->pf_spawn_interface = (fp_interface)GetProcAddress(module, func_names[func_num])) == nullptr )
 				{
 					FreeLibrary(module);
 					push_back = false;
@@ -133,11 +135,12 @@ get_available_interfaces()
 		{
 			wide_to_mb(mb, wfd.cFileName, _countof(mb));
 
-			aid.file_name		= mb;
-			aid.library_handle	= (void*)module;
-			aid.group		= "Current Directory";
+			aid->file_name		= mb;
+			aid->library_handle	= (void*)module;
+			aid->group		= "Current Directory";
 
-			ret.push_back(std::make_shared<AvailableInterfaceDetails>(aid));
+			//ret.push_back(std::make_shared<AvailableInterfaceDetails>(aid));
+			ret.push_back(aid);
 			push_back = false;
 		}
 		
