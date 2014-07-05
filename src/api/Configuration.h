@@ -160,6 +160,7 @@ public:
 	struct {
 		proxy<bool>			search_curdir;
 		proxy<keyval_str>		search_paths;
+		keyval_str			get_search_paths() { return search_paths.data; }
 	} interfaces;
 
 	struct

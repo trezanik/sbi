@@ -163,16 +163,19 @@ InterfacesLoadDialog::SetModel(
 		toplvl->addChild(twi);
 	}
 
-	// add search paths even if they contain no entries (for GUI)
-	for ( auto c : cfg->interfaces.search_paths.data )
+	/* add search paths even if they contain no entries (for GUI purposes;
+	 * ensures the user can see the path was actually searched) */
+	for ( auto c : cfg->interfaces.get_search_paths() )
 	{
-		bool	present = false;
+		// identifier is the first in the pair
+		std::string	str = std::get<0>(c);
+		bool		present = false;
 
 		for ( auto i : root_items )
 		{
 			ba = i->text(0).toUtf8();
 
-			if ( strcmp(c[0].c_str(), ba.data()) == 0 )
+			if ( strcmp(str.c_str(), ba.data()) == 0 )
 			{
 				present = true;
 				break;
@@ -182,7 +185,7 @@ InterfacesLoadDialog::SetModel(
 		if ( !present )
 		{
 			toplvl = new QTreeWidgetItem;
-			toplvl->setText(0, c.c_str());
+			toplvl->setText(0, str.c_str());
 			root_items.push_back(toplvl);
 		}
 	}
