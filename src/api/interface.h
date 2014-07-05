@@ -14,7 +14,7 @@
 
 
 #include "interface_status.h"	// used by those including this, and ready for fix
-#include "definitions.h"
+#include "definitions.h"	// export macro
 
 
 
