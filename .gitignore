@@ -24,6 +24,7 @@ documentation/doxygen/latex
 *.dll
 *.idb
 *.ilk
+*.lastcodeanalysissucceeded
 *.obj
 *.opensdf
 *.pdb
