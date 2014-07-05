@@ -35,6 +35,7 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 class Allocator;
 class Configuration;
 class Log;
+class Interprocess;
 
 
 
@@ -185,6 +186,15 @@ public:
 	GetObjectFromModule(
 		const char* module_name
 	);
+
+
+	/**
+	 * Gets the interprocess communication class.
+	 *
+	 * @return A pointer to the static instance within the runtime.
+	 */
+	class Interprocess*
+	Interprocess() const;
 
 
 	/**

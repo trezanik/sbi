@@ -25,6 +25,7 @@
 #include "Allocator.h"
 #include "Log.h"
 #include "Configuration.h"
+#include "Interprocess.h"
 #include "Terminal.h"
 #include "utils.h"		// string handling
 
@@ -156,6 +157,14 @@ Runtime::GetObjectFromModule(
 	return retval->get(nullptr);
 }
 
+
+
+class Interprocess*
+Runtime::Interprocess() const
+{
+	static class Interprocess	ipc;
+	return &ipc;
+}
 
 
 
