@@ -171,13 +171,41 @@ void
 Configuration::Dump() const
 {
 	std::stringstream	log_str;
-	//uint32_t		i;
+	std::stringstream	interface_search_paths;
+	std::stringstream	module_search_paths;
+	uint32_t		i;
+
+	/* since we want to append to the log_str just once en masse, prepare
+	 * any arrays/vectors/lists in advance */
+	i = 0;
+	for ( auto x : interfaces.search_paths.data )
+	{
+		interface_search_paths << "\n"
+			<< "\t* [" << i << "]\t"
+			<< std::get<0>(x) << " = " << std::get<1>(x);
+		i++;
+	}
+	i = 0;
+	for ( auto x : modules.search_paths.data )
+	{
+		module_search_paths << "\n"
+			<< "\t* [" << i << "]\t"
+			<< std::get<0>(x) << " = " << std::get<1>(x);
+		i++;
+	}
+
 
 	// we want to start on a newline, logging will have the prefix data
 	log_str << "\n\t==== Dumping Parsed Configuration ====\n"
 		<< "\t---- Log Settings ----\n"
 		<< "\t* log.path = " << log.path.data << "\n"
 		<< "\t* log.level = " << log.level << "\n"
+		<< "\t---- Interface Settings ----\n"
+		<< "\t* interfaces.search_current_directory = " << interfaces.search_curdir << "\n"
+		<< "\t* interfaces.search_paths = " << interface_search_paths.str() << "\n"
+		<< "\t---- Module Settings ----\n"
+		<< "\t* modules.search_current_directory = " << modules.search_curdir << "\n"
+		<< "\t* modules.search_paths = " << module_search_paths.str() << "\n"
 		<< "\t---- UI Settings ----\n"
 		<< "\t* ui.command_prefix = " << ui.command_prefix.data << "\n"
 		<< "\t* ui.library = " << ui.library.file_name.data << "\n"
