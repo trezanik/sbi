@@ -71,7 +71,6 @@ InterfacesLoadDialog::OnLoadInterface()
 
 	for ( auto t : _avail_interfaces )
 	{
-#if 0
 		if ( t->file_name.compare(item_text) == 0 )
 		{
 			// got the file; execute the spawn function
@@ -86,7 +85,6 @@ InterfacesLoadDialog::OnLoadInterface()
 			// let items be deleted on dialog closure automatically
 			return;
 		}
-#endif
 	}
 
 	LOG(ELogLevel::Error) << "None of the interface items matched the one to load ("
