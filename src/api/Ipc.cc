@@ -75,14 +75,19 @@ Ipc::Read()
 
 
 uint32_t
-Ipc::Write()
+Ipc::Write(
+	const char* data
+)
 {
 #if defined(_WIN32)
 
 	BOOL	ok;
 	DWORD	cnt_written;
 
-	ok = WriteFile(_read, _write_buffer, strlen(_write_buffer), &cnt_written, NULL);
+	if ( data == nullptr )
+		ok = WriteFile(_read, _write_buffer, strlen(_write_buffer), &cnt_written, NULL);
+	else
+		ok = WriteFile(_read, data, strlen(data), &cnt_written, NULL);
 
 	return cnt_written;
 

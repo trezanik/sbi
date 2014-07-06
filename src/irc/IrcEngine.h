@@ -34,6 +34,7 @@ class IrcChannel;
 //class IrcListener;
 class IrcParser;
 class IrcPool;
+class IpcListener;
 
 
 #if 0	// Code Removed: Now including IrcListener.h
@@ -106,7 +107,7 @@ enum E_CONNECTION_STATE
 class SBI_IRC_API IrcEngine
 {
 	// only spawn_interface() is allowed to create this class
-    friend int ::spawn_interface();
+	friend int ::spawn_interface();
 	/* only IrcConnection and IrcParser can execute NotifyListeners(), as
 	 * they are the classes that determine fresh data. Just promise not to
 	 * touch the other private variables..! */
@@ -138,6 +139,10 @@ private:
 
 	/** IrcObject creation factory */
 	std::unique_ptr<IrcFactory>	_ircobject_factory;
+
+	/** IPC method */
+	std::shared_ptr<IpcListener>	_ipc_listener;
+
 
 	// private constructor; we want one instance that is controlled
 	IrcEngine();

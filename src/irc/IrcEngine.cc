@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include <api/Terminal.h>
+#include "IpcListener.h"
 #include "IrcEngine.h"			// prototypes
 #include "IrcListener.h"
 #include "IrcConnection.h"
@@ -28,7 +29,10 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 
 IrcEngine::IrcEngine()
 {
+	// create the object factory
 	_ircobject_factory.reset(new IrcFactory(this));
+	// create the IPC mechanism
+	_ipc_listener.reset(new IpcListener(this));
 }
 
 

@@ -27,7 +27,7 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 /**
  * Low-level class stored by the Interprocess class.
  */
-class Ipc
+class SBI_API Ipc
 {
 	friend class Interprocess;
 private:
@@ -58,7 +58,9 @@ public:
 	Read();
 
 	uint32_t
-	Write();
+	Write(
+		const char* data
+	);
 };
 
 

@@ -51,6 +51,9 @@
     <ClCompile Include="..\..\src\irc\interface.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\irc\IpcListener.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\irc\config_structs.h">
@@ -114,6 +117,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\irc\irc_status.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\irc\IpcListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

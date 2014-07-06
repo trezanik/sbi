@@ -89,6 +89,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\irc\interface.cc" />
+    <ClCompile Include="..\..\src\irc\IpcListener.cc" />
     <ClCompile Include="..\..\src\irc\IrcFactory.cc" />
     <ClCompile Include="..\..\src\irc\IrcChannel.cc" />
     <ClCompile Include="..\..\src\irc\IrcConnection.cc" />
@@ -103,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\irc\config_structs.h" />
+    <ClInclude Include="..\..\src\irc\IpcListener.h" />
     <ClInclude Include="..\..\src\irc\IrcFactory.h" />
     <ClInclude Include="..\..\src\irc\IrcChannel.h" />
     <ClInclude Include="..\..\src\irc\IrcConnection.h" />

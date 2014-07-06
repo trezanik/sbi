@@ -8,6 +8,8 @@
 
 
 
+// if we decide to use libev/libevent/boost::asio, they'll go here
+
 #if defined(_WIN32)
 #	include <process.h>
 #elif defined(__linux__)
@@ -161,7 +163,7 @@ Interprocess::WaitForClient(
 		BOOL	connected;
 
 		ipc->_read = CreateNamedPipe(w,
-		      PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE,
+		      PIPE_ACCESS_DUPLEX,
 		      PIPE_TYPE_BYTE | PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS,
 		      PIPE_UNLIMITED_INSTANCES, // max instances
 		      sizeof(ipc->_read_buffer),
@@ -188,6 +190,7 @@ Interprocess::WaitForClient(
 		// blocks until client connects
 		connected = ConnectNamedPipe(ipc->_read, NULL);
 				
+		LOG(ELogLevel::Debug) << "New pipe connection received\n";
 	}
 
 	return EIPCStatus::Ok;
