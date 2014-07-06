@@ -84,8 +84,7 @@ struct access_control
  *
  * @class Interprocess
  */
-SBI_API
-class Interprocess
+class SBI_API Interprocess
 {
 	// we are created on the stack in Runtime::Interprocess()
 	friend class Runtime;
