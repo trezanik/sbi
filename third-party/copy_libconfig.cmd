@@ -29,8 +29,8 @@ REM / copy libraries
 REM /================================
 
 mkdir %DEST_PATH%\lib
-if exist "%LIBCONFIG_PATH%\Debug" copy /Y /Q "%LIBCONFIG_PATH%\Debug\libconfig++.lib" "%DEST_PATH%\lib\Debug\"
-if exist "%LIBCONFIG_PATH%\Release" copy /Y /Q "%LIBCONFIG_PATH%\Release\libconfig++.lib" "%DEST_PATH%\lib\Release\"
+if exist "%LIBCONFIG_PATH%\Debug" copy /Y "%LIBCONFIG_PATH%\Debug\libconfig++.lib" "%DEST_PATH%\lib\Debug\"
+if exist "%LIBCONFIG_PATH%\Release" copy /Y "%LIBCONFIG_PATH%\Release\libconfig++.lib" "%DEST_PATH%\lib\Release\"
 
 
 popd
