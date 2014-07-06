@@ -41,7 +41,7 @@ class IrcObject;
  */
 class SBI_IRC_API IrcFactory
 {
-	// we are created on the stack in IrcEngine::Factory()
+	// we are created by the IrcEngine
 	friend class IrcEngine;
 private:
 	NO_CLASS_ASSIGNMENT(IrcFactory);
