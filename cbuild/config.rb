@@ -6,6 +6,7 @@ require_relative 'cbuild.rb' # only for string .colors - workaround
 # file automatically on compilation.
 # Make sure these match the source code definition equivalents!
 DEBUG = false
+USING_BOOST_IPC = false
 USING_BOOST_NET = false
 USING_OPENSSL_NET = false
 USING_MEMORY_DEBUGGING = false
@@ -176,6 +177,14 @@ if USING_OPENSSL_NET
 	content.push("");
 end
 #******************************************************************************
+# IPC library
+#******************************************************************************
+if USING_BOOST_IPC
+	content.push("// uses Boost as the IPC library");
+	content.push("#define USING_BOOST_IPC");
+	content.push("");
+end
+#******************************************************************************
 # Other definitions
 #******************************************************************************
 if DEBUG
@@ -200,7 +209,7 @@ if IS_WINDOWS_BUILD
 end
 
 #******************************************************************************
-# Definition conlicts (put at end of file for less visibility)
+# Definition conflicts (put at end of file for less visibility)
 #******************************************************************************
 conflict_checker = [
 	"/*-----------------------------------------------------------------------------",
