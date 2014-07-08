@@ -10,6 +10,11 @@
 
 #include <memory>
 #include <map>
+#include <mutex>
+
+#if defined(USING_BOOST_IPC)
+#	include <boost/interprocess/managed_shared_memory.hpp>
+#endif
 
 #if defined(_WIN32)
 #	include <Windows.h>		// named pipes
@@ -26,10 +31,15 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 
 // forward declarations
 class Ipc;
+class IpcListener;
 class Interprocess;
 
+// allows type changes in one location
+typedef uint16_t		ipc_interface_id;
+typedef uint16_t		ipc_message_id;
 // shorthand to save typing
 typedef std::map<std::string, std::shared_ptr<Ipc>>	ipc_map;
+typedef std::map<std::string, ipc_interface_id>		ipc_idmap;
 
 
 
@@ -55,7 +65,7 @@ enum EIPCAction
 
 
 
-struct wfc_params
+struct smoproc_params
 {
 	std::shared_ptr<Ipc>	ipc;
 	Interprocess*		thisptr;
@@ -67,6 +77,30 @@ struct wfc_params
 struct access_control
 {
 };
+
+
+
+struct ipc_header
+{
+	/** 
+	 * 65,535 possible registered interface IDs (0 is reserved for invalid)
+	 */
+	ipc_interface_id	interface_id;
+	/**
+	 * 65,535 possible message types (consider expansion to uint32_t)
+	 */
+	ipc_message_id		msg_type;
+	std::unique_ptr<char>	buffer;
+	uint32_t	buf_size;
+	std::mutex	lock;
+
+	ipc_header(uint32_t size)
+	{
+		buf_size = size;
+		buffer.reset(new char[size]);
+	}
+};
+
 
 
 
@@ -93,11 +127,38 @@ private:
 	NO_CLASS_COPY(Interprocess);
 
 
+	/** 
+	 * Registered IPC codes. An interface must request a code for their
+	 * usage, then use that one for their communications. This prevents
+	 * hardcoding the values which will be far too unwieldly
+	 */
+	ipc_idmap		_ipc_ids;
+	/**
+	 * 
+	 */
+	ipc_map			_ipc_map;
+	/**
+	 * Next available interface id; starts at 0 (in constructor), which is
+	 * an invalid id; each RegisterInterfaceId() call increments this value
+	 * and then assigns it - so the first one is always '1'.
+	 */
+	ipc_interface_id	_available_id;
 
-	ipc_map		_ipc_map;
+
+	static uint32_t
+#if defined(_WIN32)
+	__stdcall
+#endif
+	ExecProcSMO(
+		void* params
+	);
+	EIPCStatus
+	ProcSMO(
+		smoproc_params* tp
+	);
 
 
-
+#if 0	// Code Removed: Native test setup; remove on boost success
 	/**
 	 * Calls the class function; static so that it can be the recipient to
 	 * a new thread, as it's part of a class.
@@ -113,9 +174,6 @@ private:
 	ExecWaitForClient(
 		void* params
 	);
-
-
-
 	/**
 	 * Handles the maintenance of a created IPC-M.
 	 */
@@ -123,6 +181,7 @@ private:
 	WaitForClient(
 		wfc_params* tp
 	);
+#endif
 
 
 
@@ -135,6 +194,77 @@ public:
 	~Interprocess();
 
 
+	/**
+	 * Attaches an IpcListener to receive notifications of data changes.
+	 *
+	 * @param[in] listener The IpcListener to add
+	 */
+	void
+	AttachListener(
+		const char* identifier,
+		IpcListener* listener
+	);
+
+
+
+	/**
+	 * Detaches an IpcListener previously attached. Once removed, the object
+	 * will not longer receive notifications.
+	 *
+	 * @sa AttachListener(), Notify()
+	 * @param[in] listener The IpcListener to remove
+	 */
+	void
+	DetachListener(
+		const char* identifier,
+		IpcListener* listener
+	);
+
+
+
+	EIPCStatus
+	CreateSMO(
+		const char* identifier,
+		const uint32_t size
+		
+	);
+	EIPCStatus
+	ReadSMO(
+		const char* identifier,
+		char* buf,
+		uint32_t buf_size
+	);
+	EIPCStatus
+	WriteSMO(
+		const char* identifier,
+		const char* data
+	);
+
+
+	/**
+	 * Registers the interface called identifier with the next unused 
+	 * interface id. If identifier already exists, the existing id is 
+	 * returned.
+	 *
+	 * No method currently exists to unregister; this means that with
+	 * ipc_interface_id as an uint16_t, there are 65,535 possible unique 
+	 * calls to this function before it will throw a runtime_error due to 
+	 * no free ids. 0 is reserved for invalid/unset.
+	 *
+	 * @param[in] identifier The interface name to register; must be unique
+	 * to the interface or you'll get an existing one. Ones designed by us
+	 * will be a direct name; user-created ones should follow a specific
+	 * naming convention to avoid conflict (such as author_interface_name).
+	 * @return An ipc_interface_id. On failure, this function throws, so a
+	 * return value will always be a valid id, whether new or existing.
+	 */
+	ipc_interface_id
+	GetInterfaceId(
+		const char* identifier
+	);
+
+
+#if 0	// Code Removed: Native test setup; remove on boost success
 	/**
 	 * Closes the IPC-M with the specified name.
 	 *
@@ -188,7 +318,7 @@ public:
 		EIPCAction action,
 		void* unused = nullptr
 	);
-
+#endif
 };
 
 

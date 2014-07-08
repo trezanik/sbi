@@ -8,8 +8,6 @@
 
 
 
-// if we decide to use libev/libevent/boost::asio, they'll go here
-
 #if defined(_WIN32)
 #	include <process.h>
 #elif defined(__linux__)
@@ -30,18 +28,172 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 
 Interprocess::Interprocess()
 {
-	
+	_available_id = 0;
 }
 
 
 
 Interprocess::~Interprocess()
 {
-
+	// shared_memory_object::remove(*)
 }
 
 
 
+
+
+EIPCStatus
+Interprocess::CreateSMO(
+	const char* identifier,
+	const uint32_t size
+)
+{
+	using namespace boost::interprocess;
+
+	managed_shared_memory	segment(create_only, identifier, size);
+
+	ipc_header*	header = segment.construct<ipc_header>("IPC")();
+
+	return EIPCStatus::Ok;
+}
+
+
+
+EIPCStatus
+Interprocess::ReadSMO(
+	const char* identifier,
+	char* buf,
+	uint32_t buf_size
+)
+{
+	using namespace boost::interprocess;
+
+	ipc_header*		ipch;
+	managed_shared_memory	segment(open_read_only, identifier);
+
+	std::pair<ipc_header*, managed_shared_memory::size_type>	res;
+
+	res = segment.find<ipc_header>("IPC");
+	ipch = res.first;
+
+	strlcpy(ipch->buffer.get(), buf, buf_size);
+
+	return EIPCStatus::Ok;
+}
+
+
+
+EIPCStatus
+Interprocess::WriteSMO(
+	const char* identifier,
+	const char* data
+)
+{
+	using namespace boost::interprocess;
+
+	ipc_header*		ipch;
+	managed_shared_memory	segment(open_only, identifier);
+
+	std::pair<ipc_header*, managed_shared_memory::size_type>	res;
+
+	res = segment.find<ipc_header>("IPC");
+	ipch = res.first;
+
+	strlcpy(ipch->buffer.get(), data, ipch->buf_size);
+
+
+	return EIPCStatus::Ok;
+}
+
+
+
+uint32_t
+#if defined(_WIN32)
+__stdcall
+#endif
+Interprocess::ExecProcSMO(
+	void* params
+)
+{
+	smoproc_params*	tp = reinterpret_cast<smoproc_params*>(params);
+
+	return tp->thisptr->ProcSMO(tp);
+}
+
+
+
+EIPCStatus
+Interprocess::ProcSMO(
+	smoproc_params* tparam
+)
+{
+	using namespace boost::interprocess;
+
+	// input pointer won't live forever, copy the contents
+	std::shared_ptr<Ipc>	ipc = tparam->ipc;
+	Interprocess*		thisptr = tparam->thisptr;
+	// let the caller know we're done
+	tparam->ipc = nullptr;
+	tparam->thisptr = nullptr;
+
+	// normal processing
+	ipc_map::iterator	iter;
+
+	if ( CreateSMO(ipc->_name.c_str(), ipc->_buf_size) != EIPCStatus::Ok )
+	{
+		return EIPCStatus::CreateFailed;
+	}
+
+	managed_shared_memory	segment(open_only, ipc->_name.c_str());
+
+	// endless loop until it does not exist, or thread is killed
+	while ( segment.find<ipc_header>("IPC").first )
+	{
+
+	}
+
+
+	runtime.ThreadStopping(ipc->_thread_id, __func__);
+	return EIPCStatus::Ok;
+}
+
+
+
+ipc_interface_id
+Interprocess::GetInterfaceId(
+	const char* identifier
+)
+{
+	ipc_idmap::iterator	iter;
+	
+	if (( iter = _ipc_ids.find(identifier)) != _ipc_ids.end() )
+	{
+		// existing entry; return it
+		return iter->second;
+	}
+
+	/* as 0 is invalid, we can use it to detect if we'll overflow; will
+	 * work as long as the type remains unsigned */
+	if ( (_available_id + 1) == 0 )
+	{
+		LOG(ELogLevel::Error) 
+			<< "All spare interface ids have been assigned trying to register '"
+			<< identifier << "'\n";
+		throw std::runtime_error("All spare interface ids used");
+	}
+
+	// move to next available id and assign
+	_ipc_ids[identifier] = ++_available_id;
+	
+	LOG(ELogLevel::Info) << "Registered new interface: "
+		<< identifier << " = " << _available_id << "\n";
+
+	return _available_id;
+}
+
+
+
+#if 0	// Code Removed: Native test setup; remove on boost success
 EIPCStatus
 Interprocess::Close(
 	char* name
@@ -195,7 +347,7 @@ Interprocess::WaitForClient(
 
 	return EIPCStatus::Ok;
 }
-
+#endif
 
 
 END_NAMESPACE

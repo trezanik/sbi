@@ -13,6 +13,9 @@
 // uses Boost as the networking library
 #define USING_BOOST_NET
 
+// uses Boost as the IPC library
+#define USING_BOOST_IPC
+
 // debug build
 #define _DEBUG 1
 
