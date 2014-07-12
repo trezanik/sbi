@@ -161,6 +161,9 @@ InterfacesLoadDialog::SetModel(
 		toplvl->addChild(twi);
 	}
 
+	/** @todo missing Current Directory if it contains no entries.
+	 * How about we add all the tree nodes before attempting to push back,
+	 * then we just look up the node and add it like that. A lot clearer. */
 	/* add search paths even if they contain no entries (for GUI purposes;
 	 * ensures the user can see the path was actually searched) */
 	for ( auto c : cfg->interfaces.get_search_paths() )

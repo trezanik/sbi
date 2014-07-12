@@ -189,11 +189,13 @@ get_available_interfaces()
 			continue;
 		}
 
+		std::shared_ptr<AvailableInterfaceDetails>	aid(new AvailableInterfaceDetails);
+
 		for ( func_num = 0; func_num != funcarray_size; func_num++ )
 		{
 			if ( func_num == 0 )		// destroy_interface
 			{
-				aid.pf_destroy_interface = (fp_interface)dlsym(lib_handle, func_names[func_num]);
+				aid->pf_destroy_interface = (fp_interface)dlsym(lib_handle, func_names[func_num]);
 				if (( err = dlerror()) != nullptr )
 				{
 					dlclose(lib_handle);
@@ -207,7 +209,7 @@ get_available_interfaces()
 			}
 			else if ( func_num == 1 )	// instance
 			{
-				aid.pf_instance = (fp_instance)dlsym(lib_handle, func_names[func_num]);
+				aid->pf_instance = (fp_instance)dlsym(lib_handle, func_names[func_num]);
 				if (( err = dlerror()) != nullptr )
 				{
 					dlclose(lib_handle);
@@ -221,7 +223,7 @@ get_available_interfaces()
 			}
 			else if ( func_num == 2 )	// spawn_interface
 			{
-				aid.pf_spawn_interface = (fp_interface)dlsym(lib_handle, func_names[func_num]);
+				aid->pf_spawn_interface = (fp_interface)dlsym(lib_handle, func_names[func_num]);
 				if (( err = dlerror()) != nullptr )
 				{
 					dlclose(lib_handle);
@@ -242,10 +244,10 @@ get_available_interfaces()
 
 		if ( push_back )
 		{
-			aid.file_name		= filename;
-			aid.library_handle	= lib_handle;
+			aid->file_name		= filename;
+			aid->library_handle	= lib_handle;
 
-			ret.push_back(std::make_shared<AvailableInterfaceDetails>(aid));
+			ret.push_back(aid);
 			push_back = false;
 		}
 	}

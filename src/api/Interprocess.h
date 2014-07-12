@@ -12,16 +12,6 @@
 #include <map>
 #include <mutex>
 
-#if defined(USING_BOOST_IPC)
-#	include <boost/interprocess/managed_shared_memory.hpp>
-#endif
-
-#if defined(_WIN32)
-#	include <Windows.h>		// named pipes
-#elif defined(__linux__)
-#	include
-#endif
-
 #include "definitions.h"
 
 
@@ -53,6 +43,7 @@ enum EIPCStatus
 	Exists,
 	CreateFailed,
 	ThreadCreateFailed,
+	IpcNotFound,
 };
 
 
@@ -90,9 +81,8 @@ struct ipc_header
 	 * 65,535 possible message types (consider expansion to uint32_t)
 	 */
 	ipc_message_id		msg_type;
+	uint32_t		buf_size;
 	std::unique_ptr<char>	buffer;
-	uint32_t	buf_size;
-	std::mutex	lock;
 
 	ipc_header(uint32_t size)
 	{
@@ -139,12 +129,22 @@ private:
 	ipc_map			_ipc_map;
 	/**
 	 * Next available interface id; starts at 0 (in constructor), which is
-	 * an invalid id; each RegisterInterfaceId() call increments this value
-	 * and then assigns it - so the first one is always '1'.
+	 * an invalid id; each GetInterfaceId() call increments this value and
+	 * then assigns it - so the first one is always '1'.
 	 */
 	ipc_interface_id	_available_id;
 
 
+
+	/**
+	 * Executes the ProcSMO function.
+	 *
+	 * This is needed, and static, so that it can be the recipient to a new
+	 * thread creation, as it's part of a class.
+	 *
+	 * @param[in] params A pointer to populated smoproc_params cast void
+	 * @return Returns the value returned by ProcSMO, as a uint32_t
+	 */
 	static uint32_t
 #if defined(_WIN32)
 	__stdcall
@@ -152,6 +152,21 @@ private:
 	ExecProcSMO(
 		void* params
 	);
+
+
+
+	/**
+	 * Enters an endless loop, waiting for read/write requests on the Ipc
+	 * which is supplied in the parameters struct, and notifies any
+	 * listeners when these events are triggered.
+	 *
+	 * Do not call directly; must be executed via ExecProcSMO, which needs
+	 * to be the function passed into a new thread creation.
+	 *
+	 * @sa ExecProcSMO
+	 * @param[in] tp A pointer to a smoproc_params struct.
+	 * @return
+	 */
 	EIPCStatus
 	ProcSMO(
 		smoproc_params* tp
@@ -197,9 +212,10 @@ public:
 	/**
 	 * Attaches an IpcListener to receive notifications of data changes.
 	 *
+	 * @param[in] identifier The Ipc name to listen to
 	 * @param[in] listener The IpcListener to add
 	 */
-	void
+	EIPCStatus
 	AttachListener(
 		const char* identifier,
 		IpcListener* listener
@@ -211,34 +227,108 @@ public:
 	 * Detaches an IpcListener previously attached. Once removed, the object
 	 * will not longer receive notifications.
 	 *
-	 * @sa AttachListener(), Notify()
+	 * @param[in] identifier The Ipc name to detach from
 	 * @param[in] listener The IpcListener to remove
 	 */
-	void
+	EIPCStatus
 	DetachListener(
 		const char* identifier,
 		IpcListener* listener
 	);
 
 
-
+	/**
+	 * Creates a new Shared Memory Object (SMO) for usage with the Ipc of
+	 * the specified name.
+	 *
+	 * @sa ReadSMO, WriteSMO
+	 * @param identifier The Ipc name
+	 * @param size The size of the buffer to allocate for use
+	 * @return EIPCStatus::Ok if the SMO is created and ready for use
+	 * @retval EIPCStatus::CreateFailed if creation failed
+	 */
 	EIPCStatus
 	CreateSMO(
 		const char* identifier,
 		const uint32_t size
 		
 	);
+
+
+
+	/**
+	 * Destroys a previously created Shared Memory Object.
+	 *
+	 * Calling this enables the thread(s) using the object to cease running,
+	 * as the object will no longer exist. The alternative is to leave the
+	 * thread running, or wait for process termination. The thread will be
+	 * running via ProcSMO.
+	 *
+	 * @param[in] identifier The Ipc name
+	 * @return
+	 */
+	EIPCStatus
+	DestroySMO(
+		const char* identifier
+	);
+
+
+
+	/**
+	 *
+	 * @param[in] name The Ipc name to acquire
+	 * @retval nullptr if no Ipc existed for the specified name
+	 * @retval Ipc* A shared pointer to the Ipc requested
+	 */
+	std::shared_ptr<Ipc>
+	GetIpc(
+		const char* name
+	);
+
+
+
+	/**
+	 * Reads from the Shared Memory Object (SMO) from the Ipc of the
+	 * specified name.
+	 *
+	 * @sa CreateSMO, WriteSMO
+	 * @param[in] identifier The Ipc name
+	 * @param[out] buf The buffer to store the read contents into
+	 * @param[in] buf_size The size of the storage buffer, in bytes
+	 * @retval EIPCStatus::Ok if the data was written succesfully
+	 * @retval EIPCStatus::Truncated if the data was read, but there was too
+	 * much to fit into the supplied buffer.
+	 * @retval EIPCStatus::DoesNotExist if the identifier does not refer to
+	 * a known Ipc name
+	 */
 	EIPCStatus
 	ReadSMO(
 		const char* identifier,
 		char* buf,
 		uint32_t buf_size
 	);
+
+
+
+	/**
+	 * Writes into the Shared Memory Object (SMO) of the Ipc of the
+	 * specified name.
+	 *
+	 * @sa CreateSMO, ReadSMO
+	 * @param[in] identifier The Ipc name
+	 * @param[in] data The data to write
+	 * @retval EIPCStatus::Ok if the data was written succesfully
+	 * @retval EIPCStatus::Truncated if the data was written, but was too
+	 * large to fit into the buffer (created in CreateSMO).
+	 * @retval EIPCStatus::DoesNotExist if the identifier does not refer to
+	 * a known Ipc name
+	 */
 	EIPCStatus
 	WriteSMO(
 		const char* identifier,
 		const char* data
 	);
+
 
 
 	/**

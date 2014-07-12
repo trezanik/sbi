@@ -15,6 +15,9 @@ DEFINES += _DEBUG USING_LIBCONFIG
 DEPENDPATH += ../../src
 INCLUDEPATH += ../../src
 
+# for shm_open
+LIBS += -lrt
+
 #>>> libconfig
 contains(DEFINES,USING_LIBCONFIG){
 	INCLUDEPATH += ../../third-party/libconfig
@@ -46,7 +49,9 @@ SOURCES += ../../src/api/Allocator.cc \
     ../../src/api/sync_event.cc \
     ../../src/api/utils.cc \
     ../../src/api/utils_linux.cc \
-    ../../src/api/utils_win.cc
+    ../../src/api/utils_win.cc \
+    ../../src/api/Interprocess.cc \
+    ../../src/api/Ipc.cc
 
 HEADERS += ../../src/api/Allocator.h \
     ../../src/api/char_helper.h \
@@ -66,4 +71,7 @@ HEADERS += ../../src/api/Allocator.h \
     ../../src/api/utils.h \
     ../../src/api/utils_linux.h \
     ../../src/api/utils_win.h \
-    ../../src/api/version.h
+    ../../src/api/version.h \
+    ../../src/api/Ipc.h \
+    ../../src/api/Interprocess.h \
+    ../../src/api/IpcListener.h

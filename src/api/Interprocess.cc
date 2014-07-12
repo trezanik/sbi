@@ -8,6 +8,10 @@
 
 
 
+#if defined(USING_BOOST_IPC)
+#	include <boost/interprocess/managed_shared_memory.hpp>
+#endif
+
 #if defined(_WIN32)
 #	include <process.h>
 #elif defined(__linux__)
@@ -16,6 +20,7 @@
 
 #include "Interprocess.h"
 #include "Ipc.h"
+#include "IpcListener.h"
 #include "Log.h"
 #include "Terminal.h"
 #include "utils.h"
@@ -40,6 +45,24 @@ Interprocess::~Interprocess()
 
 
 
+EIPCStatus
+Interprocess::AttachListener(
+	const char* identifier,
+	IpcListener* listener
+)
+{
+	std::shared_ptr<Ipc>	ipc = GetIpc(identifier);
+
+	if ( ipc == nullptr )
+	{
+		return EIPCStatus::IpcNotFound;
+	}
+
+	_ipc_map[identifier]->_listeners.insert(listener);
+
+	return EIPCStatus::Ok;
+}
+
 
 
 EIPCStatus
@@ -52,9 +75,63 @@ Interprocess::CreateSMO(
 
 	managed_shared_memory	segment(create_only, identifier, size);
 
-	ipc_header*	header = segment.construct<ipc_header>("IPC")();
+	ipc_header*	header = segment.construct<ipc_header>("IPC")(size);
 
 	return EIPCStatus::Ok;
+}
+
+
+
+EIPCStatus
+Interprocess::DestroySMO(
+	const char* identifier
+)
+{
+	using namespace boost::interprocess;
+
+	//managed_shared_memory	segment(open, identifier);
+
+	//segment.destroy<ipc_header>("IPC");
+
+	return EIPCStatus::Ok;
+}
+
+
+
+EIPCStatus
+Interprocess::DetachListener(
+	const char* identifier,
+	IpcListener* listener
+)
+{
+	std::shared_ptr<Ipc>	ipc = GetIpc(identifier);
+
+	if ( ipc == nullptr )
+	{
+		return EIPCStatus::IpcNotFound;
+	}
+
+	_ipc_map[identifier]->_listeners.erase(
+		_ipc_map[identifier]->_listeners.find(listener)
+	);
+
+	return EIPCStatus::Ok;
+}
+
+
+
+std::shared_ptr<Ipc>
+Interprocess::GetIpc(
+	const char* name
+)
+{
+	ipc_map::iterator	iter;
+
+	// operator [] creates the map entry, which is undesired; use find()
+	if (( iter = _ipc_map.find(name)) == _ipc_map.end() )
+		return nullptr;
+
+	return iter->second;
 }
 
 
@@ -92,6 +169,7 @@ Interprocess::WriteSMO(
 	using namespace boost::interprocess;
 
 	ipc_header*		ipch;
+	std::shared_ptr<Ipc>	ipc;
 	managed_shared_memory	segment(open_only, identifier);
 
 	std::pair<ipc_header*, managed_shared_memory::size_type>	res;
@@ -101,6 +179,12 @@ Interprocess::WriteSMO(
 
 	strlcpy(ipch->buffer.get(), data, ipch->buf_size);
 
+	// buffer updated; notify the ProcSMO thread so listeners can grab it
+	if (( ipc = GetIpc(identifier)) == nullptr )
+		return EIPCStatus::IpcNotFound;
+
+	// should only be one listener (the ProcSMO), but notify all in case
+	ipc->_cv.notify_all();
 
 	return EIPCStatus::Ok;
 }
@@ -137,19 +221,26 @@ Interprocess::ProcSMO(
 	tparam->thisptr = nullptr;
 
 	// normal processing
-	ipc_map::iterator	iter;
 
 	if ( CreateSMO(ipc->_name.c_str(), ipc->_buf_size) != EIPCStatus::Ok )
 	{
 		return EIPCStatus::CreateFailed;
 	}
 
-	managed_shared_memory	segment(open_only, ipc->_name.c_str());
+	managed_shared_memory		segment(open_only, ipc->_name.c_str());
+	std::unique_lock<std::mutex>	lock(ipc->_lock);
 
 	// endless loop until it does not exist, or thread is killed
 	while ( segment.find<ipc_header>("IPC").first )
 	{
+		// block until variable is notified
+		ipc->_cv.wait(lock);
 
+		// notify all the listeners of the new data
+		for ( auto l : ipc->_listeners )
+		{
+			l->Notify();
+		}
 	}
 
 
