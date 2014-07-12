@@ -48,7 +48,7 @@
     <TargetName>libapi</TargetName>
     <IncludePath>$(ProjectRoot)/src;$(JSON);$(libconfig);$(boost);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <SourcePath>$(ProjectRoot)/src;$(VC_SourcePath);</SourcePath>
-    <LibraryPath>$(ProjectRoot)/lib/$(Platform)/$(Configuration);$(libconfig)/lib/$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
+    <LibraryPath>$(ProjectRoot)/lib/$(Platform)/$(Configuration);$(boost)/lib/$(Configuration);$(libconfig)/lib/$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -100,6 +100,7 @@
     <ClInclude Include="..\..\src\api\interface_status.h" />
     <ClInclude Include="..\..\src\api\Interprocess.h" />
     <ClInclude Include="..\..\src\api\Ipc.h" />
+    <ClInclude Include="..\..\src\api\IpcListener.h" />
     <ClInclude Include="..\..\src\api\Log.h" />
     <ClInclude Include="..\..\src\api\modules.h" />
     <ClInclude Include="..\..\src\api\Runtime.h" />

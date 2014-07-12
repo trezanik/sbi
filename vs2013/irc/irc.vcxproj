@@ -89,7 +89,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\irc\interface.cc" />
-    <ClCompile Include="..\..\src\irc\IpcListener.cc" />
     <ClCompile Include="..\..\src\irc\IrcFactory.cc" />
     <ClCompile Include="..\..\src\irc\IrcChannel.cc" />
     <ClCompile Include="..\..\src\irc\IrcConnection.cc" />

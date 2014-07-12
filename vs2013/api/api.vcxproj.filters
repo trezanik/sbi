@@ -75,6 +75,9 @@
     <ClInclude Include="..\..\src\api\Ipc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\api\IpcListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\api\utils.cc">
