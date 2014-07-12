@@ -46,7 +46,13 @@ public:
 	 * ReadSMO, which just gets the data all the same anyway...
 	 */
 	virtual void
-	Notify();
+	Notify()
+	{
+		/* on Visual Studio, this cannot just be a declaration, as it
+		 * requires a call to this function to exist within the library,
+		 * despite nothing from api actively using it.
+		 * gcc/clang are happy without this, but no problems with it. */
+	}
 };
 
 
