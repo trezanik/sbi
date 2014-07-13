@@ -10,6 +10,7 @@ USING_BOOST_IPC = false
 USING_BOOST_NET = false
 USING_OPENSSL_NET = false
 USING_MEMORY_DEBUGGING = false
+USING_DEFAULT_QT5_GUI = false
 USING_LIBCONFIG = false
 USING_JSON_CONFIG = false
 USING_API_WARNINGS = false
@@ -47,6 +48,12 @@ def print_help()
 	puts "USING_OPENSSL_NET  (define)"
 	puts "    - Uses OpenSSL for networking functionality."
 	puts "    - No alternative socket libraries (xxx_NET) can be provided."
+	puts "USING_BOOST_IPC  (define)"
+	puts "    - Uses Boost libraries for IPC functionality."
+	puts "    - No alternative IPC libraries (xxx_IPC) can be provided."
+	puts "USING_DEFAULT_QT5_GUI  (define)"
+	puts "    - Uses the official, default Qt5 GUI."
+	puts "    - No alternative GUI libraries (xxx_GUI) can be provided."
 	puts "USING_LIBCONFIG  (define)"
 	puts "    - Uses libconfig as the configuration file parser."
 	puts "    - No alternative config libraries (xxx_CONFIG) can be provided."
@@ -85,6 +92,12 @@ if ARGV.length > 0
 		elsif arg == "USING_OPENSSL_NET"
 			USING_OPENSSL_NET = true
 			puts "  -> " + "Enabled OpenSSL networking".fg_yellow.bold
+		elsif arg == "USING_BOOST_IPC"
+			USING_BOOST_IPC = true
+			puts "  -> " + "Enabled Boost IPC".fg_yellow.bold
+		elsif arg == "USING_DEFAULT_QT5_GUI"
+			USING_DEFAULT_QT5_GUI = true
+			puts "  -> " + "Enabled default Qt5 GUI".fg_yellow.bold
 		elsif arg == "USING_LIBCONFIG"
 			USING_LIBCONFIG = true
 			puts "  -> " + "Enabled libconfig configuration".fg_yellow.bold
@@ -182,6 +195,14 @@ end
 if USING_BOOST_IPC
 	content.push("// uses Boost as the IPC library");
 	content.push("#define USING_BOOST_IPC");
+	content.push("");
+end
+#******************************************************************************
+# GUI
+#******************************************************************************
+if USING_DEFAULT_QT5_GUI
+	content.push("// uses the official, default Qt5 GUI");
+	content.push("#define USING_DEFAULT_QT5_GUI");
 	content.push("");
 end
 #******************************************************************************

@@ -16,7 +16,7 @@ QMAKE_CXXFLAGS += \
 	-Wno-ignored-qualifiers \
 	-Wno-write-strings \
 	-include build_config.h
-DEFINES += _DEBUG USING_BOOST_NET
+DEFINES += _DEBUG USING_BOOST_NET USING_DEFAULT_QT5_GUI
 DEPENDPATH += ../../src
 INCLUDEPATH += ../../src
 

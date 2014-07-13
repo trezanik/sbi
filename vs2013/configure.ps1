@@ -5,6 +5,7 @@ Param (
     [switch]$USING_BOOST_NET = $false,
     [switch]$USING_OPENSSL_NET = $false,
     [switch]$USING_MEMORY_DEBUGGING = $false,
+    [switch]$USING_DEFAULT_QT5_GUI = $false,
     [switch]$USING_LIBCONFIG = $false,
     [switch]$USING_JSON_CONFIG = $false,
     [switch]$USING_API_WARNINGS = $false
@@ -81,6 +82,17 @@ if ( $USING_BOOST_IPC )
     $content += , @(
     	"// uses Boost as the IPC library",
     	"#define USING_BOOST_IPC",
+    	""
+    )
+}
+#******************************************************************************
+# GUI
+#******************************************************************************
+if ( $USING_DEFAULT_QT5_GUI )
+{
+    $content += , @(
+    	"// uses the official, default Qt5 GUI",
+    	"#define USING_DEFAULT_QT5_GUI",
     	""
     )
 }

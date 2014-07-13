@@ -23,7 +23,7 @@ QMAKE_CXXFLAGS += \
 	-std=c++11 \
 	-Wall \
 	-include build_config.h
-DEFINES += _DEBUG USING_LIBCONFIG
+DEFINES += _DEBUG USING_LIBCONFIG USING_DEFAULT_QT5_GUI
 DEPENDPATH += ../../src
 INCLUDEPATH += ../../src
 MOC_DIR = ../../src/Qt5GUI/generated
