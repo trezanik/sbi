@@ -8,7 +8,7 @@
 
 
 
-#include <assert.h>			// assertions
+#include <cassert>			// assertions
 
 #include <api/utils.h>
 #include "IrcUser.h"			// prototypes

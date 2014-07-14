@@ -8,7 +8,7 @@
 
 
 
-#include <assert.h>			// assertions
+#include <cassert>			// assertions
 
 #if defined(_WIN32)
 #	include <WS2tcpip.h>		// Winsock needed before openssl

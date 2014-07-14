@@ -8,9 +8,9 @@
 
 
 
-#include <assert.h>			// assertions
+#include <cassert>			// assertions
 #include <algorithm>			// std::find
-#include <string.h>			// strcmp
+#include <cstring>			// strcmp
 
 #include "IrcChannel.h"			// prototypes
 #include "IrcUser.h"			// IrcUser
