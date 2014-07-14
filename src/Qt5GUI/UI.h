@@ -21,6 +21,7 @@
 
 class QApplication;
 class QMainWindow;
+class QStackedWidget;
 class Ui_MainWindow;
 
 
@@ -38,7 +39,7 @@ END_NAMESPACE
  *
  * @class UI
  */
-class UI : public QObject
+class SBI_QT5GUI_API UI : public QObject
 {
 	Q_OBJECT
 
@@ -137,6 +138,15 @@ public:
 	Show(
 		bool enabled = true
 	);
+
+
+	/**
+	 * Returns a pointer to the QStackedWidget that all interfaces add their
+	 * unique page to. This is used by the interfaces to be able to add
+	 * themselves in when they're loading.
+	 */
+	QStackedWidget*
+	StackWidget() const;
 
 
 	/* We use a similar method as that in Configuration to store settings.

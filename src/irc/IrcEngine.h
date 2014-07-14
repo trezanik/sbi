@@ -32,21 +32,12 @@ class IrcObject;
 class IrcConnection;
 class IrcNetwork;
 class IrcChannel;
-//class IrcListener;
 class IrcParser;
 class IrcPool;
+class IrcGui;
 
 
-#if 0	// Code Removed: Now including IrcListener.h
-#if IS_VISUAL_STUDIO
-	// Visual Studio can handle a forward-declaration enum
-enum E_IRC_LISTENER_NOTIFICATION;
-#else
-	/* C++11 permits forward declaring enums - requires a type;
-	 * g++ does not compile unless this is a signed integer */
-enum E_IRC_LISTENER_NOTIFICATION : int32_t;
-#endif
-#endif	// Code Removed
+
 
 
 /** Module name accessor for the runtime */
@@ -286,7 +277,8 @@ public:
 	DetachListener(
 		IrcListener* listener
 	);
-	
+
+
 
 #if 0
 	/**
@@ -365,6 +357,17 @@ public:
 	 */
 	IrcPool*
 	Pools() const;
+
+
+	/**
+	 * Accesses the UI functionality exposed by this interface.
+	 *
+	 * Never fails - created on the stack as a static variable.
+	 *
+	 * @return A pointer to the IrcGui
+	 */
+	IrcGui*
+	UI() const;
 };
 
 

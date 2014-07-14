@@ -43,12 +43,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectRoot)/src;$(Boost);$(OpenSSL)/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(ProjectRoot)/src;$(Qt5-x86)/include;$(Boost);$(OpenSSL)/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <SourcePath>$(ProjectRoot)/src;$(VC_SourcePath);</SourcePath>
     <OutDir>$(ProjectRoot)/bin/$(Platform)/$(Configuration)/</OutDir>
     <IntDir>$(Configuration)/</IntDir>
     <TargetName>libirc</TargetName>
-    <LibraryPath>$(Boost)/lib/$(Configuration);$(ProjectRoot)/lib/$(Platform)/$(Configuration);$(OpenSSL)/out32dll;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
+    <LibraryPath>$(Qt5-x86)/lib;$(Boost)/lib/$(Configuration);$(ProjectRoot)/lib/$(Platform)/$(Configuration);$(OpenSSL)/out32dll;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -93,6 +93,7 @@
     <ClCompile Include="..\..\src\irc\IrcChannel.cc" />
     <ClCompile Include="..\..\src\irc\IrcConnection.cc" />
     <ClCompile Include="..\..\src\irc\IrcEngine.cc" />
+    <ClCompile Include="..\..\src\irc\IrcGui.cc" />
     <ClCompile Include="..\..\src\irc\IrcNetwork.cc" />
     <ClCompile Include="..\..\src\irc\IrcObject.cc" />
     <ClCompile Include="..\..\src\irc\IrcParser.cc" />
@@ -110,6 +111,7 @@
     <ClInclude Include="..\..\src\irc\ircd_bahamut.h" />
     <ClInclude Include="..\..\src\irc\ircd_ngircd.h" />
     <ClInclude Include="..\..\src\irc\IrcEngine.h" />
+    <ClInclude Include="..\..\src\irc\IrcGui.h" />
     <ClInclude Include="..\..\src\irc\IrcListener.h" />
     <ClInclude Include="..\..\src\irc\IrcNetwork.h" />
     <ClInclude Include="..\..\src\irc\IrcObject.h" />

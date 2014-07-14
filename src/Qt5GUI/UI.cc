@@ -10,6 +10,7 @@
 
 #include <QtWidgets/qapplication.h>
 #include <QtWidgets/qmainwindow.h>
+#include <QtWidgets/qstackedwidget.h>
 #include <QtCore/qstring.h>
 
 #if defined(USING_LIBCONFIG)
@@ -402,6 +403,14 @@ UI::Show(
 	}
 
 	enabled ? _wnd->show() : _wnd->hide();
+}
+
+
+
+QStackedWidget*
+UI::StackWidget() const
+{
+	return _base->stacked_widget;
 }
 
 

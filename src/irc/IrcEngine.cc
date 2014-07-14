@@ -12,7 +12,9 @@
 #include <cassert>
 
 #include <api/Terminal.h>
+#include <api/Interprocess.h>
 #include "IrcEngine.h"			// prototypes
+#include "IrcGui.h"
 #include "IrcListener.h"
 #include "IrcConnection.h"
 #include "IrcNetwork.h"
@@ -30,6 +32,8 @@ IrcEngine::IrcEngine()
 {
 	// create the object factory
 	_ircobject_factory.reset(new IrcFactory(this));
+	// and the UI
+	UI()->CreateMainPage();
 }
 
 
@@ -202,8 +206,17 @@ IrcEngine::Parser() const
 IrcPool*
 IrcEngine::Pools() const
 {
-	static IrcPool	pools;
+	static IrcPool		pools;
 	return &pools;
+}
+
+
+
+IrcGui*
+IrcEngine::UI() const
+{
+	static IrcGui		ui;
+	return &ui;
 }
 
 
