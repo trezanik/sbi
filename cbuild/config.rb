@@ -11,6 +11,7 @@ USING_BOOST_NET = false
 USING_OPENSSL_NET = false
 USING_MEMORY_DEBUGGING = false
 USING_DEFAULT_QT5_GUI = false
+USING_JSON_SPIRIT_RPC = false
 USING_LIBCONFIG = false
 USING_JSON_CONFIG = false
 USING_API_WARNINGS = false
@@ -54,6 +55,9 @@ def print_help()
 	puts "USING_DEFAULT_QT5_GUI  (define)"
 	puts "    - Uses the official, default Qt5 GUI."
 	puts "    - No alternative GUI libraries (xxx_GUI) can be provided."
+	puts "USING_JSON_SPIRIT_RPC  (define)"
+	puts "    - Uses json-spirit as the RPC library."
+	puts "    - No alternative RPC libraries (xxx_RPC) can be provided."
 	puts "USING_LIBCONFIG  (define)"
 	puts "    - Uses libconfig as the configuration file parser."
 	puts "    - No alternative config libraries (xxx_CONFIG) can be provided."
@@ -98,6 +102,9 @@ if ARGV.length > 0
 		elsif arg == "USING_DEFAULT_QT5_GUI"
 			USING_DEFAULT_QT5_GUI = true
 			puts "  -> " + "Enabled default Qt5 GUI".fg_yellow.bold
+		elsif arg == "USING_JSON_SPIRIT_RPC"
+			USING_JSON_SPIRIT_RPC = true
+			puts "  -> " + "Enabled json-spirit RPC".fg_yellow.bold
 		elsif arg == "USING_LIBCONFIG"
 			USING_LIBCONFIG = true
 			puts "  -> " + "Enabled libconfig configuration".fg_yellow.bold
@@ -195,6 +202,14 @@ end
 if USING_BOOST_IPC
 	content.push("// uses Boost as the IPC library");
 	content.push("#define USING_BOOST_IPC");
+	content.push("");
+end
+#******************************************************************************
+# RPC library
+#******************************************************************************
+if USING_JSON_SPIRIT_RPC
+	content.push("// uses json-spirit as the RPC library");
+	content.push("#define USING_JSON_SPIRIT_RPC");
 	content.push("");
 end
 #******************************************************************************

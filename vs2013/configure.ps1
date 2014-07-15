@@ -6,6 +6,7 @@ Param (
     [switch]$USING_OPENSSL_NET = $false,
     [switch]$USING_MEMORY_DEBUGGING = $false,
     [switch]$USING_DEFAULT_QT5_GUI = $false,
+    [switch]$USING_JSON_SPIRIT_RPC = $false,
     [switch]$USING_LIBCONFIG = $false,
     [switch]$USING_JSON_CONFIG = $false,
     [switch]$USING_API_WARNINGS = $false
@@ -82,6 +83,17 @@ if ( $USING_BOOST_IPC )
     $content += , @(
     	"// uses Boost as the IPC library",
     	"#define USING_BOOST_IPC",
+    	""
+    )
+}
+#******************************************************************************
+# RPC library
+#******************************************************************************
+if ( $USING_JSON_SPIRIT_RPC )
+{
+    $content += , @(
+    	"// uses json-spirit as the RPC library",
+    	"#define USING_JSON_SPIRIT_RPC",
     	""
     )
 }
