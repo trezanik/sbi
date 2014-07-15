@@ -13,6 +13,7 @@ documentation/doxygen/latex
 
 # generated files (keep the folders though)
 **/generated/*
+src/build_config.h
 
 #########################
 # Windows/Visual Studio #
