@@ -55,6 +55,7 @@ enum class ERPCStatus
 	OutOfMemory,		// Memory allocation failed
 	AccessDenied,		// No permissions
 	UnknownType,		// Unrecognized type passed as parameter
+	NameInUse,		// RpcCommand name is already used
 	// json-rpc
 	InvalidRequest,
 	MethodNotFound,
@@ -63,6 +64,21 @@ enum class ERPCStatus
 	ParseError,
 };
 
+
+
+/* These definitions are the flags for a RPC Command. Requires a minimum of a 
+ * 32-bit variable for storage in the class (assumed to be the case due to the
+ * target platforms); the data type is just unsigned, so the available number of
+ * flags depends on this.
+ *
+ * Reserved (API/Developer flags) are 0x00000000 through to 0x0000FFFF; anything
+ * after these values can be used by an interface if desired for their own 
+ * functionality.
+ */
+#define RPCF_DEFAULT			0x00000000	// default state; locked, not allowed in test mode
+#define RPCF_UNLOCKED			0x00000001	// RPC function is unlocked, callable
+#define RPCF_ALLOW_IN_TEST_MODE		0x00000002	// RPC function is allowed in test mode
+#define RPCF_USER_DEFINED		0x00010000	// start of user definitions
 
 
 /**
@@ -76,10 +92,12 @@ private:
 
 protected:
 public:
+	// internal, unique name of the command
 	std::string	name;
+	// the function itself
 	rpc_function	actor;
-	bool		allow_test_mode;
-	bool		unlocked;
+	// RPC Command type flags - see RPCF_Xxxx definitions
+	unsigned	flags;
 };
 
 
@@ -113,6 +131,25 @@ public:
 	operator[] (
 		std::string name
 	) const;
+
+
+	/**
+	 * Adds a new RPC function.
+	 *
+	 * Used by Interfaces so they can enable support for their own
+	 * functionality, and with other third-party options.
+	 *
+	 * The one caveat is that the command name must be unique; a name
+	 * conflict will be triggered if the same name is used more than once.
+	 *
+	 * @param[in] new_cmd The RpcCommand to add to the table
+	 * @retval ERPCStatus::Ok If the function is added
+	 * @return The relevant ERPCStatus error code on failure
+	 */
+	ERPCStatus
+	AddCallableRPC(
+		RpcCommand* new_cmd
+	);
 	
 
 	/**
@@ -158,6 +195,17 @@ private:
 	NO_CLASS_COPY(RpcServer);
 
 
+	RpcTable		_table;
+
+
+	/** Retrieves a pointer to the RpcTable, to Add/Remove RpcCommands */
+	RpcTable*
+	GetRpcTable()
+	{
+		return &_table;
+	}
+
+
 	void
 	TypeCheck(
 		const json_spirit::Array& params,
@@ -181,18 +229,7 @@ public:
 	~RpcServer();
 
 
-	/**
-	 * Adds a new RPC function.
-	 *
-	 * Used by Interfaces so they can enable support for their own
-	 * functionality, and with other third-party options.
-	 *
-	 * @retval ERPCStatus::Ok If the function is added
-	 * @return The relevant ERPCStatus error code on failure
-	 */
-	ERPCStatus
-	AddCallableRPC(
-	);
+	
 
 
 	/**

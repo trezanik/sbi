@@ -191,10 +191,10 @@ RpcServer::TypeCheck(
 
 
 static const RpcCommand ApiRpcCommands[] =
-{	//  name                      function                 testmd  unlocked
-	//  ------------------------  -----------------------  ------  --------
-	{ "help", &help, true, true },
-	{ "stop", &stop, true, true },
+{	//  name                      function                 flags
+	//  ------------------------  -----------------------  ---------------->
+	{ "help", &help, RPCF_ALLOW_IN_TEST_MODE | RPCF_UNLOCKED },
+	{ "stop", &stop, RPCF_ALLOW_IN_TEST_MODE | RPCF_UNLOCKED },
 };
 
 
@@ -212,6 +212,7 @@ RpcTable::RpcTable()
 }
 
 
+
 const RpcCommand*
 RpcTable::operator[] (
 	std::string name
@@ -225,6 +226,24 @@ RpcTable::operator[] (
 	return (*it).second;
 }
 
+
+
+ERPCStatus
+RpcTable::AddCallableRPC(
+RpcCommand* new_cmd
+)
+{
+	// check for a duplicate name that would cause conflicts
+	if ( (_cmd_map.find(new_cmd->name)) != _cmd_map.end() )
+	{
+		return ERPCStatus::NameInUse;
+	}
+
+	// name is unique; add it to the map.
+	_cmd_map[new_cmd->name] = new_cmd;
+
+	return ERPCStatus::Ok;
+}
 
 
 
