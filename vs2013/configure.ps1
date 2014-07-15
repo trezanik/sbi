@@ -153,7 +153,7 @@ $content += , @(
 # Write updated configuration to file
 #******************************************************************************
 Write-Host "==> Writing build configuration to '$BUILDCONFIG_FILE'"
-$content | Out-File $BUILDCONFIG_FILE
+$content | Out-File -Encoding "ASCII" $BUILDCONFIG_FILE
 
 Write-Host "==> Finished."
 
