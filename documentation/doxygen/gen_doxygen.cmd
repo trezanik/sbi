@@ -7,8 +7,7 @@ set DOXYGEN_VER=1.8.5
 
 doxygen-%DOXYGEN_VER%.exe sbi.win32.doxygen > doxygen.log
 
-REM Replace the default css with our own, backing up the original
-copy html\doxygen.css doxygen-%DOXYGEN_VER%-original.css > nul
+REM Replace the default css with our own
 copy doxygen-%DOXYGEN_VER%-custom.css html\doxygen.css > nul
 
 popd

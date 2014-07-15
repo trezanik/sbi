@@ -10,6 +10,9 @@
 # Doxygen documentation (generated)
 documentation/doxygen/html
 documentation/doxygen/latex
+documentation/doxygen/man
+# but keep the custom css/exe on Windows environments
+!documentation/doxygen/doxygen-*
 
 # generated files (keep the folders though)
 **/generated/*
