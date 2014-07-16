@@ -8,7 +8,7 @@
  *		is not a coincidence. I've never had to use json spirit or write
  *		a RPC client or server before, and I'd rather use something that
  *		works and adapt it then reinvent the wheel - incorrectly. 
- *		See bitcoinrpc.h for the original.
+ *		See bitcoinrpc.[h|cpp] for the originals.
  */
 
 
@@ -38,6 +38,26 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 #define PAIRTYPE(t1, t2)	std::pair<t1, t2>
 
 
+// forward declarations
+class RpcServer;
+
+
+
+
+/**
+ * RPC server thread parameters
+ */
+struct SBI_API rpcs_params
+{
+	RpcServer*	thisptr;
+
+#if defined(_WIN32)
+	uintptr_t	thread_handle;
+#endif
+	uint32_t	thread_id;
+};
+
+
 
 
 /**
@@ -58,6 +78,23 @@ private:
 
 
 	RpcTable		_table;
+
+
+	/**
+	 * Enters an endless loop, processing RPC requests.
+	 *
+	 * Do not call directly; must be executed via ExecServerThread, which 
+	 * needs to be the function passed into a new thread creation.
+	 *
+	 * @sa ExecServerThread
+	 * @param[in] tp A pointer to a rpcs_params struct.
+	 * @return
+	 */
+	ERpcStatus
+	ServerThread(
+		rpcs_params* tp
+	);
+
 
 
 	void
@@ -83,7 +120,25 @@ public:
 	~RpcServer();
 
 
-	
+	/**
+	 * Executes the ServerThread function.
+	 *
+	 * This is needed, and static, so that it can be the recipient to a new
+	 * thread creation, as it's part of a class.
+	 *
+	 * @sa ServerThread
+	 * @param[in] params A pointer to populated rpcs_params cast void
+	 * @return Returns the value returned by ServerThread, as an uint32_t
+	 */
+	static uint32_t
+#if defined(_WIN32)
+	__stdcall
+#endif
+	ExecServerThread(
+		void* params
+	);
+
+
 
 
 	/**

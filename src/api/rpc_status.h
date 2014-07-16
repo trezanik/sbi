@@ -23,6 +23,8 @@ enum class ERpcStatus
 	AccessDenied,		// No permissions
 	UnknownType,		// Unrecognized type passed as parameter
 	NameInUse,		// RpcCommand name is already used
+	ThreadCreateFailed,	// Could not create the server thread
+	NotListening,		// Could not listen on requested port
 	// json-rpc
 	InvalidRequest,
 	MethodNotFound,
