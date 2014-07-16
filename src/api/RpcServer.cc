@@ -1,6 +1,6 @@
 
 /**
- * @file	Rpc.cc
+ * @file	RpcServer.cc
  * @author	James Warren
  * @copyright	James Warren, 2014
  * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)
@@ -18,7 +18,7 @@
 #	include <Windows.h>
 #endif
 
-#include "Rpc.h"
+#include "RpcServer.h"
 #include "utils.h"
 
 
@@ -30,7 +30,7 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 // special function; can't be class member as the return value is for throwing
 json_spirit::Object
 JSONRPCError(
-	ERPCStatus err_code,
+	ERpcStatus err_code,
 	const std::string& message
 )
 {
@@ -113,8 +113,30 @@ RpcServer::GetInterfaceInfo(
 	bool fHelp
 )
 {
+	params;
+	fHelp;
+
 	/** @todo implement RPC interface info acquisition */
+
 	return 0;
+}
+
+
+
+ERpcStatus
+RpcServer::Shutdown()
+{
+	return ERpcStatus::Ok;
+}
+
+
+
+ERpcStatus
+RpcServer::Startup()
+{
+
+
+	return ERpcStatus::Ok;
 }
 
 
@@ -142,7 +164,7 @@ RpcServer::TypeCheck(
 				value_type_to_string(v.type())
 			);
 			
-			throw JSONRPCError(ERPCStatus::UnknownType, err);
+			throw JSONRPCError(ERpcStatus::UnknownType, err);
 		}
 		i++;
 	}
@@ -166,7 +188,7 @@ RpcServer::TypeCheck(
 		{
 			err = BUILD_STRING("Missing ", t.first.c_str());
 
-			throw JSONRPCError(ERPCStatus::UnknownType, err);
+			throw JSONRPCError(ERpcStatus::UnknownType, err);
 		}
 
 		if ( !((v.type() == t.second) || (fAllowNull && (v.type() == json_spirit::null_type))) )
@@ -180,70 +202,11 @@ RpcServer::TypeCheck(
 				value_type_to_string(v.type())
 			);
 					   
-			throw JSONRPCError(ERPCStatus::UnknownType, err);
+			throw JSONRPCError(ERpcStatus::UnknownType, err);
 		}
 	}
 }
 
-
-
-
-
-
-static const RpcCommand ApiRpcCommands[] =
-{	//  name                      function                 flags
-	//  ------------------------  -----------------------  ---------------->
-	{ "help", &help, RPCF_ALLOW_IN_TEST_MODE | RPCF_UNLOCKED },
-	{ "stop", &stop, RPCF_ALLOW_IN_TEST_MODE | RPCF_UNLOCKED },
-};
-
-
-RpcTable::RpcTable()
-{
-	uint32_t	vcidx;
-
-	for ( vcidx = 0; vcidx < (sizeof(ApiRpcCommands) / sizeof(ApiRpcCommands[0])); vcidx++ )
-	{
-		const RpcCommand*	pcmd;
-
-		pcmd = &ApiRpcCommands[vcidx];
-		_cmd_map[pcmd->name] = pcmd;
-	}
-}
-
-
-
-const RpcCommand*
-RpcTable::operator[] (
-	std::string name
-) const
-{
-	std::map<std::string, const RpcCommand*>::const_iterator it = _cmd_map.find(name);
-
-	if ( it == _cmd_map.end() )
-		return nullptr;
-
-	return (*it).second;
-}
-
-
-
-ERPCStatus
-RpcTable::AddCallableRPC(
-RpcCommand* new_cmd
-)
-{
-	// check for a duplicate name that would cause conflicts
-	if ( (_cmd_map.find(new_cmd->name)) != _cmd_map.end() )
-	{
-		return ERPCStatus::NameInUse;
-	}
-
-	// name is unique; add it to the map.
-	_cmd_map[new_cmd->name] = new_cmd;
-
-	return ERPCStatus::Ok;
-}
 
 
 

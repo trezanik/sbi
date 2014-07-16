@@ -36,6 +36,7 @@ class Allocator;
 class Configuration;
 class Log;
 class Interprocess;
+class RpcServer;
 
 
 
@@ -254,6 +255,16 @@ public:
 		const char* text_buffer,
 		const char* title
 	) const;
+
+
+	/**
+	 * Gets the RPC server class.
+	 *
+	 * @return A pointer to the static instance within the runtime.
+	 */
+	RpcServer*
+	RPC() const;
+
 
 
 	/**

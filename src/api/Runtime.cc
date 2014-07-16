@@ -26,6 +26,7 @@
 #include "Log.h"
 #include "Configuration.h"
 #include "Interprocess.h"
+#include "RpcServer.h"
 #include "Terminal.h"
 #include "utils.h"		// string handling
 
@@ -204,6 +205,15 @@ Runtime::Report(
 	::MessageBox(GetDesktopWindow(), w_text, w_title, MB_OK);
 #else
 #endif
+}
+
+
+
+RpcServer*
+Runtime::RPC() const
+{
+	static class RpcServer	rpc;
+	return &rpc;
 }
 
 
