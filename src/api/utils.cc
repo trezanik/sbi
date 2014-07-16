@@ -19,6 +19,13 @@
 #	include <Windows.h>	// OS API
 #else
 #	include <sys/time.h>
+
+	// for rename_thread
+#	if defined(__linux__)
+#		include <sys/prctl.h>
+#	elif defined(BSD)
+#		include <pthread_np.h>
+#	endif
 #endif
 
 #include "utils.h"		// prototypes
@@ -154,6 +161,24 @@ mbstr_to_chartypestr(
 	return ret;
 #else
 	return src;
+#endif
+}
+
+
+
+void
+rename_thread(
+	const char* name
+)
+{
+#if IS_VISUAL_STUDIO	// is this safe to use _WIN32 instead?
+	set_thread_name(GetCurrentThreadId(), name);
+#elif defined(__linux__)
+	::prctl(PR_SET_NAME, name, 0, 0, 0);
+#elif defined(BSD)
+	pthread_set_name_np(pthread_self(), name);
+#else
+	(void)name;
 #endif
 }
 

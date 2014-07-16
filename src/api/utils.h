@@ -127,6 +127,20 @@ get_ms_time();
 
 
 
+/**
+ * Renames the current thread, making it easier to identify when the application
+ * is heavily multi-threaded.
+ *
+ * @param[in] name The new thread name
+ */
+SBI_API
+void
+rename_thread(
+	const char* name
+);
+
+
+
 SBI_API
 char*
 skip_whitespace(

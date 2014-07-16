@@ -173,6 +173,20 @@ mb_to_utf8(
 
 
 
+/**
+ * Windows-specific thread rename code. Dedicated utility function due to the
+ * amount of code required.
+ *
+ * @sa rename_thread
+ */
+void
+set_thread_name(
+	DWORD thread_id,
+	const char* name
+);
+
+
+
 #if 0	// Consider this for future; zero priority at the moment
 SBI_API
 bool
