@@ -28,6 +28,7 @@
 #include <api/Terminal.h>		// output
 #include <api/Allocator.h>		// memory debug log name
 #include <api/Configuration.h>		// configuration
+#include <api/RpcServer.h>		// RPC
 #include "app.h"			// prototypes
 #include "getopt.h"			// command line parser
 
@@ -217,6 +218,30 @@ app_init(
 		 * if we fail */
 		//SetConsoleCtrlHandler((PHANDLER_ROUTINE)sig_handler, TRUE);
 
+
+#	if !defined(_WIN64)
+		/* as we target Windows 7 minimum, this functionality is 
+		 * available. Can get dynamically on XP SP3 or later. Supported
+		 * on 32-bit processes only */
+		DEP_SYSTEM_POLICY_TYPE	cur_dep = GetSystemDEPPolicy();
+
+		// 0=AlwaysOff, 1=AlwaysOn, 2=OptIn, 3=OptOut
+		if ( cur_dep == 2 )
+		{
+			if ( SetProcessDEPPolicy(PROCESS_DEP_ENABLE) )
+			{
+				LOG(ELogLevel::Debug) << "Enabled DEP on the process\n";
+			}
+			else
+			{
+				DWORD	le = GetLastError();
+				LOG(ELogLevel::Error) << "Enabling DEP on the process failed; error "
+					<< le << " (" << error_code_as_string(le) << ")\n";
+			}
+		}
+#	endif	// _WIN64
+
+
 		std::vector<ModuleInformation*>	miv;
 		uint32_t		num = 0;
 		CHARSTREAMTYPE		ss;
@@ -226,16 +251,8 @@ app_init(
 		{
 			ss << "Outputting loaded modules:\n";
 
-			// VS2010 brings *some* C++11 support, but not auto
-#if MSVC_BEFORE_VS11
-			for ( std::vector<ModuleInformation*>::iterator iter = miv.begin();
-			     iter != miv.end(); iter++ )
-			{
-				ModuleInformation*	mi = (*iter);
-#else
 			for ( auto mi : miv )
 			{
-#endif
 				ss << "\t* [" << num << "]\t" <<
 					mi->name << "  [" <<
 					mi->fvi.major << "." <<
@@ -252,7 +269,7 @@ app_init(
 			LOG(ELogLevel::Debug) << ss.str();
 		}
 	}
-#endif
+#endif	// _WIN32
 
 
 
@@ -266,6 +283,10 @@ app_init(
 #endif
 	}
 	
+
+	// with everything initialized, we can start the RPC server and finish
+	runtime.RPC()->Startup();
+
 
 	end_time = get_ms_time();
 	std::cout << "Application startup completed in " << (end_time - start_time) << "ms\n";
