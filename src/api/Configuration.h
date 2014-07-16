@@ -170,6 +170,15 @@ public:
 	} modules;
 
 	struct {
+		/* If set, all RPC communication will be done using SSL. Any
+		 * interface not supporting SSL will not be able to use RPC. */
+		proxy<bool>			use_ssl;
+		/* If set, only connections from the local machine will be
+		 * allowed; all remote connections will be denied. */
+		proxy<bool>			local_only;
+	} rpc;
+
+	struct {
 		proxy<std::string>			command_prefix;
 		proxy<bool>				enable_terminal;
 
