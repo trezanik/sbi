@@ -6,9 +6,9 @@
     <OpenSSL>$(ProjectRoot)/third-party/openssl</OpenSSL>
     <Qt5-x64>$(ProjectRoot)/../Qt/5.3/msvc2013_64</Qt5-x64>
     <Qt5-x86>$(ProjectRoot)/../Qt/5.3/msvc2013</Qt5-x86>
-    <JSON>$(ProjectRoot)/third-party/json-spirit</JSON>
     <libconfig>$(ProjectRoot)/third-party/libconfig</libconfig>
     <Boost>$(ProjectRoot)/third-party/boost</Boost>
+    <json_spirit>$(ProjectRoot)/third-party/json_spirit</json_spirit>
   </PropertyGroup>
   <PropertyGroup>
     <ExecutablePath>$(VC_ExecutablePath_x86);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);</ExecutablePath>
@@ -35,16 +35,16 @@
       <Value>$(Qt5-x86)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
-    <BuildMacro Include="JSON">
-      <Value>$(JSON)</Value>
-      <EnvironmentVariable>true</EnvironmentVariable>
-    </BuildMacro>
     <BuildMacro Include="libconfig">
       <Value>$(libconfig)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
     <BuildMacro Include="Boost">
       <Value>$(Boost)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="json_spirit">
+      <Value>$(json_spirit)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
   </ItemGroup>
