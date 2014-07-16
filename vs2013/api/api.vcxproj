@@ -46,9 +46,9 @@
     <OutDir>$(ProjectRoot)/bin/Win32/$(Configuration)/</OutDir>
     <IntDir>$(Configuration)/</IntDir>
     <TargetName>libapi</TargetName>
-    <IncludePath>$(ProjectRoot)/src;$(json_spirit);$(libconfig);$(boost);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(ProjectRoot)/src;$(openssl);$(json_spirit);$(libconfig);$(boost);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <SourcePath>$(ProjectRoot)/src;$(VC_SourcePath);</SourcePath>
-    <LibraryPath>$(ProjectRoot)/lib/$(Platform)/$(Configuration);$(boost)/lib/$(Configuration);$(libconfig)/lib/$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
+    <LibraryPath>$(ProjectRoot)/lib/$(Platform)/$(Configuration);$(openssl)/lib;$(boost)/lib/$(Configuration);$(libconfig)/lib/$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
