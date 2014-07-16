@@ -179,10 +179,10 @@ strlcat(
 	uint32_t dest_size
 )
 {
-    char*		d = dest;
-    const char*	s = src;
-    uint32_t		n = dest_size;
-	uint32_t			len;
+	char*		d = dest;
+	const char*	s = src;
+	uint32_t	n = dest_size;
+	uint32_t	len;
 
 	// Find the end of dst and adjust bytes left but don't go past end
 	while ( *d != '\0' && n-- != 0 )
@@ -219,9 +219,9 @@ strlcpy(
 	uint32_t dest_size
 )
 {
-    char*		d = dest;
-    const char*	s = src;
-    uint32_t		n = dest_size;
+	char*		d = dest;
+	const char*	s = src;
+	uint32_t	n = dest_size;
 
 	// Copy as many bytes as will fit
 	if ( n != 0 && --n != 0 )
