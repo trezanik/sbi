@@ -54,7 +54,7 @@ class RpcServer;
  * @todo
  * Add a sync event for each, so we can reset after setting _quitting?
  *
- * @sa Runtime::CreateThread, E_THREAD_TYPE
+ * @sa Runtime::AddManualThread, Runtime::ThreadStopping
  * @struct thread_info
  */
 struct thread_info
@@ -65,20 +65,20 @@ struct thread_info
 #elif defined(__linux__) || defined(BSD)
 	pthread_t	thread;
 #endif
-	std::string	called_from_function;
+	std::string	called_by_function;
 
 	// yes, both of these are required as a result of WaitThenKillThread
 	bool operator == (const thread_info& ti) const
 	{
 		if ( thread == ti.thread 
-		    && called_from_function.compare(ti.called_from_function) == 0 )
+		    && called_by_function.compare(ti.called_by_function) == 0 )
 		    return true;
 		return false;
 	}
 	bool operator == (const thread_info* ti) const
 	{
 		if ( thread == ti->thread 
-		    && called_from_function.compare(ti->called_from_function) == 0 )
+		    && called_by_function.compare(ti->called_by_function) == 0 )
 		    return true;
 		return false;
 	}
@@ -311,6 +311,7 @@ public:
 	 } // end loop/sync
 
 	 runtime.ThreadStopping(GetCurrentThreadId(), __func__);
+	 // end thread
 	 @endcode
 	 *
 	 * While not mandatory to be called, on app closure the runtime will try

@@ -58,6 +58,10 @@ Runtime::AddManualThread(
 )
 {
 	_manual_threads.push_back(ti);
+
+	LOG(ELogLevel::Info) << "Thread id " 
+		<< ti->thread << " (" << ti->called_by_function.c_str() << ")" 
+		<< " is starting execution\n";
 }
 
 
@@ -241,8 +245,11 @@ Runtime::ThreadStopping(
 	{
 		if ( t->thread == thread_id )
 		{
-			LOG(ELogLevel::Info) << "Thread id " << thread_id << " (" << function << ") is ending execution\n";
-
+			LOG(ELogLevel::Info) << "Thread id " << thread_id 
+				<< " (" << t->called_by_function.c_str() << ")"
+				<< "is ending execution (called by "
+				<< function << ")\n";
+			
 			_manual_threads.erase(std::find(_manual_threads.begin(), _manual_threads.end(), t));
 			found = true;
 			break;

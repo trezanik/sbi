@@ -385,6 +385,7 @@ RpcServer::ServerThread(
 	// input pointer won't live forever, copy the contents
 	RpcServer*	thisptr = tparam->thisptr;
 	std::shared_ptr<thread_info>	ti;
+	ti->called_by_function	= __func__;
 	ti->thread		= tparam->thread_id;;
 #if defined(_WIN32)
 	ti->thread_handle	= tparam->thread_handle;
