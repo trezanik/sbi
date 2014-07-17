@@ -12,6 +12,7 @@
 #include <cstring>		// strlen
 #include <cstdarg>		// va_*
 #include <cstdio>		// vsnprintf
+#include <ctime>		// time + date acquistion
 #include <ctype.h>		// isspace
 #include <cstdlib>		// rand
 
@@ -143,6 +144,30 @@ get_ms_time()
 
 	return ret;
 #endif
+}
+
+
+
+char*
+get_current_time_format(
+	char* buf,
+	const uint32_t buf_size,
+	const char* format
+)
+{
+	time_t		cur_time = time(NULL);
+	tm		tms;
+
+#if defined(_WIN32)
+	localtime_s(&tms, &cur_time);
+#else
+	localtime_r(&cur_time, &tms);
+#endif
+	
+	// requires C++11 (always multibyte)
+	std::strftime(buf, buf_size, format, &tms);
+
+	return &buf[0];
 }
 
 

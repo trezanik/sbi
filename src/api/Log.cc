@@ -146,23 +146,14 @@ Log::LogWithLevel(
 
 	if ( file != nullptr )
 	{	
-		/** @todo provide a utility function for time acquisition, this gets so nasty inline */
-		time_t		cur_time = time(NULL);
-		tm		tms;
-#if defined(_WIN32)
-		localtime_s(&tms, &cur_time);
-#else
-		localtime_r(&cur_time, &tms);
-#endif
 		const char*	p;
 		char		cur_datetime[32];
 		
-		// requires C++11 (always multibyte)
-		// ISO 8601 : %F %T (invalid format on Win7,VS2013)
 #if defined(_WIN32)
-		std::strftime(cur_datetime, sizeof(cur_datetime), "%Y-%m-%d %H:%M:%S", &tms);
+		// ISO 8601 : %F %T (invalid format on Win7,VS2013)
+		get_current_time_format(cur_datetime, sizeof(cur_datetime), "%Y-%m-%d %H:%M:%S");
 #else
-		std::strftime(cur_datetime, sizeof(cur_datetime), "%F %T", &tms);
+		get_current_time_format(cur_datetime, sizeof(cur_datetime), "%F %T");
 #endif
 
 		_next_log << cur_datetime << "\t";

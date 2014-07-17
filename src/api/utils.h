@@ -128,6 +128,19 @@ get_ms_time();
 
 
 /**
+ * 
+ */
+SBI_API
+char*
+get_current_time_format(
+	char* buf,
+	const uint32_t buf_size,
+	const char* format
+);
+
+
+
+/**
  * Renames the current thread, making it easier to identify when the application
  * is heavily multi-threaded.
  *
