@@ -384,9 +384,17 @@ RpcServer::ServerThread(
 
 	// input pointer won't live forever, copy the contents
 	RpcServer*	thisptr = tparam->thisptr;
-	uint32_t	tid = tparam->thread_id;
+	std::shared_ptr<thread_info>	ti;
+	ti->thread		= tparam->thread_id;;
+#if defined(_WIN32)
+	ti->thread_handle	= tparam->thread_handle;
+#endif
+	runtime.AddManualThread(ti);
 	// let the caller know we're done
 	tparam->thisptr = nullptr;
+
+	
+	
 
 
 	// needs to be shared object (put through thisptr)
@@ -474,7 +482,7 @@ RpcServer::ServerThread(
 	// RPC server shutting down; close acceptors and end the thread
 	acceptor->close();
 
-	runtime.ThreadStopping(tid, __func__);
+	runtime.ThreadStopping(ti->thread, __func__);
 	return ERpcStatus::Ok;
 }
 

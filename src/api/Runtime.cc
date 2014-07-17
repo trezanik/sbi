@@ -52,6 +52,16 @@ Runtime::~Runtime()
 
 
 
+void
+Runtime::AddManualThread(
+	std::shared_ptr<thread_info> ti
+)
+{
+	_manual_threads.push_back(ti);
+}
+
+
+
 Configuration*
 Runtime::Config() const
 {
@@ -96,7 +106,7 @@ Runtime::DoShutdown()
 
 	// stop any existing threads still running
 	while ( !_manual_threads.empty() )
-		WaitThenKillThread(_manual_threads[0].thread);
+		WaitThenKillThread(_manual_threads[0]->thread);
 }
 
 
@@ -229,7 +239,7 @@ Runtime::ThreadStopping(
 	// search for the thread id
 	for ( auto t : _manual_threads )
 	{
-		if ( t.thread == thread_id )
+		if ( t->thread == thread_id )
 		{
 			LOG(ELogLevel::Info) << "Thread id " << thread_id << " (" << function << ") is ending execution\n";
 
@@ -241,7 +251,8 @@ Runtime::ThreadStopping(
 
 	if ( !found )
 	{
-		std::cerr << fg_red << "The supplied thread id (" << thread_id << ") was not found in the list\n";
+		std::cerr << fg_red << "The supplied thread id (" << thread_id 
+			<< ") was not found in the list - did you call AddManualThread()?\n";
 	}
 }
 
@@ -253,39 +264,41 @@ Runtime::WaitThenKillThread(
 	uint32_t timeout_ms
 )
 {
-	thread_info*	ti = nullptr;
+	std::shared_ptr<thread_info>	ti = nullptr;
 	bool		killed = false;
 	bool		success = true;
 
 	for ( auto t : _manual_threads )
 	{
 #if defined(_WIN32)
-		if ( t.thread == thread_id )
-		{
-			ti = &t;
+		HANDLE	thread_handle = (HANDLE)t->thread_handle;
 
-			if ( t.thread_handle != nullptr && t.thread_handle != INVALID_HANDLE_VALUE )
+		if ( t->thread == thread_id )
+		{
+			ti = t;
+
+			if ( thread_handle != nullptr && thread_handle != INVALID_HANDLE_VALUE )
 			{
 				DWORD	exit_code = 0;
 				DWORD	wait_ret;
 
-				wait_ret = WaitForSingleObject(t.thread_handle, timeout_ms);
+				wait_ret = WaitForSingleObject(thread_handle, timeout_ms);
 
 				if ( wait_ret != WAIT_OBJECT_0 && wait_ret != WAIT_TIMEOUT )
 				{
 					if ( GetLastError() == ERROR_INVALID_HANDLE )
 					{
-						std::cerr << fg_red << "The thread handle " << t.thread_handle << " was reported as invalid by the system\n";
+						std::cerr << fg_red << "The thread handle " << thread_handle << " was reported as invalid by the system\n";
 						// exit loop, just remove the thread_info
 						success = false;
 						break;
 					}
 				}
 
-				if ( !GetExitCodeThread(t.thread_handle, &exit_code) || exit_code == STILL_ACTIVE )
+				if ( !GetExitCodeThread(thread_handle, &exit_code) || exit_code == STILL_ACTIVE )
 				{
 					// tried to let the thread go peacefully - kill it
-					if ( TerminateThread(t.thread_handle, EXIT_FAILURE) )
+					if ( TerminateThread(thread_handle, EXIT_FAILURE) )
 					{
 						killed = true;
 						std::cerr << fg_yellow << "Thread id " << thread_id << " has been forcibly killed after timing out\n";
@@ -297,40 +310,40 @@ Runtime::WaitThenKillThread(
 					}
 				}
 
-				CloseHandle(t.thread_handle);
+				CloseHandle(thread_handle);
 			}
 
 #else
 
-		if ( t.thread == thread_id )
+		if ( t->thread == thread_id )
 		{
 			int32_t		rc;
 			timespec	wait_time;
 
-			ti = &t;
+			ti = t;
 
 			wait_time.tv_nsec = (timeout_ms % 1000) * 1000000;
 
-			rc = pthread_timedjoin_np(t.thread, nullptr, &wait_time);
+			rc = pthread_timedjoin_np(t->thread, nullptr, &wait_time);
 
 			if ( rc == ETIMEDOUT )
 			{
-				/* tried to let the thread go peacefully - stop it */
-				pthread_cancel(t.thread);
-				/* wait again */
-				rc = pthread_timedjoin_np(t.thread, nullptr, &wait_time);
+				// tried to let the thread go peacefully - stop it
+				pthread_cancel(t->thread);
+				// wait again
+				rc = pthread_timedjoin_np(t->thread, nullptr, &wait_time);
 
 				if ( rc == ETIMEDOUT )
 				{
-					std::cerr << fg_yellow << "Thread " << t.thread << " has been forcibly killed after failing to finish on request\n";
+					std::cerr << fg_yellow << "Thread " << t->thread << " has been forcibly killed after failing to finish on request\n";
 
-					/* Just kill it and live with any resource leaks */
-					pthread_kill(t.thread, SIGKILL);
+					// Just kill it and live with any resource leaks
+					pthread_kill(t->thread, SIGKILL);
 					killed = true;
 				}
 				else if ( rc != 0 )
 				{
-					std::cerr << fg_red << "Received errno " << rc << " after waiting for thread " << t.thread << " to finish\n";
+					std::cerr << fg_red << "Received errno " << rc << " after waiting for thread " << t->thread << " to finish\n";
 				}
 			}
 #endif	// _WIN32
@@ -358,11 +371,11 @@ Runtime::WaitThenKillThread(
 	else
 	{
 		/* if the thread_info still exists, we've been told a lie, or
-		* the thread function never called ThreadStopping */
+		 * the thread function never called ThreadStopping() */
 
 		for ( auto t : _manual_threads )
 		{
-			if ( t.thread == thread_id )
+			if ( t->thread == thread_id )
 			{
 				std::cerr << fg_red << "Thread id " << thread_id <<
 					" still exists after a successful wait for the thread to finish;"

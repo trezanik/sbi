@@ -60,14 +60,14 @@ class RpcServer;
 struct thread_info
 {
 #if defined(_WIN32)
-	HANDLE		thread_handle;
+	uintptr_t	thread_handle;
 	uint32_t	thread;
 #elif defined(__linux__) || defined(BSD)
 	pthread_t	thread;
 #endif
 	std::string	called_from_function;
 
-	/* yes, both of these are required as a result of WaitThenKillThread */
+	// yes, both of these are required as a result of WaitThenKillThread
 	bool operator == (const thread_info& ti) const
 	{
 		if ( thread == ti.thread 
@@ -134,15 +134,32 @@ private:
 	~Runtime();
 
 	
-	bool				_quitting;
+	/**
+	 * Set if the application is entering a shutdown state; can be used by
+	 * threads that have no other synchronization object, as a sign for when
+	 * to stop. Also used for detection that the application has closed
+	 * cleanly.
+	 *
+	 * False by default, set to true when DoShutdown() is called. No public
+	 * method exists to unset this, intentionally.
+	 */
+	bool		_quitting;
 
-	std::vector<thread_info>	_manual_threads;
+
+	/**
+	 * Holds all the threads created by our application code; note that this
+	 * does not cover ones created by the operating system or runtime
+	 * libraries - this is just those done by our code, AND where they're
+	 * then provided to the Runtime for recording.
+	 *
+	 * Third-party interfaces can choose to ignore this, although for the
+	 * sake of debugging and some synchronization, it is highly recommended
+	 * not to.
+	 */
+	std::vector<std::shared_ptr<thread_info>>	_manual_threads;
 
 
-	/* we no longer store the app classes in this header - they are all
-	 * static within their relevant functions in Runtime.cc
-	 * The one major downside is that we can't follow through when debugging
-	 * - but it's not hard to work around. */
+
 
 
 	std::set<runtime_object_accessor*>	_runtime_objects;
@@ -161,6 +178,22 @@ public:
 	}
 
 
+
+	/**
+	 * Adds a created threads details into the tracked vector.
+	 *
+	 * Recommended to do this in the thread function itself, as it's sure to
+	 * have valid handles/ids, and will never execute after a thread could
+	 * potentially have returned from its function already.
+	 *
+	 * @param[in] ti A populated thread_info struct
+	 */
+	void
+	AddManualThread(
+		std::shared_ptr<thread_info> ti
+	);
+
+
 	/**
 	 * Gets the configuration.
 	 *
@@ -171,7 +204,8 @@ public:
 
 
 	/**
-	 *
+	 * Sets _quitting to true, and enters a waiting phase for all existing
+	 * threads to close, and to kill on timeout.
 	 */
 	void
 	DoShutdown();
@@ -276,18 +310,18 @@ public:
 	 @code
 	 } // end loop/sync
 
-	 runtime.ThreadStopping(GetCurrentThreadId(), __FUNCTION__);
+	 runtime.ThreadStopping(GetCurrentThreadId(), __func__);
 	 @endcode
 	 *
 	 * While not mandatory to be called, on app closure the runtime will try
 	 * to wait for all known threads to finish, then terminate them if they
 	 * are taking too long. If the system responds to the handles in an
 	 * unexpected way, this could cause a crash if this function has not
-	 * been processed.
+	 * been processed. Safer just to call this at the end of a thread func.
 	 *
 	 * @param[in] thread_id The ID of the executing thread that's stopping
 	 * @param[in] function The name of the thread function itself
-	 * @sa CreateThread
+	 * @sa AddManualThread
 	 */
 	void
 	ThreadStopping(
@@ -304,12 +338,8 @@ public:
 	 * Should only be called after performing an action that would cause the
 	 * thread to actually start its own cleanup routine, or just plain stop.
 	 *
-	 * Primarily used for ensuring the IrcConnection class doesn't get
-	 * deleted while its thread is still running, but can/will expand into
-	 * other uses too.
-	 *
 	 * When this function returns, the supplied thread_id is guaranteed to
-	 * not exist (assuming it was spawned by our CreateThread); if it does
+	 * not exist (assuming it was added via AddManualThread); if it does
 	 * not exist to begin with, the function returns immediately.
 	 *
 	 * @param[in] thread_id The ID of the thread to wait for
