@@ -437,6 +437,7 @@ RpcServer::ServerThread(
 			" for listening on IPv6; falling back to IPv4: ",
 			e.what()
 		);
+		LOG(ELogLevel::Error) << errstr.c_str() << "\n";
 	}
 
 	if ( !is_listening || loopback || v6_only_error )
@@ -465,12 +466,15 @@ RpcServer::ServerThread(
 				" for listening on IPv4: ",
 				e.what()
 			);
+			LOG(ELogLevel::Error) << errstr.c_str() << "\n";
 		}
 	}
 
 	// if we're not listening on a port at all, return failure
 	if ( !is_listening )
 	{
+		LOG(ELogLevel::Error) << "Not listening on any port; startup failure\n";
+		runtime.ThreadStopping(ti->thread, __func__);
 		return ERpcStatus::NotListening;
 	}
 
