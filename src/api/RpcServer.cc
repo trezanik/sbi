@@ -31,6 +31,7 @@
 #include "Log.h"
 #include "Terminal.h"
 #include "utils.h"
+#include "version.h"
 
 
 
@@ -196,7 +197,7 @@ RPCAcceptHandler(
 	std::shared_ptr<boost::asio::basic_socket_acceptor<Protocol, SocketAcceptorService>> acceptor,
 	boost::asio::ssl::context& context,
 	bool use_ssl,
-	AcceptedConnection* conn,
+	std::shared_ptr<AcceptedConnection> conn,
 	const boost::system::error_code& error
 );
 
@@ -217,63 +218,157 @@ RPCListen(
 	acceptor->async_accept(
 		conn->ssl_stream.lowest_layer(),
 		conn->peer,
-		boost::bind(&RPCAcceptHandler<Protocol, SocketAcceptorService>,
-		acceptor,
-		boost::ref(context),
-		use_ssl,
-		conn,
-		boost::asio::placeholders::error)
+		boost::bind(
+			&RPCAcceptHandler<Protocol, SocketAcceptorService>,
+			acceptor,
+			boost::ref(context),
+			use_ssl,
+			conn,
+			boost::asio::placeholders::error
+		)
 	);
 }
 
+bool
+ClientAllowed(
+	boost::asio::ip::address client_addr
+)
+{
+	return true;
+}
+
 /**
-* Accept and handle incoming connection.
-*/
+ * Accept and handle incoming connection.
+ */
 template <typename Protocol, typename SocketAcceptorService>
 static void
 RPCAcceptHandler(
 	std::shared_ptr<boost::asio::basic_socket_acceptor<Protocol, SocketAcceptorService>> acceptor,
 	boost::asio::ssl::context& context,
 	const bool use_ssl,
-	AcceptedConnection* conn,
+	std::shared_ptr<AcceptedConnection> conn,
 	const boost::system::error_code& error
 )
 {
-	//vnThreadsRunning[THREAD_RPCLISTENER]++;
-
 	// Immediately start accepting new connections, except when we're cancelled or our socket is closed.
 	if ( error != boost::asio::error::operation_aborted && acceptor->is_open() )
-	    RPCListen(acceptor, context, use_ssl);
+		RPCListen(acceptor, context, use_ssl);
 
-	AcceptedConnectionImpl<boost::asio::ip::tcp>* tcp_conn = dynamic_cast< AcceptedConnectionImpl<boost::asioip::tcp>* >(conn);
+	std::shared_ptr<AcceptedConnectionImpl<boost::asio::ip::tcp>>	tcp_conn = dynamic_cast< std::shared_ptr<AcceptedConnectionImpl<boost::asio::ip::tcp>> >(conn);
+	uintptr_t	thandle;
+	uint32_t	tid;
 
 	/** @todo Actually handle errors in RpcAcceptHandler */
 	if ( error )
 	{
-		delete conn;
+		
 	}
-
-	// Restrict callers by IP.  It is important to
-	// do this before starting client thread, to filter out
-	// certain DoS and misbehaving clients.
 	else if ( tcp_conn && !ClientAllowed(tcp_conn->peer.address()) )
 	{
-		// Only send a 403 if we're not using SSL to prevent a DoS during the SSL handshake.
 		if ( !use_ssl )
+		{
+			// Only send a 403 if we're not using SSL to prevent a DoS during the SSL handshake.
 			conn->stream() << HTTPReply(HTTP_FORBIDDEN, "", false) << std::flush;
-		delete conn;
-	}
+		}
 
-	// start HTTP client thread
-	// SpawnServerClientThread(conn)
-	else if ( !NewThread(ThreadRPCServer3, conn) )
+		LOG(ELogLevel::Info) << "Client was denied access.\n";
+		return;
+	}
+#if defined(_WIN32)
+	thandle = _beginthreadex(nullptr, 0, RpcServer::ExecRpcHandlerThread, conn, CREATE_SUSPENDED, &tid);
+
+	if ( thandle == 0 )
 	{
-		printf("Failed to create RPC server client thread\n");
-		delete conn;
+		LOG(ELogLevel::Error) << "Failed to create the RPC server client thread\n";
+		return;
+	}
+	
+	ResumeThread((HANDLE)thandle);
+	
+#else
+	pthread_create();
+#endif
+
+}
+
+
+std::string
+rfc1123_time()
+{
+	char		buffer[64];
+	std::string	locale(setlocale(LC_TIME, NULL));
+	std::string	rfctime;
+	
+	setlocale(LC_TIME, "C"); // we want POSIX (aka "C") weekday/month strings
+	rfctime = get_current_time_format(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S +0000");
+	setlocale(LC_TIME, locale.c_str());
+	
+	return rfctime;
+}
+
+static std::string
+HTTPReply(
+	int status_code,
+	const std::string& msg,
+	bool keepalive
+)
+{
+	std::stringstream	ss;
+	std::string		retstr;
+	std::string		version = APPLICATION_VERSION_STR;
+
+	if ( status_code == HTTP_UNAUTHORIZED )
+	{
+		std::string	resp_401 =
+			"<!DOCTYPE html>\r\n"
+			"<html>\r\n"
+			"<head>\r\n"
+			"<title>Error</title>\r\n"
+			"<meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1'>\r\n"
+			"</head>\r\n"
+			"<body><h1>401 Unauthorized.</h1></body>\r\n"
+			"</html>\r\n"
+		;
+		ss	<< "HTTP/1.0 401 Authorization Required\r\n"
+			<< "Date: " << rfc1123_time().c_str() << "\r\n"
+			<< "Server: sbi-json-rpc/" << version.c_str() << "\r\n"
+			<< "WWW-Authenticate: Basic realm=\"jsonrpc\"\r\n"
+			<< "Content-Type: text/html\r\n"
+			<< "Content-Length: " << resp_401.size() << "\r\n"
+			<< "\r\n"
+			<< resp_401.c_str();
+	}
+	else
+	{
+		char*	status_str;
+		char*	conn_type = keepalive ? "keep-alive" : "close";
+
+		switch ( status_code )
+		{
+		case HTTP_OK:			status_str = "OK"; break;
+		case HTTP_BAD_REQUEST:		status_str = "Bad Request"; break;
+		case HTTP_FORBIDDEN:		status_str = "Forbidden"; break;
+		case HTTP_NOT_FOUND:		status_str = "Not Found"; break;
+		case HTTP_INTERNAL_SERVER_ERROR:status_str = "Internal Server Error"; break;
+		default:
+			status_str = "";
+			break;
+		}
+
+		ss	<< "HTTP/1.1 " << status_code << " " << status_str << "\r\n"
+			<< "Date: " << rfc1123_time().c_str() << "\r\n"
+			<< "Connection: " << conn_type << "\r\n"
+			<< "Content-Length: " << msg.size() << "\r\n"
+			<< "Content-Type: application/json\r\n"
+			<< "Server: sbi-json-rpc/" << version.c_str() << "\r\n"
+			<< "\r\n"
+			<< msg.c_str();
 	}
 
-	//vnThreadsRunning[THREAD_RPCLISTENER]--;
+	retstr = ss.str();
+	return retstr;
 }
+
 
 
 
@@ -290,6 +385,21 @@ RpcServer::RpcServer()
 RpcServer::~RpcServer()
 {
 
+}
+
+
+
+uint32_t
+#if defined(_WIN32)
+__stdcall
+#endif
+RpcServer::ExecRpcHandlerThread(
+	void* params
+)
+{
+	rpch_params*	tp = reinterpret_cast<rpch_params*>(params);
+
+	return (uint32_t)tp->thisptr->RpcHandlerThread(tp);
 }
 
 
@@ -375,6 +485,35 @@ RpcServer::GetInterfaceInfo(
 
 
 ERpcStatus
+RpcServer::RpcHandlerThread(
+	rpch_params* tparam
+)
+{
+	/* Remember, this is a class thread function - using 'this' will not
+	 * work, which is why we supply the 'thisptr' as an input parameter. */
+
+	// input pointer won't live forever, copy the contents
+	RpcServer*	thisptr = tparam->thisptr;
+	std::shared_ptr<thread_info>	ti;
+	ti->called_by_function	= __func__;
+	ti->thread		= tparam->thread_id;
+#if defined(_WIN32)
+	ti->thread_handle	= tparam->thread_handle;
+#endif
+	rename_thread("rpchandler");
+	runtime.AddManualThread(ti);
+	// let the caller know we're done
+	tparam->thisptr = nullptr;
+
+
+
+	runtime.ThreadStopping(ti->thread, __func__);
+	return ERpcStatus::Ok;
+}
+
+
+
+ERpcStatus
 RpcServer::ServerThread(
 	rpcs_params* tparam
 )
@@ -386,10 +525,11 @@ RpcServer::ServerThread(
 	RpcServer*	thisptr = tparam->thisptr;
 	std::shared_ptr<thread_info>	ti;
 	ti->called_by_function	= __func__;
-	ti->thread		= tparam->thread_id;;
+	ti->thread		= tparam->thread_id;
 #if defined(_WIN32)
 	ti->thread_handle	= tparam->thread_handle;
 #endif
+	rename_thread("rpcserver");
 	runtime.AddManualThread(ti);
 	// let the caller know we're done
 	tparam->thisptr = nullptr;

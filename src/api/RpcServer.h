@@ -31,6 +31,15 @@
 BEGIN_NAMESPACE(APP_NAMESPACE)
 
 
+
+// HTTP status codes returned from the server
+#define HTTP_OK				200
+#define HTTP_BAD_REQUEST		400
+#define HTTP_UNAUTHORIZED		401
+#define HTTP_FORBIDDEN			403
+#define HTTP_NOT_FOUND			404
+#define HTTP_INTERNAL_SERVER_ERROR	500
+
 // the port the server listens on, and the clients must connect to
 #define RPC_PORT		50451
 
@@ -42,6 +51,20 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 class RpcServer;
 
 
+
+
+/**
+ * RPC handler thread parameters
+ */
+struct SBI_API rpch_params
+{
+	RpcServer*	thisptr;
+
+#if defined(_WIN32)
+	uintptr_t	thread_handle;
+#endif
+	uint32_t	thread_id;
+};
 
 
 /**
@@ -81,6 +104,15 @@ private:
 
 
 	/**
+	 *
+	 */
+	ERpcStatus
+	RpcHandlerThread(
+		rpch_params* tp
+	);
+
+
+	/**
 	 * Enters an endless loop, processing RPC requests.
 	 *
 	 * Do not call directly; must be executed via ExecServerThread, which 
@@ -96,6 +128,7 @@ private:
 	);
 
 
+	
 
 	void
 	TypeCheck(
@@ -118,6 +151,26 @@ protected:
 public:
 	RpcServer();
 	~RpcServer();
+
+
+	/**
+	 * Executes the RpcHandlerThread function.
+	 *
+	 * This is needed, and static, so that it can be the recipient to a new
+	 * thread creation, as it's part of a class.
+	 *
+	 * @sa RpcHandlerThread
+	 * @param[in] params A pointer to populated rpch_params cast void
+	 * @return Returns the value returned by RpcHandlerThread, as an uint32_t
+	 */
+	static uint32_t
+#if defined(_WIN32)
+	__stdcall
+#endif
+	ExecRpcHandlerThread(
+		void* params
+	);
+
 
 
 	/**
