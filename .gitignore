@@ -18,6 +18,11 @@ documentation/doxygen/man
 **/generated/*
 src/build_config.h
 
+# compiled libraries
+*.lib
+*.a
+*.so*
+
 #########################
 # Windows/Visual Studio #
 #########################
@@ -53,9 +58,14 @@ src/build_config.h
 #############################
 
 bin/**/sbi
-lib/**/*.so*
+*.pro.user
 */debug/**/*.[ao]
 */release/**/*.[ao]
 qtcreator/**/Makefile*
 
+###########
+# OpenSSL #
+###########
+# configured by script, will change depending on OS we're working on
+**/opensslconf.h
 
