@@ -281,7 +281,7 @@ mb_to_utf8(
 
 void
 set_thread_name(
-	DWORD thread_id,
+	uint32_t thread_id,
 	const char* name
 )
 {
