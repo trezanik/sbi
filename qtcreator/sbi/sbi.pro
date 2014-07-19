@@ -12,16 +12,27 @@ QMAKE_CXXFLAGS += \
 	-Wall
 #QMAKE_CXXFLAGS_DEBUG
 #QMAKE_CXXFLAGS_RELEASE
-DEFINES += _DEBUG
+DEFINES += _DEBUG USING_JSON_SPIRIT_RPC
 DEPENDPATH += ../../src
 INCLUDEPATH += ../../src
 LIBS += -lapi -lpthread -ldl
 
-#>>> libconfig @todo : remove this dependency of a child; definition source???
+#>>> libconfig
 DEFINES += USING_LIBCONFIG
 contains(DEFINES,USING_LIBCONFIG){
 	INCLUDEPATH += ../../third-party/libconfig
 	LIBS += -L../../third-party/libconfig/lib/ -lconfig++
+}
+#<<<
+#>>> JSON Spirit
+contains(DEFINES,USING_JSON_SPIRIT_RPC){
+	INCLUDEPATH += ../../third-party/json_spirit
+	# json_spirit->boost dependency
+	INCLUDEPATH += ../../third-party/boost
+	LIBS += -L../../third-party/boost/lib/ -lboost_system
+	# boost->openssl dependency
+	INCLUDEPATH += ../../third-party/openssl
+	LIBS += -L../../third-party/openssl/lib/ -lssl -lcrypto
 }
 #<<<
 

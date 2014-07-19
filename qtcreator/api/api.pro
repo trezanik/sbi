@@ -11,7 +11,7 @@ QMAKE_CXXFLAGS += \
 	-std=c++11 \
 	-Wall \
 	-include build_config.h
-DEFINES += _DEBUG USING_LIBCONFIG
+DEFINES += _DEBUG USING_LIBCONFIG USING_JSON_SPIRIT_RPC
 DEPENDPATH += ../../src
 INCLUDEPATH += ../../src
 
@@ -22,6 +22,16 @@ LIBS += -lrt
 contains(DEFINES,USING_LIBCONFIG){
 	INCLUDEPATH += ../../third-party/libconfig
 	LIBS += -L../../third-party/libconfig/lib/ -lconfig++
+}
+#<<<
+#>>> JSON Spirit
+contains(DEFINES,USING_JSON_SPIRIT_RPC){
+	INCLUDEPATH += ../../third-party/json_spirit
+	# json_spirit->boost dependency
+	INCLUDEPATH += ../../third-party/boost
+	# boost->openssl dependency
+	INCLUDEPATH += ../../third-party/openssl
+	LIBS += -L../../third-party/openssl/lib/ -lssl -lcrypto
 }
 #<<<
 
@@ -50,8 +60,10 @@ SOURCES += ../../src/api/Allocator.cc \
     ../../src/api/utils.cc \
     ../../src/api/utils_linux.cc \
     ../../src/api/utils_win.cc \
-    ../../src/api/Interprocess.cc \
-    ../../src/api/Ipc.cc
+    ../../src/api/Ipc.cc \
+    ../../src/api/rpc_commands.cc \
+    ../../src/api/RpcServer.cc \
+    ../../src/api/RpcTable.cc
 
 HEADERS += ../../src/api/Allocator.h \
     ../../src/api/char_helper.h \
@@ -72,6 +84,8 @@ HEADERS += ../../src/api/Allocator.h \
     ../../src/api/utils_linux.h \
     ../../src/api/utils_win.h \
     ../../src/api/version.h \
-    ../../src/api/Ipc.h \
-    ../../src/api/Interprocess.h \
-    ../../src/api/IpcListener.h
+    ../../src/api/rpc_commands.h \
+    ../../src/api/rpc_status.h \
+    ../../src/api/RpcCommand.h \
+    ../../src/api/RpcServer.h \
+    ../../src/api/RpcTable.h

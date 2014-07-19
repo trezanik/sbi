@@ -34,6 +34,8 @@
 #if defined(_WIN32)
 #	include <Windows.h>
 #	include <process.h>
+#else
+#	include <pthread.h>
 #endif
 
 #include "RpcServer.h"
@@ -265,7 +267,7 @@ ClientAllowed(
 /**
  * Accept and handle an incoming connection.
  */
-static void
+void
 RPCAcceptHandler(
 	std::shared_ptr<boost::asio::basic_socket_acceptor<boost_ip::tcp>> acceptor,
 	boost_ssl::context& context,
@@ -297,9 +299,10 @@ RPCAcceptHandler(
 		return;
 	}
 
-#if defined(_WIN32)
 	params.thisptr		= runtime.RPC();
 	params.connection	= conn;
+
+#if defined(_WIN32)
 	params.thread_handle	= _beginthreadex(nullptr, 0, 
 		runtime.RPC()->ExecRpcHandlerThread,
 		&params, 
@@ -317,11 +320,26 @@ RPCAcceptHandler(
 	/* wait for the thread to reset this member; we don't want to exit scope
 	 * before the thread has a chance to acquire the params contents */
 	while ( params.thisptr != nullptr )
-		SLEEP_MILLISECONDS(21);
-	
+		SLEEP_MILLISECONDS(21);	
 #else
-	pthread_create();
-#endif
+	int32_t		err;
+	pthread_attr_t	attr;
+
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+
+	err = pthread_create(&params.thread,
+			     &attr,
+			     runtime.RPC()->ExecRpcHandlerThread,
+			     &params);
+
+	if ( err != 0 )
+	{
+		LOG(ELogLevel::Error) << "Failed to create the RPC Handler thread; error "
+					 << err << "\n";
+		return;
+	}
+#endif	// _WIN32
 
 }
 
@@ -363,9 +381,11 @@ RpcServer::~RpcServer()
 
 
 
-uint32_t
 #if defined(_WIN32)
-__stdcall
+	uint32_t
+	__stdcall
+#else
+	void*
 #endif
 RpcServer::ExecRpcHandlerThread(
 	void* params
@@ -373,14 +393,22 @@ RpcServer::ExecRpcHandlerThread(
 {
 	rpch_params*	tp = reinterpret_cast<rpch_params*>(params);
 
+#if defined(_WIN32)
 	return (uint32_t)tp->thisptr->RpcHandlerThread(tp);
+#else
+	tp->thisptr->RpcHandlerThread(tp);
+	return nullptr;
+#endif
 }
 
 
 
-uint32_t
+
 #if defined(_WIN32)
-__stdcall
+	uint32_t
+	__stdcall
+#else
+	void*
 #endif
 RpcServer::ExecServerThread(
 	void* params
@@ -388,7 +416,12 @@ RpcServer::ExecServerThread(
 {
 	rpcs_params*	tp = reinterpret_cast<rpcs_params*>(params);
 
+#if defined(_WIN32)
 	return (uint32_t)tp->thisptr->ServerThread(tp);
+#else
+	tp->thisptr->ServerThread(tp);
+	return nullptr;
+#endif
 }
 
 
@@ -427,8 +460,8 @@ RpcServer::HTTPReply(
 	}
 	else
 	{
-		char*	status_str;
-		char*	conn_type = keepalive ? "keep-alive" : "close";
+		char*		status_str;
+		const char*	conn_type = keepalive ? "keep-alive" : "close";
 
 		switch ( status_code )
 		{
@@ -539,9 +572,11 @@ RpcServer::RpcHandlerThread(
 		thisptr			= tparam->thisptr;
 
 		ti.reset(new thread_info);
-		ti->thread		= tparam->thread_id;
 #if defined(_WIN32)
+		ti->thread		= tparam->thread_id;
 		ti->thread_handle	= tparam->thread_handle;
+#else
+		ti->thread		= tparam->thread;
 #endif
 		strlcpy(ti->called_by_function, __func__, sizeof(ti->called_by_function));
 		rename_thread("rpchandler");
@@ -576,9 +611,11 @@ RpcServer::ServerThread(
 		thisptr			= tparam->thisptr;
 
 		ti.reset(new thread_info);
-		ti->thread		= tparam->thread_id;
 #if defined(_WIN32)
+		ti->thread		= tparam->thread_id;
 		ti->thread_handle	= tparam->thread_handle;
+#else
+		ti->thread		= tparam->thread;
 #endif
 		strlcpy(ti->called_by_function, __func__, sizeof(ti->called_by_function));
 		rename_thread("rpcserver");
@@ -596,10 +633,10 @@ RpcServer::ServerThread(
 	/* pointer exists as long as the server exists, perfectly safe; to avoid
 	 * spamming .get() everywhere below, barely legible as it is */
 	boost::asio::io_service&	io_service = *thisptr->_io_service.get();
-	std::string	errstr;
-	bool		is_listening = false;
-	const bool	loopback = true;
-	const bool	use_ssl = false;
+	std::string			errstr;
+	bool				is_listening = false;
+	const bool			loopback = true;
+	const bool			use_ssl = false;
 	boost_ip::address		bind_addr = loopback ?
 		boost_ip::address_v6::loopback() :
 		boost_ip::address_v6::any();
@@ -627,7 +664,7 @@ RpcServer::ServerThread(
 	{
 		errstr = BUILD_STRING(
 			"Error setting up RPC port ", 
-			std::to_string(RPC_PORT),
+			std::to_string(RPC_PORT).c_str(),
 			" for listening on IPv6; falling back to IPv4: ",
 			e.what()
 		);
@@ -656,7 +693,7 @@ RpcServer::ServerThread(
 		{
 			errstr = BUILD_STRING(
 				"Error setting up RPC port ",
-				std::to_string(RPC_PORT),
+				std::to_string(RPC_PORT).c_str(),
 				" for listening on IPv4: ",
 				e.what()
 			);
@@ -675,6 +712,7 @@ RpcServer::ServerThread(
 	// otherwise, enter the server loop
 	while ( !thisptr->_shutdown )
 	{
+		// blocks until signalled
 		io_service.run_one();
 	}
 
@@ -752,7 +790,23 @@ RpcServer::Startup()
 		SLEEP_MILLISECONDS(4);
 
 #else
-	pthread_create();
+	int32_t		err;
+	pthread_attr_t	attr;
+
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+
+	err = pthread_create(&_server_params.thread,
+			     &attr,
+			     ExecServerThread,
+			     &_server_params);
+
+	if ( err != 0 )
+	{
+		LOG(ELogLevel::Error) << "Failed to create the RPC Server thread; error "
+					 << err << "\n";
+		return ERpcStatus::ThreadCreateFailed;
+	}
 #endif
 
 	return ERpcStatus::Ok;
@@ -778,9 +832,9 @@ RpcServer::TypeCheck(
 		{
 			std::string	err = BUILD_STRING(
 				"Expected type ",
-				value_type_to_string(t),
+				value_type_to_string(t).c_str(),
 				", got ",
-				value_type_to_string(v.type())
+				value_type_to_string(v.type()).c_str()
 			);
 			
 			throw JSONRPCError(ERpcStatus::UnknownType, err);
@@ -814,11 +868,11 @@ RpcServer::TypeCheck(
 		{
 			err = BUILD_STRING(
 				"Expected type ",
-				value_type_to_string(t.second),
+				value_type_to_string(t.second).c_str(),
 				" for ",
 				t.first.c_str(),
 				", got ",
-				value_type_to_string(v.type())
+				value_type_to_string(v.type()).c_str()
 			);
 					   
 			throw JSONRPCError(ERpcStatus::UnknownType, err);

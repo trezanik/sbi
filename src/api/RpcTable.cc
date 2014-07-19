@@ -129,7 +129,10 @@ RpcTable::Help(
 
 	if ( ret == "" )
 	{
-		ret = BUILD_STRING("help: unknown command: ", command_name, "\n");
+		ret = BUILD_STRING(
+			"help: unknown command: ",
+			command_name.c_str(),
+			"\n");
 	}
 
 	ret = ret.substr(0, ret.size() - 1);

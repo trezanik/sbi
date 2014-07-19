@@ -23,7 +23,7 @@ QMAKE_CXXFLAGS += \
 	-std=c++11 \
 	-Wall \
 	-include build_config.h
-DEFINES += _DEBUG USING_LIBCONFIG USING_DEFAULT_QT5_GUI
+DEFINES += _DEBUG USING_LIBCONFIG USING_DEFAULT_QT5_GUI USING_JSON_SPIRIT_RPC
 DEPENDPATH += ../../src
 INCLUDEPATH += ../../src
 MOC_DIR = ../../src/Qt5GUI/generated
@@ -35,6 +35,16 @@ DEFINES += USING_LIBCONFIG
 contains(DEFINES,USING_LIBCONFIG){
 	INCLUDEPATH += ../../third-party/libconfig
 	LIBS += -L../../third-party/libconfig/lib/ -lconfig++
+}
+#<<<
+#>>> JSON Spirit
+contains(DEFINES,USING_JSON_SPIRIT_RPC){
+	INCLUDEPATH += ../../third-party/json_spirit
+	# json_spirit->boost dependency
+	INCLUDEPATH += ../../third-party/boost
+	# boost->openssl dependency
+	INCLUDEPATH += ../../third-party/openssl
+	LIBS += -L../../third-party/openssl/lib/ -lssl -lcrypto
 }
 #<<<
 

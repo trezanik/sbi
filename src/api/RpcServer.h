@@ -68,8 +68,11 @@ struct SBI_API rpch_params
 
 #if defined(_WIN32)
 	uintptr_t	thread_handle;
-#endif
 	uint32_t	thread_id;
+#else
+	pthread_t	thread;
+#endif
+
 };
 
 
@@ -82,8 +85,11 @@ struct SBI_API rpcs_params
 
 #if defined(_WIN32)
 	uintptr_t	thread_handle;
-#endif
 	uint32_t	thread_id;
+#else
+	pthread_t	thread;
+#endif
+
 };
 
 
@@ -191,9 +197,11 @@ public:
 	 * @param[in] params A pointer to populated rpch_params cast void
 	 * @return Returns the value returned by RpcHandlerThread, as an uint32_t
 	 */
-	static uint32_t
 #if defined(_WIN32)
+	static uint32_t
 	__stdcall
+#else
+	static void*
 #endif
 	ExecRpcHandlerThread(
 		void* params
@@ -211,9 +219,11 @@ public:
 	 * @param[in] params A pointer to populated rpcs_params cast void
 	 * @return Returns the value returned by ServerThread, as an uint32_t
 	 */
-	static uint32_t
 #if defined(_WIN32)
+	static uint32_t
 	__stdcall
+#else
+	static void*
 #endif
 	ExecServerThread(
 		void* params
