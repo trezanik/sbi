@@ -23,6 +23,7 @@
 //#	include <Windows.h>		// HANDLE
 #else
 #	include <pthread.h>		// pthread_t
+#	include <string.h>		// strcmp
 #endif
 
 #include "char_helper.h"
@@ -36,7 +37,6 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 class Allocator;
 class Configuration;
 class Log;
-class Interprocess;
 class RpcServer;
 
 
@@ -230,15 +230,6 @@ public:
 	GetObjectFromModule(
 		const char* module_name
 	);
-
-
-	/**
-	 * Gets the interprocess communication class.
-	 *
-	 * @return A pointer to the static instance within the runtime.
-	 */
-	class Interprocess*
-	Interprocess() const;
 
 
 	/**
