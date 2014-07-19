@@ -298,7 +298,12 @@ app_init(
 void
 app_stop()
 {
-	
+	// will block, waiting for threads to finish
+	runtime.DoShutdown();
+
+	std::cout << "Application closure and cleanup complete\n";
+	LOG(ELogLevel::Info) << "Application closure and cleanup complete\n";
+
 	runtime.Logger()->Flush();
 }
 
