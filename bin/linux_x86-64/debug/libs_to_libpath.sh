@@ -23,6 +23,7 @@ fi
 
 # third-party requirements (copy, don't move)
 cp ../../../third-party/libconfig/lib/libconfig++.so $DEST_PATH
+cp ../../../third-party/boost/lib/libboost_system.so $DEST_PATH
 
 # finally, copy the libraries into their destination (don't move, for rebuild)
 cp $SOURCE_PATH/*.so $DEST_PATH
