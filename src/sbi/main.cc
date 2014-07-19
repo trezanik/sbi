@@ -123,7 +123,7 @@ main(
 
 abort:
 	/* special case: should be done in app_stop(), but if an exception is
-	 * raised, then we'll never be able to log it! */
+	 * raised there, then we'll never be able to log it! */
 	runtime.Logger()->Close();
 	return exit_status;
 }
