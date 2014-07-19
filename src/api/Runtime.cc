@@ -4,6 +4,11 @@
  * @author	James Warren
  * @copyright	James Warren, 2013-2014
  * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)
+ * @todo	Sort out duplicate output (stdout/stderr + logging); either get
+		the Log class to do ChainOfResponsibility, or use BUILD_STRING
+		to store the string var, then output to both
+ * @todo	Need a way to get the cheapest, quickest dialog box up inside
+		X11/Wayland for reporting, when a GUI is present		
  */
 
 
@@ -59,9 +64,12 @@ Runtime::AddManualThread(
 {
 	_manual_threads.push_back(ti);
 
+	std::cout << fg_white << "Thread id "
+		<< ti->thread << " (" << ti->called_by_function << ") "
+		<< "is starting execution\n";
 	LOG(ELogLevel::Info) << "Thread id " 
-		<< ti->thread << " (" << ti->called_by_function.c_str() << ")" 
-		<< " is starting execution\n";
+		<< ti->thread << " (" << ti->called_by_function << ") " 
+		<< "is starting execution\n";
 }
 
 
@@ -105,12 +113,14 @@ Runtime::DoShutdown()
 	 * called from here now, that way they're all done and clean... similar
 	 * to the functionality behind the get() getter */
 
-	// parser thread explicity waits for _quitting to be set
-	//Irc()->Parser()->TriggerSync();
+	// shutdown the RPC server if still running
+	RPC()->Shutdown();
 
 	// stop any existing threads still running
 	while ( !_manual_threads.empty() )
+	{
 		WaitThenKillThread(_manual_threads[0]->thread);
+	}
 }
 
 
@@ -245,8 +255,12 @@ Runtime::ThreadStopping(
 	{
 		if ( t->thread == thread_id )
 		{
+			std::cout << fg_white << "Thread id " << thread_id
+				<< " (" << t->called_by_function << ") "
+				<< "is ending execution (called by "
+				<< function << ")\n";
 			LOG(ELogLevel::Info) << "Thread id " << thread_id 
-				<< " (" << t->called_by_function.c_str() << ")"
+				<< " (" << t->called_by_function << ") "
 				<< "is ending execution (called by "
 				<< function << ")\n";
 			
@@ -259,6 +273,8 @@ Runtime::ThreadStopping(
 	if ( !found )
 	{
 		std::cerr << fg_red << "The supplied thread id (" << thread_id 
+			<< ") was not found in the list - did you call AddManualThread()?\n";
+		LOG(ELogLevel::Info) << "The supplied thread id (" << thread_id
 			<< ") was not found in the list - did you call AddManualThread()?\n";
 	}
 }
@@ -288,6 +304,7 @@ Runtime::WaitThenKillThread(
 			{
 				DWORD	exit_code = 0;
 				DWORD	wait_ret;
+				DWORD	err;
 
 				wait_ret = WaitForSingleObject(thread_handle, timeout_ms);
 
@@ -296,6 +313,7 @@ Runtime::WaitThenKillThread(
 					if ( GetLastError() == ERROR_INVALID_HANDLE )
 					{
 						std::cerr << fg_red << "The thread handle " << thread_handle << " was reported as invalid by the system\n";
+						LOG(ELogLevel::Error) << "The thread handle " << thread_handle << " was reported as invalid by the system\n";
 						// exit loop, just remove the thread_info
 						success = false;
 						break;
@@ -309,11 +327,14 @@ Runtime::WaitThenKillThread(
 					{
 						killed = true;
 						std::cerr << fg_yellow << "Thread id " << thread_id << " has been forcibly killed after timing out\n";
+						LOG(ELogLevel::Warn) << "Thread id " << thread_id << " has been forcibly killed after timing out\n";
 					}
 					else
 					{
 						success = false;
-						std::cerr << fg_red << "Failed to terminate thread id " << thread_id << "; Win32 error " << GetLastError() << "\n";
+						err = GetLastError();
+						std::cerr << fg_red << "Failed to terminate thread id " << thread_id << "; Win32 error " << err << "\n";
+						LOG(ELogLevel::Error) << "Failed to terminate thread id " << thread_id << "; Win32 error " << err << "\n";
 					}
 				}
 
@@ -367,6 +388,7 @@ Runtime::WaitThenKillThread(
 	 * called, so we need to remove it manually + notify */
 	if ( ti != nullptr && killed )
 	{
+		std::cerr << fg_yellow << "Thread id " << thread_id << " has been killed\n";
 		LOG(ELogLevel::Warn) << "Thread id " << thread_id << " has been killed\n";
 		_manual_threads.erase(std::find(_manual_threads.begin(), _manual_threads.end(), ti));
 	}
@@ -385,6 +407,9 @@ Runtime::WaitThenKillThread(
 			if ( t->thread == thread_id )
 			{
 				std::cerr << fg_red << "Thread id " << thread_id <<
+					" still exists after a successful wait for the thread to finish;"
+					" was Runtime::ThreadStopping() not executed or did the system lie?";
+				LOG(ELogLevel::Warn) << "Thread id " << thread_id <<
 					" still exists after a successful wait for the thread to finish;"
 					" was Runtime::ThreadStopping() not executed or did the system lie?";
 

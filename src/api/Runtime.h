@@ -14,6 +14,7 @@
 
 #include <set>
 #include <vector>
+#include <memory>
 
 #if defined(_WIN32)
 	// avoid including a whole header for one unchanging typedef
@@ -37,6 +38,11 @@ class Configuration;
 class Log;
 class Interprocess;
 class RpcServer;
+
+
+// required definitions
+#define THREADINFO_FUNCTION_BUFFER_SIZE		64
+#define THREADINFO_MAX_FUNCTION_LENGTH		(THREADINFO_FUNCTION_BUFFER_SIZE-1)
 
 
 
@@ -65,20 +71,20 @@ struct thread_info
 #elif defined(__linux__) || defined(BSD)
 	pthread_t	thread;
 #endif
-	std::string	called_by_function;
+	char		called_by_function[THREADINFO_FUNCTION_BUFFER_SIZE];
 
 	// yes, both of these are required as a result of WaitThenKillThread
 	bool operator == (const thread_info& ti) const
 	{
 		if ( thread == ti.thread 
-		    && called_by_function.compare(ti.called_by_function) == 0 )
+		    && strcmp(called_by_function, ti.called_by_function) == 0 )
 		    return true;
 		return false;
 	}
 	bool operator == (const thread_info* ti) const
 	{
 		if ( thread == ti->thread 
-		    && called_by_function.compare(ti->called_by_function) == 0 )
+		    && strcmp(called_by_function, ti->called_by_function) == 0 )
 		    return true;
 		return false;
 	}
@@ -206,6 +212,9 @@ public:
 	/**
 	 * Sets _quitting to true, and enters a waiting phase for all existing
 	 * threads to close, and to kill on timeout.
+	 *
+	 * Pretty much responsible for cleaning up anything created in app_exec
+	 * that is not handled elsewhere.
 	 */
 	void
 	DoShutdown();
