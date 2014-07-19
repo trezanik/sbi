@@ -9,6 +9,7 @@ pushd %~dp0
 set BIN_PATH=Debug
 set LIBCONFIG_PATH=..\..\..\libconfig\1.4.9
 set QT_PATH=..\..\..\Qt\5.3\msvc2013
+set OPENSSL_PATH=..\..\..\openssl\1.0.1h\out32dll
 
 echo Copying DLL dependencies to %~dp0%BIN_PATH%...
 
@@ -25,5 +26,8 @@ if not exist "%BIN_PATH%\icuuc52.dll" copy "%QT_PATH%\bin\icuuc52.dll" "%BIN_PAT
 if not exist "%BIN_PATH%\icudt52.dll" copy "%QT_PATH%\bin\icudt52.dll" "%BIN_PATH%\"
 if not exist "%BIN_PATH%\libEGLd.dll" copy "%QT_PATH%\bin\libEGLd.dll" "%BIN_PATH%\"
 if not exist "%BIN_PATH%\libGLESv2d.dll" copy "%QT_PATH%\bin\libGLESv2d.dll" "%BIN_PATH%\"
+REM >>> OpenSSL
+if not exist "%BIN_PATH%\libeay32.dll" copy "%OPENSSL_PATH%\libeay32.dll" "%BIN_PATH%\"
+if not exist "%BIN_PATH%\ssleay32.dll" copy "%OPENSSL_PATH%\ssleay32.dll" "%BIN_PATH%\"
 
 popd
