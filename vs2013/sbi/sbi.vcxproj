@@ -46,7 +46,7 @@
     <OutDir>$(ProjectRoot)/bin/$(Platform)/$(Configuration)/</OutDir>
     <IntDir>$(Configuration)/</IntDir>
     <TargetName>sbi</TargetName>
-    <IncludePath>$(ProjectRoot)/src;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(ProjectRoot)/src;$(json_spirit);$(boost);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <SourcePath>$(ProjectRoot)/src;$(VC_SourcePath);</SourcePath>
     <LibraryPath>$(ProjectRoot)/lib/$(Platform)/$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
   </PropertyGroup>
