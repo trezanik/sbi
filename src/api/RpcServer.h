@@ -19,6 +19,9 @@
 
 #if defined(USING_JSON_SPIRIT_RPC)
 #	include <json_spirit/json_spirit_utils.h>
+	/* anything using API will need to link to boost if using the 'normal'
+	 * headers and not this forward declaration */
+	namespace boost { namespace asio { class io_service; }}
 #endif
 
 #include "definitions.h"
@@ -48,6 +51,7 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 
 
 // forward declarations
+class AcceptedConnection;
 class RpcServer;
 
 
@@ -59,6 +63,8 @@ class RpcServer;
 struct SBI_API rpch_params
 {
 	RpcServer*	thisptr;
+
+	std::shared_ptr<AcceptedConnection>	connection;
 
 #if defined(_WIN32)
 	uintptr_t	thread_handle;
@@ -101,6 +107,28 @@ private:
 
 
 	RpcTable		_table;
+
+	/** flag to trigger the shutdown of the RPC server. Will continue
+	 * running (assuming it started up ok) until this is set via Shutdown().
+	 */
+	bool			_shutdown;
+
+	/**
+	 * Passed into the ServerThread for creation parameters. Used by the
+	 * Startup() and Shutdown() functions.
+	 */
+	rpcs_params		_server_params;
+
+#if defined(USING_JSON_SPIRIT_RPC)
+	/**
+	 * Runs in the ServerThread. In order to signal it to stop, it must be
+	 * callable from another thread, so we retain it in this class.
+	 *
+	 * Is a pointer to get around needing to provide boost paths and linkage
+	 * to projects for this single variable.
+	 */
+	std::unique_ptr<boost::asio::io_service>	_io_service;
+#endif
 
 
 	/**
@@ -192,6 +220,19 @@ public:
 	);
 
 
+	/**
+	* Generates a HTTP response based on the input parameters.
+	*
+	* @param[in] status_code The HTTP status code (200, 403, 404, etc.)
+	* @param[in] msg The body of the reply (everything after content-length)
+	* @param[in] keepalive Enable/disable connection keep-alive
+	*/
+	std::string
+	HTTPReply(
+		int status_code,
+		const std::string& msg,
+		bool keepalive
+	);
 
 
 	/**
@@ -233,6 +274,10 @@ public:
 	/**
 	 * Shuts down the RPC server, preventing any IPC. Once done, can only be
 	 * restarted by the API.
+	 *
+	 * RPC threads running tasks will cease processing once the task is
+	 * finished, so this function could potentially take some time to return
+	 * and should be catered for.
 	 *
 	 * Should only normally be needed when closing the application.
 	 *

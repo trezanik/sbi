@@ -68,7 +68,7 @@ api_Stop(
 	}
 
 	runtime.RPC()->Shutdown();
-	return "SBI RPC server stopping";
+	return "SBI RPC server stopped";
 }
 
 

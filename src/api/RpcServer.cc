@@ -14,11 +14,21 @@
 #	include <boost/foreach.hpp>
 #endif
 #if defined(USING_BOOST_NET)
+	// ironically requires OpenSSL for the ssl functionality anyway
+#	if IS_VISUAL_STUDIO
+#		pragma comment ( lib, "libeay32.lib" )
+#		pragma comment ( lib, "ssleay32.lib" )
+#	endif
 #	include <boost/asio.hpp>
 #	include <boost/asio/ssl.hpp>
 #	include <boost/iostreams/concepts.hpp>
 #	include <boost/iostreams/stream.hpp>
-// ironically requires OpenSSL for the ssl functionality anyway
+	/* I don't like obscuring namespace use, which is why you'll rarely see
+	 * 'using namespace' in my code - but the boost variables are hidden so
+	 * deep it prevents code clarity. These namespace aliases aim to improve
+	 * this situation, at least slightly. */
+	namespace boost_ip = boost::asio::ip;
+	namespace boost_ssl = boost::asio::ssl;
 #endif
 
 #if defined(_WIN32)
@@ -58,14 +68,13 @@ JSONRPCError(
 //
 // IOStream device that speaks SSL but can also speak non-SSL
 //
-template <typename Protocol>
 class SSLIOStreamDevice : public boost::iostreams::device<boost::iostreams::bidirectional> 
 {
 public:
 	SSLIOStreamDevice(
-		boost::asio::ssl::stream<typename Protocol::socket> &streamIn, 
+		boost_ssl::stream<typename boost_ip::tcp::socket> &stream_in, 
 		bool fUseSSLIn
-	) : stream(streamIn)
+	) : stream(stream_in)
 	{
 		fUseSSL = fUseSSLIn;
 		fNeedHandshake = fUseSSLIn;
@@ -73,7 +82,7 @@ public:
 
 	void
 	handshake(
-		boost::asio::ssl::stream_base::handshake_type role
+		boost_ssl::stream_base::handshake_type role
 	)
 	{
 		if ( !fNeedHandshake )
@@ -87,7 +96,7 @@ public:
 		std::streamsize n
 	)
 	{
-		handshake(boost::asio::ssl::stream_base::server); // HTTPS servers read first
+		handshake(boost_ssl::stream_base::server); // HTTPS servers read first
 		return fUseSSL ?
 			stream.read_some(boost::asio::buffer(s, n)) :
 			stream.next_layer().read_some(boost::asio::buffer(s, n));
@@ -98,7 +107,7 @@ public:
 		std::streamsize n
 	)
 	{
-		handshake(boost::asio::ssl::stream_base::client); // HTTPS clients write first
+		handshake(boost_ssl::stream_base::client); // HTTPS clients write first
 		return fUseSSL ?
 			boost::asio::write(stream, boost::asio::buffer(s, n)) :
 			boost::asio::write(stream.next_layer(), boost::asio::buffer(s, n));
@@ -109,11 +118,11 @@ public:
 		const std::string& port
 	)
 	{
-		ip::tcp::resolver resolver(stream.get_io_service());
-		ip::tcp::resolver::query query(server.c_str(), port.c_str());
-		ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-		ip::tcp::resolver::iterator end;
-		boost::system::error_code error = boost::asio::error::host_not_found;
+		boost_ip::tcp::resolver			resolver(stream.get_io_service());
+		boost_ip::tcp::resolver::query		query(server.c_str(), port.c_str());
+		boost_ip::tcp::resolver::iterator	endpoint_iterator = resolver.resolve(query);
+		boost_ip::tcp::resolver::iterator	end;
+		boost::system::error_code		error = boost::asio::error::host_not_found;
 		while ( error && endpoint_iterator != end )
 		{
 			stream.lowest_layer().close();
@@ -129,33 +138,17 @@ private:
 
 	bool fNeedHandshake;
 	bool fUseSSL;
-	boost::asio::ssl::stream<typename Protocol::socket>& stream;
+	boost_ssl::stream<typename boost_ip::tcp::socket>& stream;
 };
+
+
 
 class AcceptedConnection
 {
 public:
-	virtual ~AcceptedConnection()
-	{
-	}
-
-	virtual std::iostream&
-	stream() = 0;
-	
-	virtual std::string
-	peer_address_to_string() const = 0;
-	
-	virtual void
-	close() = 0;
-};
-
-template <typename Protocol>
-class AcceptedConnectionImpl : public AcceptedConnection
-{
-public:
-	AcceptedConnectionImpl(
+	AcceptedConnection(
 		boost::asio::io_service& io_service,
-		boost::asio::ssl::context &context,
+		boost_ssl::context &context,
 		bool use_ssl
 	)
 	: ssl_stream(io_service, context),
@@ -165,37 +158,38 @@ public:
 	}
 
 	std::iostream&
-	stream() override
+	stream()
 	{
 		return _stream;
 	}
 
 	std::string
-	peer_address_to_string() const override
+	peer_address_to_string() const
 	{
 		return peer.address().to_string();
 	}
 
 	void
-	close() override
+	close()
 	{
 		_stream.close();
 	}
 
-	typename Protocol::endpoint				peer;
-	boost::asio::ssl::stream<typename Protocol::socket>	ssl_stream;
+	boost_ip::tcp::endpoint				peer;
+	boost_ssl::stream<boost_ip::tcp::socket>	ssl_stream;
 
 private:
-	SSLIOStreamDevice<Protocol>				_dev;
-	boost::iostreams::stream<SSLIOStreamDevice<Protocol>>	_stream;
+	SSLIOStreamDevice				_dev;
+	boost::iostreams::stream<SSLIOStreamDevice>	_stream;
 };
 
+
+
 // Forward declaration required for RPCListen
-template <typename Protocol, typename SocketAcceptorService>
 static void
 RPCAcceptHandler(
-	std::shared_ptr<boost::asio::basic_socket_acceptor<Protocol, SocketAcceptorService>> acceptor,
-	boost::asio::ssl::context& context,
+	std::shared_ptr<boost::asio::basic_socket_acceptor<boost_ip::tcp>> acceptor,
+	boost_ssl::context& context,
 	bool use_ssl,
 	std::shared_ptr<AcceptedConnection> conn,
 	const boost::system::error_code& error
@@ -204,22 +198,23 @@ RPCAcceptHandler(
 /**
  * Sets up I/O resources to accept and handle a new connection.
  */
-template <typename Protocol, typename SocketAcceptorService>
 static void 
 RPCListen(
-	std::shared_ptr<boost::asio::basic_socket_acceptor<Protocol, SocketAcceptorService>> acceptor,
-	boost::asio::ssl::context& context,
+	std::shared_ptr<boost::asio::basic_socket_acceptor<boost_ip::tcp>> acceptor,
+	boost_ssl::context& context,
 	const bool use_ssl
 )
 {
 	// Accept connection
-	AcceptedConnectionImpl<Protocol>* conn = new AcceptedConnectionImpl<Protocol>(acceptor->get_io_service(), context, use_ssl);
+	std::shared_ptr<AcceptedConnection> conn;
+	
+	conn.reset(new AcceptedConnection(acceptor->get_io_service(), context, use_ssl));
 
 	acceptor->async_accept(
 		conn->ssl_stream.lowest_layer(),
 		conn->peer,
 		boost::bind(
-			&RPCAcceptHandler<Protocol, SocketAcceptorService>,
+			&RPCAcceptHandler,
 			acceptor,
 			boost::ref(context),
 			use_ssl,
@@ -231,20 +226,49 @@ RPCListen(
 
 bool
 ClientAllowed(
-	boost::asio::ip::address client_addr
+	boost_ip::address client_addr
 )
 {
+	/* ensure that IPv4-compatible and IPv4-mapped IPv6 addresses are 
+	 * treated as IPv4 addresses */
+	if ( client_addr.is_v6()
+	    && ( client_addr.to_v6().is_v4_compatible()
+	    || client_addr.to_v6().is_v4_mapped())
+	)
+	{
+		return ClientAllowed(client_addr.to_v6().to_v4());
+	}
+
+	if ( client_addr == boost_ip::address_v4::loopback()
+	    || client_addr == boost_ip::address_v6::loopback()
+	    // Check whether IPv4client_addres match 127.0.0.0/8 (loopback subnet)
+	    || (client_addr.is_v4() && (client_addr.to_v4().to_ulong() & 0xff000000) == 0x7f000000) )
+	{
+		return true;
+	}
+
+	const std::string	address_str = client_addr.to_string();
+	/* to implement:
+	const std::vector<std::string>& allow_vect = mapMultiArgs["-rpcallowip"];
+	
+	BOOST_FOREACH(std::string allow_str, allow_vect)
+	{
+		if ( WildcardMatch(address_str, allow_str) )
+			return true;
+	}
+
+	return false;
+	*/
 	return true;
 }
 
 /**
- * Accept and handle incoming connection.
+ * Accept and handle an incoming connection.
  */
-template <typename Protocol, typename SocketAcceptorService>
 static void
 RPCAcceptHandler(
-	std::shared_ptr<boost::asio::basic_socket_acceptor<Protocol, SocketAcceptorService>> acceptor,
-	boost::asio::ssl::context& context,
+	std::shared_ptr<boost::asio::basic_socket_acceptor<boost_ip::tcp>> acceptor,
+	boost_ssl::context& context,
 	const bool use_ssl,
 	std::shared_ptr<AcceptedConnection> conn,
 	const boost::system::error_code& error
@@ -253,37 +277,47 @@ RPCAcceptHandler(
 	// Immediately start accepting new connections, except when we're cancelled or our socket is closed.
 	if ( error != boost::asio::error::operation_aborted && acceptor->is_open() )
 		RPCListen(acceptor, context, use_ssl);
-
-	std::shared_ptr<AcceptedConnectionImpl<boost::asio::ip::tcp>>	tcp_conn = dynamic_cast< std::shared_ptr<AcceptedConnectionImpl<boost::asio::ip::tcp>> >(conn);
-	uintptr_t	thandle;
-	uint32_t	tid;
+	
+	rpch_params	params;
 
 	/** @todo Actually handle errors in RpcAcceptHandler */
 	if ( error )
 	{
 		
 	}
-	else if ( tcp_conn && !ClientAllowed(tcp_conn->peer.address()) )
+	else if ( conn && !ClientAllowed(conn->peer.address()) )
 	{
 		if ( !use_ssl )
 		{
 			// Only send a 403 if we're not using SSL to prevent a DoS during the SSL handshake.
-			conn->stream() << HTTPReply(HTTP_FORBIDDEN, "", false) << std::flush;
+			conn->stream() << runtime.RPC()->HTTPReply(HTTP_FORBIDDEN, "", false) << std::flush;
 		}
 
 		LOG(ELogLevel::Info) << "Client was denied access.\n";
 		return;
 	}
-#if defined(_WIN32)
-	thandle = _beginthreadex(nullptr, 0, RpcServer::ExecRpcHandlerThread, conn, CREATE_SUSPENDED, &tid);
 
-	if ( thandle == 0 )
+#if defined(_WIN32)
+	params.thisptr		= runtime.RPC();
+	params.connection	= conn;
+	params.thread_handle	= _beginthreadex(nullptr, 0, 
+		runtime.RPC()->ExecRpcHandlerThread,
+		&params, 
+		CREATE_SUSPENDED,
+		&params.thread_id);
+
+	if ( params.thread_handle == 0 )
 	{
-		LOG(ELogLevel::Error) << "Failed to create the RPC server client thread\n";
+		LOG(ELogLevel::Error) << "Failed to create the RPC Handler thread\n";
 		return;
 	}
 	
-	ResumeThread((HANDLE)thandle);
+	ResumeThread((HANDLE)params.thread_handle);
+	
+	/* wait for the thread to reset this member; we don't want to exit scope
+	 * before the thread has a chance to acquire the params contents */
+	while ( params.thisptr != nullptr )
+		SLEEP_MILLISECONDS(21);
 	
 #else
 	pthread_create();
@@ -306,68 +340,8 @@ rfc1123_time()
 	return rfctime;
 }
 
-static std::string
-HTTPReply(
-	int status_code,
-	const std::string& msg,
-	bool keepalive
-)
-{
-	std::stringstream	ss;
-	std::string		retstr;
-	std::string		version = APPLICATION_VERSION_STR;
 
-	if ( status_code == HTTP_UNAUTHORIZED )
-	{
-		std::string	resp_401 =
-			"<!DOCTYPE html>\r\n"
-			"<html>\r\n"
-			"<head>\r\n"
-			"<title>Error</title>\r\n"
-			"<meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1'>\r\n"
-			"</head>\r\n"
-			"<body><h1>401 Unauthorized.</h1></body>\r\n"
-			"</html>\r\n"
-		;
-		ss	<< "HTTP/1.0 401 Authorization Required\r\n"
-			<< "Date: " << rfc1123_time().c_str() << "\r\n"
-			<< "Server: sbi-json-rpc/" << version.c_str() << "\r\n"
-			<< "WWW-Authenticate: Basic realm=\"jsonrpc\"\r\n"
-			<< "Content-Type: text/html\r\n"
-			<< "Content-Length: " << resp_401.size() << "\r\n"
-			<< "\r\n"
-			<< resp_401.c_str();
-	}
-	else
-	{
-		char*	status_str;
-		char*	conn_type = keepalive ? "keep-alive" : "close";
 
-		switch ( status_code )
-		{
-		case HTTP_OK:			status_str = "OK"; break;
-		case HTTP_BAD_REQUEST:		status_str = "Bad Request"; break;
-		case HTTP_FORBIDDEN:		status_str = "Forbidden"; break;
-		case HTTP_NOT_FOUND:		status_str = "Not Found"; break;
-		case HTTP_INTERNAL_SERVER_ERROR:status_str = "Internal Server Error"; break;
-		default:
-			status_str = "";
-			break;
-		}
-
-		ss	<< "HTTP/1.1 " << status_code << " " << status_str << "\r\n"
-			<< "Date: " << rfc1123_time().c_str() << "\r\n"
-			<< "Connection: " << conn_type << "\r\n"
-			<< "Content-Length: " << msg.size() << "\r\n"
-			<< "Content-Type: application/json\r\n"
-			<< "Server: sbi-json-rpc/" << version.c_str() << "\r\n"
-			<< "\r\n"
-			<< msg.c_str();
-	}
-
-	retstr = ss.str();
-	return retstr;
-}
 
 
 
@@ -419,6 +393,71 @@ RpcServer::ExecServerThread(
 
 
 
+std::string
+RpcServer::HTTPReply(
+	int status_code,
+	const std::string& msg,
+	bool keepalive
+)
+{
+	std::stringstream	ss;
+	std::string		retstr;
+	std::string		version = APPLICATION_VERSION_STR;
+
+	if ( status_code == HTTP_UNAUTHORIZED )
+	{
+		std::string	resp_401 =
+			"<!DOCTYPE html>\r\n"
+			"<html>\r\n"
+			"<head>\r\n"
+			"<title>Error</title>\r\n"
+			"<meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1'>\r\n"
+			"</head>\r\n"
+			"<body><h1>401 Unauthorized.</h1></body>\r\n"
+			"</html>\r\n"
+			;
+		ss << "HTTP/1.0 401 Authorization Required\r\n"
+			<< "Date: " << rfc1123_time().c_str() << "\r\n"
+			<< "Server: sbi-json-rpc/" << version.c_str() << "\r\n"
+			<< "WWW-Authenticate: Basic realm=\"jsonrpc\"\r\n"
+			<< "Content-Type: text/html\r\n"
+			<< "Content-Length: " << resp_401.size() << "\r\n"
+			<< "\r\n"
+			<< resp_401.c_str();
+	}
+	else
+	{
+		char*	status_str;
+		char*	conn_type = keepalive ? "keep-alive" : "close";
+
+		switch ( status_code )
+		{
+		case HTTP_OK:			status_str = "OK"; break;
+		case HTTP_BAD_REQUEST:		status_str = "Bad Request"; break;
+		case HTTP_FORBIDDEN:		status_str = "Forbidden"; break;
+		case HTTP_NOT_FOUND:		status_str = "Not Found"; break;
+		case HTTP_INTERNAL_SERVER_ERROR:status_str = "Internal Server Error"; break;
+		default:
+			status_str = "";
+			break;
+		}
+
+		ss << "HTTP/1.1 " << status_code << " " << status_str << "\r\n"
+			<< "Date: " << rfc1123_time().c_str() << "\r\n"
+			<< "Connection: " << conn_type << "\r\n"
+			<< "Content-Length: " << msg.size() << "\r\n"
+			<< "Content-Type: application/json\r\n"
+			<< "Server: sbi-json-rpc/" << version.c_str() << "\r\n"
+			<< "\r\n"
+			<< msg.c_str();
+	}
+
+	retstr = ss.str();
+	return retstr;
+}
+
+
+
 json_spirit::Value
 RpcServer::GetEnvironmentCoreCount(
 	const json_spirit::Array& params,
@@ -452,6 +491,7 @@ RpcServer::GetEnvironmentCoreCount(
 		sysctl(mib, 2, &core_count, &size, nullptr, 0);
 		if ( core_count < 1 )
 		{
+			// if HW_AVAILCPU fails, fallback to HW_NCPU
 			mib[1] = HW_NCPU;
 			sysctl(mib, 2, &core_count, &size, nullptr, 0);
 
@@ -493,17 +533,24 @@ RpcServer::RpcHandlerThread(
 	 * work, which is why we supply the 'thisptr' as an input parameter. */
 
 	// input pointer won't live forever, copy the contents
-	RpcServer*	thisptr = tparam->thisptr;
+	RpcServer*			thisptr;
 	std::shared_ptr<thread_info>	ti;
-	ti->called_by_function	= __func__;
-	ti->thread		= tparam->thread_id;
+	{
+		thisptr			= tparam->thisptr;
+
+		ti.reset(new thread_info);
+		ti->thread		= tparam->thread_id;
 #if defined(_WIN32)
-	ti->thread_handle	= tparam->thread_handle;
+		ti->thread_handle	= tparam->thread_handle;
 #endif
-	rename_thread("rpchandler");
-	runtime.AddManualThread(ti);
-	// let the caller know we're done
-	tparam->thisptr = nullptr;
+		strlcpy(ti->called_by_function, __func__, sizeof(ti->called_by_function));
+		rename_thread("rpchandler");
+		runtime.AddManualThread(ti);
+		
+		// let the caller know we're done
+		tparam->thisptr = nullptr;
+	}
+
 
 
 
@@ -521,48 +568,55 @@ RpcServer::ServerThread(
 	/* Remember, this is a class thread function - using 'this' will not
 	 * work, which is why we supply the 'thisptr' as an input parameter. */
 
-	// input pointer won't live forever, copy the contents
-	RpcServer*	thisptr = tparam->thisptr;
+	/* input pointer will live forever, but to remain similar to the other
+	 * client threads, we'll still copy the contents */
+	RpcServer*			thisptr;
 	std::shared_ptr<thread_info>	ti;
-	ti->called_by_function	= __func__;
-	ti->thread		= tparam->thread_id;
+	{
+		thisptr			= tparam->thisptr;
+
+		ti.reset(new thread_info);
+		ti->thread		= tparam->thread_id;
 #if defined(_WIN32)
-	ti->thread_handle	= tparam->thread_handle;
+		ti->thread_handle	= tparam->thread_handle;
 #endif
-	rename_thread("rpcserver");
-	runtime.AddManualThread(ti);
-	// let the caller know we're done
-	tparam->thisptr = nullptr;
+		strlcpy(ti->called_by_function, __func__, sizeof(ti->called_by_function));
+		rename_thread("rpcserver");
+		runtime.AddManualThread(ti);
 
-	
-	
+		// caller can proceed, we've done our log
+		tparam->thisptr = nullptr;
+	}
 
 
-	// needs to be shared object (put through thisptr)
-	bool shutdown = true;
 
 	// server exec
+
+
+	/* pointer exists as long as the server exists, perfectly safe; to avoid
+	 * spamming .get() everywhere below, barely legible as it is */
+	boost::asio::io_service&	io_service = *thisptr->_io_service.get();
+	std::string	errstr;
+	bool		is_listening = false;
 	const bool	loopback = true;
 	const bool	use_ssl = false;
-	boost::asio::io_service		io_service;
-	boost::asio::ssl::context	context(io_service, boost::asio::ssl::context::sslv23);
-	boost::asio::ip::address	bind_addr = loopback ?
-		boost::asio::ip::address_v6::loopback() :
-		boost::asio::ip::address_v6::any();
-	boost::asio::ip::tcp::endpoint	endpoint(bind_addr, RPC_PORT);
+	boost_ip::address		bind_addr = loopback ?
+		boost_ip::address_v6::loopback() :
+		boost_ip::address_v6::any();
+	boost_ssl::context		context(io_service, boost_ssl::context::sslv23);
+	boost_ip::tcp::endpoint		endpoint(bind_addr, RPC_PORT);
 	boost::system::error_code	v6_only_error;
-	std::shared_ptr<boost::asio::ip::tcp::acceptor>	acceptor(
-		new boost::asio::ip::tcp::acceptor(io_service)
+	std::shared_ptr<boost_ip::tcp::acceptor>	acceptor(
+		new boost_ip::tcp::acceptor(io_service)
 	);
-	bool		is_listening = false;
-	std::string	errstr;
+	
 
 	try
 	{
 		acceptor->open(endpoint.protocol());
-		acceptor->set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+		acceptor->set_option(boost_ip::tcp::acceptor::reuse_address(true));
 		// try setting dual ipv6/v4
-		acceptor->set_option(boost::asio::ip::v6_only(loopback), v6_only_error);
+		acceptor->set_option(boost_ip::v6_only(loopback), v6_only_error);
 		acceptor->bind(endpoint);
 		acceptor->listen(boost::asio::socket_base::max_connections);
 
@@ -585,13 +639,13 @@ RpcServer::ServerThread(
 		try
 		{
 			bind_addr = loopback ?
-				boost::asio::ip::address_v4::loopback() :
-				boost::asio::ip::address_v4::any();
+				boost_ip::address_v4::loopback() :
+				boost_ip::address_v4::any();
 			endpoint.address(bind_addr);
 
-			acceptor.reset(new boost::asio::ip::tcp::acceptor(io_service));
+			acceptor.reset(new boost_ip::tcp::acceptor(io_service));
 			acceptor->open(endpoint.protocol());
-			acceptor->set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+			acceptor->set_option(boost_ip::tcp::acceptor::reuse_address(true));
 			acceptor->bind(endpoint);
 			acceptor->listen(boost::asio::socket_base::max_connections);
 
@@ -619,7 +673,7 @@ RpcServer::ServerThread(
 	}
 
 	// otherwise, enter the server loop
-	while ( !shutdown )
+	while ( !thisptr->_shutdown )
 	{
 		io_service.run_one();
 	}
@@ -636,6 +690,25 @@ RpcServer::ServerThread(
 ERpcStatus
 RpcServer::Shutdown()
 {
+	_shutdown = true;
+	_io_service->stop();
+
+	// wait for other threads to finish
+#if defined(_WIN32)
+
+	
+
+	/* 5 seconds to wait for the thread before we just bail. Don't do error
+	 * handling here, the thread is either deadlocked already, or simply
+	 * doesn't exist. */
+	WaitForSingleObject((HANDLE)_server_params.thread_handle, 5000);
+
+#else
+#endif
+
+	_io_service.release();
+
+	LOG(ELogLevel::Info) << "RPC Server has finished shutdown operations.\n";
 	return ERpcStatus::Ok;
 }
 
@@ -644,34 +717,39 @@ RpcServer::Shutdown()
 ERpcStatus
 RpcServer::Startup()
 {
+	// set here in case of a prior call to Shutdown()
+	_shutdown = false;
+	memset(&_server_params, 0, sizeof(_server_params));
+	_io_service.reset(new boost::asio::io_service);
+
 
 	/** @todo Support socks|proxy|tor (also applies to IRC, Twitter, etc.).
 	 * We will NEVER use UPNP. Don't even ask. */
 
-	rpcs_params	tparam;
-
-	tparam.thisptr = this;
+	_server_params.thisptr = this;
 
 #if defined(_WIN32)
-	tparam.thread_handle = _beginthreadex(
+	_server_params.thread_handle = _beginthreadex(
 		nullptr, 0,
 		ExecServerThread,
-		(void*)&tparam, CREATE_SUSPENDED,
-		&tparam.thread_id
+		(void*)&_server_params, CREATE_SUSPENDED,
+		&_server_params.thread_id
 	);
-	if ( tparam.thread_handle == -1 )
+	if ( _server_params.thread_handle == -1 )
 	{
 		std::cerr << fg_red << "_beginthreadex failed\n";
 		LOG(ELogLevel::Error) << "_beginthreadex failed\n";
 		return ERpcStatus::ThreadCreateFailed;
 	}
 
-	ResumeThread((HANDLE)tparam.thread_handle);
+	ResumeThread((HANDLE)_server_params.thread_handle);
 
-	/* wait for the thread to reset this member; we don't want to exit scope
-	 * before the thread has a chance to acquire the params contents */
-	while ( tparam.thisptr != nullptr )
-		SLEEP_MILLISECONDS(21);
+	/* while _server_params lifetime is with the class and there's no need 
+	 * to wait for the thread, the thread will make a log entry that we want
+	 * to report before the app_exec startup log goes through. End result is
+	 * that looks just like all the other thread startups. */
+	while ( _server_params.thisptr != nullptr )
+		SLEEP_MILLISECONDS(4);
 
 #else
 	pthread_create();
