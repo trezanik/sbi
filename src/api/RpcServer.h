@@ -157,7 +157,7 @@ private:
 	 * @return
 	 */
 	ERpcStatus
-	ServerThread(
+	RpcServerThread(
 		rpcs_params* tp
 	);
 
@@ -225,7 +225,7 @@ public:
 #else
 	static void*
 #endif
-	ExecServerThread(
+	ExecRpcServerThread(
 		void* params
 	);
 

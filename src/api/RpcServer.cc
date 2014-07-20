@@ -410,16 +410,16 @@ RpcServer::ExecRpcHandlerThread(
 #else
 	void*
 #endif
-RpcServer::ExecServerThread(
+RpcServer::ExecRpcServerThread(
 	void* params
 )
 {
 	rpcs_params*	tp = reinterpret_cast<rpcs_params*>(params);
 
 #if defined(_WIN32)
-	return (uint32_t)tp->thisptr->ServerThread(tp);
+	return (uint32_t)tp->thisptr->RpcServerThread(tp);
 #else
-	tp->thisptr->ServerThread(tp);
+	tp->thisptr->RpcServerThread(tp);
 	return nullptr;
 #endif
 }
@@ -596,7 +596,7 @@ RpcServer::RpcHandlerThread(
 
 
 ERpcStatus
-RpcServer::ServerThread(
+RpcServer::RpcServerThread(
 	rpcs_params* tparam
 )
 {
@@ -769,7 +769,7 @@ RpcServer::Startup()
 #if defined(_WIN32)
 	_server_params.thread_handle = _beginthreadex(
 		nullptr, 0,
-		ExecServerThread,
+		ExecRpcServerThread,
 		(void*)&_server_params, CREATE_SUSPENDED,
 		&_server_params.thread_id
 	);
@@ -798,7 +798,7 @@ RpcServer::Startup()
 
 	err = pthread_create(&_server_params.thread,
 			     &attr,
-			     ExecServerThread,
+			     ExecRpcServerThread,
 			     &_server_params);
 
 	if ( err != 0 )
