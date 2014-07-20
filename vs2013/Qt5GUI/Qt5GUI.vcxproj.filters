@@ -56,9 +56,6 @@
     <ClCompile Include="..\..\src\Qt5GUI\generated\moc_UI.cc">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Qt5GUI\generated\qrc_sbi.cc">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\Qt5GUI\generated\moc_InterfacesLoadDialog.cc">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -82,6 +79,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Qt5GUI\ModulesUnloadDialog.cc">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\resources\generated\qrc_sbi.cc">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

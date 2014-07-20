@@ -97,6 +97,7 @@
     <ClInclude Include="..\..\src\Qt5GUI\UI.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\resources\generated\qrc_sbi.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\AboutDialog.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\generated\moc_AboutDialog.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\generated\moc_InterfacesLoadDialog.cc" />
@@ -104,7 +105,6 @@
     <ClCompile Include="..\..\src\Qt5GUI\generated\moc_ModulesLoadDialog.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\generated\moc_ModulesUnloadDialog.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\generated\moc_UI.cc" />
-    <ClCompile Include="..\..\src\Qt5GUI\generated\qrc_sbi.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\InterfacesLoadDialog.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\InterfacesUnloadDialog.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\ModulesLoadDialog.cc" />
