@@ -234,7 +234,7 @@ Runtime::RPC() const
 
 void
 Runtime::ThreadStopping(
-	uint32_t thread_id,
+	thread_t thread,
 	const char* function
 )
 {
@@ -243,13 +243,13 @@ Runtime::ThreadStopping(
 	// search for the thread id
 	for ( auto t : _manual_threads )
 	{
-		if ( t->thread == thread_id )
+		if ( t->thread == thread )
 		{
-			std::cout << fg_white << "Thread id " << thread_id
+			std::cout << fg_white << "Thread id " << thread
 				<< " (" << t->called_by_function << ") "
 				<< "is ending execution (called by "
 				<< function << ")\n";
-			LOG(ELogLevel::Info) << "Thread id " << thread_id 
+			LOG(ELogLevel::Info) << "Thread id " << thread
 				<< " (" << t->called_by_function << ") "
 				<< "is ending execution (called by "
 				<< function << ")\n";
@@ -262,9 +262,9 @@ Runtime::ThreadStopping(
 
 	if ( !found )
 	{
-		std::cerr << fg_red << "The supplied thread id (" << thread_id 
+		std::cerr << fg_red << "The supplied thread id (" << thread
 			<< ") was not found in the list - did you call AddManualThread()?\n";
-		LOG(ELogLevel::Info) << "The supplied thread id (" << thread_id
+		LOG(ELogLevel::Info) << "The supplied thread id (" << thread
 			<< ") was not found in the list - did you call AddManualThread()?\n";
 	}
 }
@@ -273,7 +273,7 @@ Runtime::ThreadStopping(
 
 void
 Runtime::WaitThenKillThread(
-	uint32_t thread_id,
+	thread_t thread,
 	uint32_t timeout_ms
 )
 {
@@ -333,7 +333,7 @@ Runtime::WaitThenKillThread(
 
 #else
 
-		if ( t->thread == thread_id )
+		if ( t->thread == thread )
 		{
 			int32_t		rc;
 			timespec	wait_time;
@@ -378,8 +378,8 @@ Runtime::WaitThenKillThread(
 	 * called, so we need to remove it manually + notify */
 	if ( ti != nullptr && killed )
 	{
-		std::cerr << fg_yellow << "Thread id " << thread_id << " has been killed\n";
-		LOG(ELogLevel::Warn) << "Thread id " << thread_id << " has been killed\n";
+		std::cerr << fg_yellow << "Thread id " << thread << " has been killed\n";
+		LOG(ELogLevel::Warn) << "Thread id " << thread << " has been killed\n";
 		_manual_threads.erase(std::find(_manual_threads.begin(), _manual_threads.end(), ti));
 	}
 	else if ( ti != nullptr && !success )
@@ -394,12 +394,12 @@ Runtime::WaitThenKillThread(
 
 		for ( auto t : _manual_threads )
 		{
-			if ( t->thread == thread_id )
+			if ( t->thread == thread )
 			{
-				std::cerr << fg_red << "Thread id " << thread_id <<
+				std::cerr << fg_red << "Thread id " << thread <<
 					" still exists after a successful wait for the thread to finish;"
 					" was Runtime::ThreadStopping() not executed or did the system lie?";
-				LOG(ELogLevel::Warn) << "Thread id " << thread_id <<
+				LOG(ELogLevel::Warn) << "Thread id " << thread <<
 					" still exists after a successful wait for the thread to finish;"
 					" was Runtime::ThreadStopping() not executed or did the system lie?";
 

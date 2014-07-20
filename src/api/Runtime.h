@@ -47,6 +47,15 @@ class RpcServer;
 
 
 
+// typedef so we can use thread identifiers without preprocessor spam
+#if defined(_WIN32)
+	typedef uint32_t	thread_t;
+#else
+	typedef pthread_t	thread_t;
+#endif
+
+
+
 /**
  * Holds the details of each thread we manually create (not those that the 3rd
  * party or system create); used for clean synchronization on shutdown.
@@ -320,13 +329,13 @@ public:
 	 * unexpected way, this could cause a crash if this function has not
 	 * been processed. Safer just to call this at the end of a thread func.
 	 *
-	 * @param[in] thread_id The ID of the executing thread that's stopping
+	 * @param[in] thread The executing thread that's stopping
 	 * @param[in] function The name of the thread function itself
 	 * @sa AddManualThread
 	 */
 	void
 	ThreadStopping(
-		uint32_t thread_id,
+		thread_t thread,
 		const char* function
 	);
 
@@ -343,12 +352,12 @@ public:
 	 * not exist (assuming it was added via AddManualThread); if it does
 	 * not exist to begin with, the function returns immediately.
 	 *
-	 * @param[in] thread_id The ID of the thread to wait for
+	 * @param[in] thread The thread to wait for
 	 * @param[in] timeout_ms The time to wait in milliseconds before killing
 	 */
 	void
 	WaitThenKillThread(
-		uint32_t thread_id,
+		thread_t thread,
 		uint32_t timeout_ms = 1000
 	);
 };
