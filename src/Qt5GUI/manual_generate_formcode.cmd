@@ -10,6 +10,8 @@ set QT_PATH=..\..\..\Qt\5.3\msvc2013\bin
 set FORMS_PATH=.\forms
 set GEN_PATH=.\generated
 
+if not exist "%GEN_PATH%" mkdir "%GEN_PATH%"
+
 for %%f in (%FORMS_PATH%\*.ui) do (
 	echo %%f
 	REM Generate the header

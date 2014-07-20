@@ -10,6 +10,10 @@ QT_PATH=../../../Qt/5.3/gcc_64/bin
 FORMS_PATH=./forms
 GEN_PATH=./generated
 
+if [ ! -d "$GEN_PATH" ]
+	mkdir "$GEN_PATH"
+fi
+
 for i in `find $FORMS_PATH/*.ui`; do
 	# remove directory paths and .ui suffix
 	filename=$(basename "$i" .ui)

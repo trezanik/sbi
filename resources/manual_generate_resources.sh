@@ -6,8 +6,12 @@ cd $(dirname $(readlink -f $0))
 ########################################################################
 
 # Adjust as needed
-QT_PATH=../../../Qt/5.3/gcc_64/bin
+QT_PATH=../../Qt/5.3/gcc_64/bin
 GEN_PATH=./generated
+
+if [ ! -d "$GEN_PATH" ]; then
+	mkdir "$GEN_PATH"
+fi
 
 $QT_PATH/rcc -name core "./sbi.qrc" -o "$GEN_PATH/qrc_sbi.cc"
 
