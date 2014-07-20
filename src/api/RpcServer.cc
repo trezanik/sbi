@@ -74,12 +74,11 @@ class SSLIOStreamDevice : public boost::iostreams::device<boost::iostreams::bidi
 {
 public:
 	SSLIOStreamDevice(
-		boost_ssl::stream<typename boost_ip::tcp::socket> &stream_in, 
-		bool fUseSSLIn
-	) : stream(stream_in)
+		boost_ssl::stream<typename boost_ip::tcp::socket> &stream, 
+		bool use_ssl
+	) : _stream(stream)
 	{
-		fUseSSL = fUseSSLIn;
-		fNeedHandshake = fUseSSLIn;
+		_use_ssl = _need_handshake = use_ssl;
 	}
 
 	void
@@ -87,10 +86,10 @@ public:
 		boost_ssl::stream_base::handshake_type role
 	)
 	{
-		if ( !fNeedHandshake )
+		if ( !_need_handshake )
 			return;
-		fNeedHandshake = false;
-		stream.handshake(role);
+		_need_handshake = false;
+		_stream.handshake(role);
 	}
 	std::streamsize
 	read(
@@ -99,9 +98,9 @@ public:
 	)
 	{
 		handshake(boost_ssl::stream_base::server); // HTTPS servers read first
-		return fUseSSL ?
-			stream.read_some(boost::asio::buffer(s, n)) :
-			stream.next_layer().read_some(boost::asio::buffer(s, n));
+		return _use_ssl ?
+			_stream.read_some(boost::asio::buffer(s, n)) :
+			_stream.next_layer().read_some(boost::asio::buffer(s, n));
 	}
 	std::streamsize
 	write(
@@ -110,9 +109,9 @@ public:
 	)
 	{
 		handshake(boost_ssl::stream_base::client); // HTTPS clients write first
-		return fUseSSL ?
-			boost::asio::write(stream, boost::asio::buffer(s, n)) :
-			boost::asio::write(stream.next_layer(), boost::asio::buffer(s, n));
+		return _use_ssl ?
+			boost::asio::write(_stream, boost::asio::buffer(s, n)) :
+			boost::asio::write(_stream.next_layer(), boost::asio::buffer(s, n));
 	}
 	bool 
 	connect(
@@ -120,15 +119,15 @@ public:
 		const std::string& port
 	)
 	{
-		boost_ip::tcp::resolver			resolver(stream.get_io_service());
+		boost_ip::tcp::resolver			resolver(_stream.get_io_service());
 		boost_ip::tcp::resolver::query		query(server.c_str(), port.c_str());
 		boost_ip::tcp::resolver::iterator	endpoint_iterator = resolver.resolve(query);
 		boost_ip::tcp::resolver::iterator	end;
 		boost::system::error_code		error = boost::asio::error::host_not_found;
 		while ( error && endpoint_iterator != end )
 		{
-			stream.lowest_layer().close();
-			stream.lowest_layer().connect(*endpoint_iterator++, error);
+			_stream.lowest_layer().close();
+			_stream.lowest_layer().connect(*endpoint_iterator++, error);
 		}
 		if ( error )
 			return false;
@@ -138,9 +137,9 @@ public:
 private:
 	NO_CLASS_ASSIGNMENT(SSLIOStreamDevice);
 
-	bool fNeedHandshake;
-	bool fUseSSL;
-	boost_ssl::stream<typename boost_ip::tcp::socket>& stream;
+	bool	_need_handshake;
+	bool	_use_ssl;
+	boost_ssl::stream<typename boost_ip::tcp::socket>&	_stream;
 };
 
 
