@@ -98,9 +98,6 @@
     <ClInclude Include="..\..\src\api\interface.h" />
     <ClInclude Include="..\..\src\api\interfaces.h" />
     <ClInclude Include="..\..\src\api\interface_status.h" />
-    <ClInclude Include="..\..\src\api\Interprocess.h" />
-    <ClInclude Include="..\..\src\api\Ipc.h" />
-    <ClInclude Include="..\..\src\api\IpcListener.h" />
     <ClInclude Include="..\..\src\api\Log.h" />
     <ClInclude Include="..\..\src\api\modules.h" />
     <ClInclude Include="..\..\src\api\RpcCommand.h" />
@@ -121,8 +118,6 @@
     <ClCompile Include="..\..\src\api\Configuration.cc" />
     <ClCompile Include="..\..\src\api\crash_handler.cc" />
     <ClCompile Include="..\..\src\api\interfaces.cc" />
-    <ClCompile Include="..\..\src\api\Interprocess.cc" />
-    <ClCompile Include="..\..\src\api\Ipc.cc" />
     <ClCompile Include="..\..\src\api\Log.cc" />
     <ClCompile Include="..\..\src\api\RpcServer.cc" />
     <ClCompile Include="..\..\src\api\RpcTable.cc" />
