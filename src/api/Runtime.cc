@@ -286,7 +286,7 @@ Runtime::WaitThenKillThread(
 #if defined(_WIN32)
 		HANDLE	thread_handle = (HANDLE)t->thread_handle;
 
-		if ( t->thread == thread_id )
+		if ( t->thread == thread )
 		{
 			ti = t;
 
@@ -316,15 +316,15 @@ Runtime::WaitThenKillThread(
 					if ( TerminateThread(thread_handle, EXIT_FAILURE) )
 					{
 						killed = true;
-						std::cerr << fg_yellow << "Thread id " << thread_id << " has been forcibly killed after timing out\n";
-						LOG(ELogLevel::Warn) << "Thread id " << thread_id << " has been forcibly killed after timing out\n";
+						std::cerr << fg_yellow << "Thread id " << thread << " has been forcibly killed after timing out\n";
+						LOG(ELogLevel::Warn) << "Thread id " << thread << " has been forcibly killed after timing out\n";
 					}
 					else
 					{
 						success = false;
 						err = GetLastError();
-						std::cerr << fg_red << "Failed to terminate thread id " << thread_id << "; Win32 error " << err << "\n";
-						LOG(ELogLevel::Error) << "Failed to terminate thread id " << thread_id << "; Win32 error " << err << "\n";
+						std::cerr << fg_red << "Failed to terminate thread id " << thread << "; Win32 error " << err << "\n";
+						LOG(ELogLevel::Error) << "Failed to terminate thread id " << thread << "; Win32 error " << err << "\n";
 					}
 				}
 
