@@ -16,10 +16,12 @@ documentation/doxygen/man
 
 # generated files (keep the folders though)
 **/generated/*
+# needs to be configured per build
 src/build_config.h
 
 # compiled libraries
 *.lib
+*.exp
 *.a
 *.so*
 
