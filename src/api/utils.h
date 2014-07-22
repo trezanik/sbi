@@ -52,34 +52,9 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 
 
 
-/**
- * Creates a std::string from any supplied parameters.
- *
- * Much easier than putting a bunch of individual line appends or having to
- * stream it; works with input of std::string, char*, etc. - anything a normal
- * std::string assignment is capable of.
- *
- * Originally created so we could have a one-liner for std::runtime_error.
- *
- * @warning
- * Use the BUILD_STRING macro; this handles the automatic argument count, so
- * changes won't result in the counter being incorrect
- *
- * @retval std::string
- */
-SBI_API
-std::string
-build_string(
-	int16_t num_args,
-	...
-);
-
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 
 
@@ -259,6 +234,9 @@ str_token(
 
 
 
+/**
+ * 
+ */
 SBI_API
 char*
 str_trim(
@@ -267,9 +245,132 @@ str_trim(
 
 
 
+/**
+ * Acquired from bitcoin_rpc.
+ */
+SBI_API
+bool
+wildcard_match(
+	const char* psz,
+	const char* mask
+);
+
+
+
 #ifdef __cplusplus
 }	// extern "C"
 #endif
+
+
+
+
+/**
+ * Creates a std::string from any supplied parameters.
+ *
+ * Much easier than putting a bunch of individual line appends or having to
+ * stream it; works with input of std::string, char*, etc. - anything a normal
+ * std::string assignment is capable of.
+ *
+ * Originally created so we could have a one-liner for std::runtime_error.
+ *
+ * @warning
+ * Use the BUILD_STRING macro; this handles the automatic argument count, so
+ * changes won't result in the counter being incorrect
+ *
+ * @retval std::string
+ */
+SBI_API
+std::string
+build_string(
+	int16_t num_args,
+	...
+);
+
+
+
+/**
+ * Acquired from bitcoin_rpc.
+ */
+SBI_API
+std::vector<unsigned char>
+decode_base32(
+	const char* p,
+	bool* pfInvalid = nullptr
+);
+
+
+
+/**
+ * Acquired from bitcoin_rpc.
+ */
+SBI_API
+std::string
+decode_base32(
+	const std::string& str
+);
+
+
+
+/**
+ * Acquired from bitcoin_rpc.
+ */
+std::vector<unsigned char>
+decode_base64(
+	const char* p,
+	bool* pfInvalid = nullptr
+);
+
+
+
+/**
+ * Acquired from bitcoin_rpc.
+ */
+std::string
+decode_base64(
+	const std::string& str
+);
+
+
+
+/**
+ * Acquired from bitcoin_rpc.
+ */
+std::string
+encode_base32(
+	const unsigned char* pch,
+	size_t len
+);
+
+
+
+/**
+ * Acquired from bitcoin_rpc.
+ */
+std::string
+encode_base32(
+	const std::string& str
+);
+
+
+
+/**
+ * Acquired from bitcoin_rpc.
+ */
+std::string
+encode_base64(
+	const unsigned char* pch,
+	size_t len
+);
+
+
+
+/**
+ * Acquired from bitcoin_rpc.
+ */
+std::string
+encode_base64(
+	const std::string& str
+);
 
 
 
@@ -287,6 +388,41 @@ SBI_API
 CHARSTRINGTYPE
 mbstr_to_chartypestr(
 	std::string& src
+);
+
+
+
+/**
+ * Timing-attack-resistant comparison. Takes time proportional to length of 
+ * first argument.
+ *
+ * Acquired from bitcoin_rpc.
+ */
+template <typename T>
+bool
+timing_resistant_equal(
+	const T& a,
+	const T& b
+)
+{
+	if ( b.size() == 0 )
+		return a.size() == 0;
+	size_t	accumulator = a.size() ^ b.size();
+	for ( size_t i = 0; i < a.size(); i++ )
+		accumulator |= a[i] ^ b[i % b.size()];
+	return accumulator == 0;
+}
+
+
+
+/**
+ * Acquired from bitcoin_rpc.
+ */
+SBI_API
+bool
+wildcard_match(
+	const std::string& str,
+	const std::string& mask
 );
 
 
