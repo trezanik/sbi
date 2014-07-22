@@ -309,7 +309,6 @@ public:
 	RPC() const;
 
 
-
 	/**
 	 * Causes the runtime to amend its _manual_threads storage - expected to
 	 * be called BY the thread function, but can be executed externally if

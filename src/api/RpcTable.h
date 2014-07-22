@@ -92,8 +92,8 @@ public:
 	 */
 	json_spirit::Value
 	Execute(
-		const std::string &method,
-		const json_spirit::Array &params
+		const std::string& method,
+		const json_spirit::Array& params
 	) const;
 
 

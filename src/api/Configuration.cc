@@ -262,6 +262,7 @@ Configuration::Load(
 	catch ( libconfig::FileIOException& e )
 	{
 		// error reading the file.
+		std::cerr << fg_red << "Error attempting to read the configuration file '" << _path << "'; " << e.what() << "\n";
 		throw;
 	}
 	catch ( libconfig::ParseException& e )
