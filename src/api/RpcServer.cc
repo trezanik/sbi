@@ -12,6 +12,8 @@
 
 #if defined(USING_JSON_SPIRIT_RPC)
 #	include <boost/foreach.hpp>
+#	include <boost/algorithm/string.hpp>
+#	include "JsonRpc.h"
 #endif
 #if defined(USING_BOOST_NET)
 	// ironically requires OpenSSL for the ssl functionality anyway
@@ -48,21 +50,6 @@
 
 
 BEGIN_NAMESPACE(APP_NAMESPACE)
-
-
-
-// special function; can't be class member as the return value is for throwing
-json_spirit::Object
-JSONRPCError(
-	ERpcStatus err_code,
-	const std::string& message
-)
-{
-	json_spirit::Object	error;
-	error.push_back(json_spirit::Pair("code", (int64_t) err_code));
-	error.push_back(json_spirit::Pair("message", message));
-	return error;
-}
 
 
 
@@ -556,6 +543,132 @@ RpcServer::GetInterfaceInfo(
 
 
 
+uint32_t
+RpcServer::ReadHTTPStatus(
+	std::basic_istream<char>& stream,
+	int& proto
+)
+{
+	const char*	ver;
+	std::string	str;
+	std::vector<std::string>	words;
+
+	getline(stream, str);
+	boost::split(words, str, boost::is_any_of(std::string(" ")));
+	
+	if ( words.size() < 2 )
+		return HTTP_INTERNAL_SERVER_ERROR;
+	
+	proto = 0;
+	ver = strstr(str.c_str(), "HTTP/1.");
+	
+	if ( ver != nullptr )
+	{
+		proto = std::stoi(ver + 7);
+	}
+
+	return std::stoi(words[1].c_str());
+}
+
+
+
+int32_t
+RpcServer::ReadHTTPHeader(
+	std::basic_istream<char>& stream,
+	std::map<std::string, std::string>& headers
+)
+{
+	int32_t	len = 0;
+
+	for ( ;; )
+	{
+		std::string	str;
+		std::getline(stream, str);
+		if ( str.empty() || str == "\r" )
+			break;
+		std::string::size_type	colon = str.find(":");
+		if ( colon != std::string::npos )
+		{
+			std::string	header = str.substr(0, colon);
+			boost::trim(header);
+			boost::to_lower(header);
+			std::string	value = str.substr(colon + 1);
+			boost::trim(value);
+			headers[header] = value;
+
+			if ( header == "content-length" )
+				len = std::stoi(value.c_str());
+		}
+	}
+
+	return len;
+}
+
+
+
+uint32_t
+RpcServer::ReadHTTP(
+	std::basic_istream<char>& stream,
+	std::map<std::string, std::string>& headers,
+	std::string& message
+)
+{
+	headers.clear();
+	message = "";
+
+	// Read status
+	int32_t		proto = 0;
+	uint32_t	status = ReadHTTPStatus(stream, proto);
+
+	// Read header
+	int32_t		len = ReadHTTPHeader(stream, headers);
+
+	if ( len < 0 || len > HTTP_MAX_CONTENT_LENGTH )
+		return HTTP_INTERNAL_SERVER_ERROR;
+
+	// if len = 0?
+
+	// Read message
+	if ( len > 0 )
+	{
+		std::vector<char>	vch(len);
+		stream.read(&vch[0], len);
+		message = std::string(vch.begin(), vch.end());
+	}
+
+	std::string	conn_header = headers["connection"];
+
+	if ( (conn_header != "close") && (conn_header != "keep-alive") )
+	{
+		if ( proto >= 1 )
+			headers["connection"] = "keep-alive";
+		else
+			headers["connection"] = "close";
+	}
+
+	return status;
+}
+
+
+
+bool
+RpcServer::HTTPAuthorized(
+	std::map<std::string, std::string>& headers
+)
+{
+	std::string	auth = headers["authorization"];
+
+	if ( auth.substr(0, 6) != "Basic " )
+		return false;
+
+	std::string	user_pass64 = auth.substr(6); boost::trim(user_pass64);
+	std::string	user_pass = decode_base64(user_pass64);
+
+	return timing_resistant_equal(user_pass, _rpc_pass);
+}
+
+
+
 ERpcStatus
 RpcServer::RpcHandlerThread(
 	rpch_params* tparam
@@ -567,8 +680,10 @@ RpcServer::RpcHandlerThread(
 	// input pointer won't live forever, copy the contents
 	RpcServer*			thisptr;
 	std::shared_ptr<thread_info>	ti;
+	std::shared_ptr<AcceptedConnection>	conn;
 	{
 		thisptr			= tparam->thisptr;
+		conn			= tparam->connection;
 
 		ti.reset(new thread_info);
 #if defined(_WIN32)
@@ -585,8 +700,86 @@ RpcServer::RpcHandlerThread(
 		tparam->thisptr = nullptr;
 	}
 
+	bool	stop = false;
 
+	// loop until we're shutting down or processing is complete
+	for ( ;; )
+	{
+		if ( thisptr->_shutdown || stop )
+		{
+			conn->close();
+			break;
+		}
 
+		std::map<std::string,std::string>	headers;
+		std::string				request;
+
+		ReadHTTP(conn->stream(), headers, request);
+
+		if ( headers.count("authorization") == 0 )
+		{
+			conn->stream() << HTTPReply(HTTP_UNAUTHORIZED, "", false) << std::flush;
+		}
+		if ( !HTTPAuthorized(headers) )
+		{
+			std::cerr << "Incorrect password attempt from %s\n" << conn->peer_address_to_string().c_str();
+			SLEEP_MILLISECONDS(250);
+
+			conn->stream() << HTTPReply(HTTP_UNAUTHORIZED, "", false) << std::flush;
+			break;
+		}
+		if ( headers["connection"] == "close" )
+			stop = true;
+
+		JsonRpc		jrpc;
+
+		try
+		{
+			// parse request
+			json_spirit::Value	val_req;
+			std::string		reply;
+
+			if ( !read_string(request, val_req) )
+			{
+				throw JsonRpcError(ERpcStatus::ParseError, "Parse error");
+			}
+
+			if ( val_req.type() == json_spirit::obj_type )
+			{
+				jrpc.Parse(val_req);
+
+				json_spirit::Value	result = _table.Execute(jrpc.method, jrpc.params);
+
+				// send reply
+				reply = jrpc.Reply(result, json_spirit::Value::null, jrpc.id);
+			}
+			else if ( val_req.type() == json_spirit::array_type )
+			{
+				// array of requests
+				reply = jrpc.ExecBatch(val_req.get_array());
+			}
+			else
+			{
+				throw JsonRpcError(ERpcStatus::ParseError, "Top-level object parse error");
+			}
+
+			conn->stream() << HTTPReply(HTTP_OK, reply, !stop) << std::flush;
+		}
+		catch ( json_spirit::Object& obj_error )
+		{
+			jrpc.ErrorReply(conn->stream(), obj_error, jrpc.id);
+			break;
+		}
+		catch ( std::exception& e )
+		{
+			jrpc.ErrorReply(conn->stream(), 
+					JsonRpcError(ERpcStatus::ParseError, e.what()),
+					jrpc.id);
+			break;
+		}
+	}
+
+	conn.reset();
 
 	runtime.ThreadStopping(ti->thread, __func__);
 	return ERpcStatus::Ok;
@@ -817,7 +1010,7 @@ void
 RpcServer::TypeCheck(
 	const json_spirit::Array& params,
 	const std::list<json_spirit::Value_type>& expected_types,
-	bool fAllowNull
+	bool allow_null
 ) const
 {
 	uint32_t	i = 0;
@@ -827,7 +1020,7 @@ RpcServer::TypeCheck(
 			break;
 
 		const json_spirit::Value& v = params[i];
-		if ( !((v.type() == t) || (fAllowNull && (v.type() == json_spirit::null_type))) )
+		if ( !((v.type() == t) || (allow_null && (v.type() == json_spirit::null_type))) )
 		{
 			std::string	err = BUILD_STRING(
 				"Expected type ",
@@ -836,7 +1029,7 @@ RpcServer::TypeCheck(
 				value_type_to_string(v.type()).c_str()
 			);
 			
-			throw JSONRPCError(ERpcStatus::UnknownType, err);
+			throw JsonRpcError(ERpcStatus::UnknownType, err);
 		}
 		i++;
 	}
@@ -848,7 +1041,7 @@ void
 RpcServer::TypeCheck(
 	const json_spirit::Object& o,
 	const std::map<std::string, json_spirit::Value_type>& expected_types,
-	bool fAllowNull
+	bool allow_null
 ) const
 {
 	std::string	err;
@@ -856,14 +1049,14 @@ RpcServer::TypeCheck(
 	BOOST_FOREACH(const PAIRTYPE(std::string, json_spirit::Value_type)& t, expected_types)
 	{
 		const json_spirit::Value& v = find_value(o, t.first);
-		if ( !fAllowNull && v.type() == json_spirit::null_type )
+		if ( !allow_null && v.type() == json_spirit::null_type )
 		{
 			err = BUILD_STRING("Missing ", t.first.c_str());
 
-			throw JSONRPCError(ERpcStatus::UnknownType, err);
+			throw JsonRpcError(ERpcStatus::UnknownType, err);
 		}
 
-		if ( !((v.type() == t.second) || (fAllowNull && (v.type() == json_spirit::null_type))) )
+		if ( !((v.type() == t.second) || (allow_null && (v.type() == json_spirit::null_type))) )
 		{
 			err = BUILD_STRING(
 				"Expected type ",
@@ -874,7 +1067,7 @@ RpcServer::TypeCheck(
 				value_type_to_string(v.type()).c_str()
 			);
 					   
-			throw JSONRPCError(ERpcStatus::UnknownType, err);
+			throw JsonRpcError(ERpcStatus::UnknownType, err);
 		}
 	}
 }

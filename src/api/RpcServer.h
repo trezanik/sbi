@@ -43,6 +43,9 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 #define HTTP_NOT_FOUND			404
 #define HTTP_INTERNAL_SERVER_ERROR	500
 
+// our maximum content-length in HTTP
+#define HTTP_MAX_CONTENT_LENGTH		8000
+
 // the port the server listens on, and the clients must connect to
 #define RPC_PORT		50451
 
@@ -127,14 +130,64 @@ private:
 
 #if defined(USING_JSON_SPIRIT_RPC)
 	/**
-	 * Runs in the ServerThread. In order to signal it to stop, it must be
-	 * callable from another thread, so we retain it in this class.
+	 * Runs in the RpcServerThread. In order to signal it to stop, it must 
+	 * be callable from another thread, so we retain it in this class.
 	 *
 	 * Is a pointer to get around needing to provide boost paths and linkage
 	 * to projects for this single variable.
 	 */
 	std::unique_ptr<boost::asio::io_service>	_io_service;
 #endif
+
+	/** @todo relocate _rpc_pass to proper settings storage */
+	std::string _rpc_pass;
+
+
+	/**
+	 * Reads http status code
+	 */
+	uint32_t
+	ReadHTTPStatus(
+		std::basic_istream<char>& stream, 
+		int& proto
+	);
+
+
+	/**
+	 * Returns length of content, negative on error
+	 */
+	int32_t 
+	ReadHTTPHeader(
+		std::basic_istream<char>& stream, 
+		std::map<std::string, std::string>& headers
+	);
+
+
+	/**
+	 * Returns HTTP status code
+	 *
+	 * @param[in] stream
+	 * @param[out] headers
+	 * @param[out] message
+	 */
+	uint32_t
+	ReadHTTP(
+		std::basic_istream<char>& stream, 
+		std::map<std::string, std::string>& headers,
+		std::string& message
+	);
+
+
+	/**
+	 * Returns if the client is authorized
+	 *
+	 * @param[in] headers
+	 */
+	bool
+	HTTPAuthorized(
+		std::map<std::string, std::string>& headers
+	);
+
 
 
 	/**
@@ -168,7 +221,7 @@ private:
 	TypeCheck(
 		const json_spirit::Array& params,
 		const std::list<json_spirit::Value_type>& expected_types,
-		bool fAllowNull
+		bool allow_null
 	) const;
 
 
@@ -176,7 +229,7 @@ private:
 	TypeCheck(
 		const json_spirit::Object& obj,
 		const std::map<std::string, json_spirit::Value_type>& expected_types,
-		bool fAllowNull
+		bool allow_null
 	) const;
 
 
@@ -210,14 +263,14 @@ public:
 
 
 	/**
-	 * Executes the ServerThread function.
+	 * Executes the RpcServerThread function.
 	 *
 	 * This is needed, and static, so that it can be the recipient to a new
 	 * thread creation, as it's part of a class.
 	 *
-	 * @sa ServerThread
+	 * @sa RpcServerThread
 	 * @param[in] params A pointer to populated rpcs_params cast void
-	 * @return Returns the value returned by ServerThread, as an uint32_t
+	 * @return Returns the value returned by RpcServerThread, as an uint32_t
 	 */
 #if defined(_WIN32)
 	static uint32_t
@@ -231,12 +284,12 @@ public:
 
 
 	/**
-	* Generates a HTTP response based on the input parameters.
-	*
-	* @param[in] status_code The HTTP status code (200, 403, 404, etc.)
-	* @param[in] msg The body of the reply (everything after content-length)
-	* @param[in] keepalive Enable/disable connection keep-alive
-	*/
+	 * Generates a HTTP response based on the input parameters.
+	 *
+	 * @param[in] status_code The HTTP status code (200, 403, 404, etc.)
+	 * @param[in] msg The body of the reply (everything after content-length)
+	 * @param[in] keepalive Enable/disable connection keep-alive
+	 */
 	std::string
 	HTTPReply(
 		int status_code,

@@ -12,6 +12,7 @@
 
 #include "RpcTable.h"
 #include "RpcServer.h"			// RpcCommand
+#include "JsonRpc.h"			// JsonRpcError
 #include "rpc_commands.h"		// api_Xxx rpc functions
 #include "utils.h"			// BUILD_STRING
 
@@ -22,8 +23,8 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 
 
 static const RpcCommand ApiRpcCommands[] =
-{	//  name                      function                 flags
-	//  ------------------------  -----------------------  --------------->>
+{	//  name              function             flags
+	//  ----------------  -------------------  --------------------------->>
 	{ "help", &api_Help, RPCF_ALLOW_IN_TEST_MODE | RPCF_UNLOCKED },
 	{ "stop", &api_Stop, RPCF_ALLOW_IN_TEST_MODE | RPCF_UNLOCKED },
 };
@@ -82,6 +83,57 @@ RpcTable::AddRpcCommand(
 	_cmd_map[new_cmd->name] = new_cmd;
 
 	return ERpcStatus::Ok;
+}
+
+
+
+json_spirit::Value
+RpcTable::Execute(
+	const std::string& method,
+	const json_spirit::Array& params
+) const
+{
+	// Find method
+	const RpcCommand*	pcmd = (*this)[method];
+
+	if ( !pcmd )
+	{
+		throw JsonRpcError(ERpcStatus::MethodNotFound, "Method not found");
+	}
+
+#if 0	// Code Removed: we don't have a safe mode
+	// Observe safe mode
+	std::string	warning_str = GetWarnings("rpc");
+	if ( warning_str != "" 
+	    && !GetBoolArg("-disablesafemode") 
+	    && !pcmd->okSafeMode )
+	{
+	    throw JsonRpcError(RPC_FORBIDDEN_BY_SAFE_MODE, string("Safe mode: ") + warning_str);
+	}
+#endif
+
+	try
+	{
+		// Execute
+		json_spirit::Value	result;
+		{
+			if ( pcmd->flags & RPCF_UNLOCKED )
+			{
+				result = pcmd->actor(params, false);
+			}
+			else
+			{
+				// purpose?
+				//LOCK2(cs_main, pwalletMain->cs_wallet);
+				result = pcmd->actor(params, false);
+			}
+		}
+		return result;
+	}
+	catch ( std::exception& e )
+	{
+		throw JsonRpcError(ERpcStatus::Exception, e.what());
+	}
 }
 
 
