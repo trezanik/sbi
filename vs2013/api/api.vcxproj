@@ -59,7 +59,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;API_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;API_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>build_config.h</ForcedIncludeFiles>
     </ClCompile>
@@ -98,6 +98,7 @@
     <ClInclude Include="..\..\src\api\interface.h" />
     <ClInclude Include="..\..\src\api\interfaces.h" />
     <ClInclude Include="..\..\src\api\interface_status.h" />
+    <ClInclude Include="..\..\src\api\JsonRpc.h" />
     <ClInclude Include="..\..\src\api\Log.h" />
     <ClInclude Include="..\..\src\api\modules.h" />
     <ClInclude Include="..\..\src\api\RpcCommand.h" />
@@ -118,6 +119,7 @@
     <ClCompile Include="..\..\src\api\Configuration.cc" />
     <ClCompile Include="..\..\src\api\crash_handler.cc" />
     <ClCompile Include="..\..\src\api\interfaces.cc" />
+    <ClCompile Include="..\..\src\api\JsonRpc.cc" />
     <ClCompile Include="..\..\src\api\Log.cc" />
     <ClCompile Include="..\..\src\api\RpcServer.cc" />
     <ClCompile Include="..\..\src\api\RpcTable.cc" />
