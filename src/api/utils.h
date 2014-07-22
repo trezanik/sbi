@@ -13,6 +13,8 @@
 #	include <cinttypes>		// PRIxPTR, for PRINT_POINTER
 #endif
 
+#include <vector>
+
 #include "char_helper.h"
 #include "definitions.h"
 #include "types.h"

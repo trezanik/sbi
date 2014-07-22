@@ -60,10 +60,10 @@ SOURCES += ../../src/api/Allocator.cc \
     ../../src/api/utils.cc \
     ../../src/api/utils_linux.cc \
     ../../src/api/utils_win.cc \
-    ../../src/api/Ipc.cc \
     ../../src/api/rpc_commands.cc \
     ../../src/api/RpcServer.cc \
-    ../../src/api/RpcTable.cc
+    ../../src/api/RpcTable.cc \
+    ../../src/api/JsonRpc.cc
 
 HEADERS += ../../src/api/Allocator.h \
     ../../src/api/char_helper.h \
@@ -88,4 +88,5 @@ HEADERS += ../../src/api/Allocator.h \
     ../../src/api/rpc_status.h \
     ../../src/api/RpcCommand.h \
     ../../src/api/RpcServer.h \
-    ../../src/api/RpcTable.h
+    ../../src/api/RpcTable.h \
+    ../../src/api/JsonRpc.h
