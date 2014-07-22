@@ -87,7 +87,14 @@
 
 #if IS_VISUAL_STUDIO || defined(_WIN32)
 
-#	pragma warning ( disable : 4251 )	// needs to have dll-interface
+	// Debug + Release disabled warnings
+#	pragma warning ( disable : 4251 )		// needs to have dll-interface
+#	if !IS_DEBUG_BUILD
+		// Warnings disabled only in Release mode
+#		pragma warning ( disable : 4127 )	// conditional expression is constant
+#	else
+		// Warnings disabled only in Debug mode
+#	endif
 
 	// Windows standards-compliance functions
 #	define unlink			_unlink
