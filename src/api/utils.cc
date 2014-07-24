@@ -29,6 +29,8 @@
 #	endif
 #endif
 
+#include "Allocator.h"		// memory allocation macros
+#include "Terminal.h"
 #include "utils.h"		// prototypes
 
 
@@ -56,371 +58,6 @@ build_string(
 	va_end(args);
 
 	return ret_str;
-}
-
-
-
-std::vector<unsigned char>
-decode_base32(
-	const char* p,
-	bool* pfInvalid
-)
-{
-	unsigned char		mode = 0;
-	unsigned char		left = 0;
-	static const int	decode32_table[256] =
-	{
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-		15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 0, 1, 2,
-		3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-		23, 24, 25, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
-	};
-
-	if ( pfInvalid )
-		*pfInvalid = false;
-
-	std::vector<unsigned char>	vect;
-	vect.reserve((strlen(p)) * 5 / 8);
-
-	while ( 1 )
-	{
-		unsigned char	dec = decode32_table[(unsigned char) *p];
-
-		if ( dec == -1 )
-			break;
-
-		p++;
-
-		switch ( mode )
-		{
-		case 0: // we have no bits and get 5
-			left = dec;
-			mode = 1;
-			break;
-		case 1: // we have 5 bits and keep 2
-			vect.push_back((left << 3) | (dec >> 2));
-			left = dec & 3;
-			mode = 2;
-			break;
-		case 2: // we have 2 bits and keep 7
-			left = left << 5 | dec;
-			mode = 3;
-			break;
-		case 3: // we have 7 bits and keep 4
-			vect.push_back((left << 1) | (dec >> 4));
-			left = dec & 15;
-			mode = 4;
-			break;
-		case 4: // we have 4 bits, and keep 1
-			vect.push_back((left << 4) | (dec >> 1));
-			left = dec & 1;
-			mode = 5;
-			break;
-		case 5: // we have 1 bit, and keep 6
-			left = left << 5 | dec;
-			mode = 6;
-			break;
-		case 6: // we have 6 bits, and keep 3
-			vect.push_back((left << 2) | (dec >> 3));
-			left = dec & 7;
-			mode = 7;
-			break;
-		case 7: // we have 3 bits, and keep 0
-			vect.push_back((left << 5) | dec);
-			mode = 0;
-			break;
-		}
-	}
-
-	if ( pfInvalid )
-	{
-		switch ( mode )
-		{
-		case 0: // 8n base32 characters processed: ok
-			break;
-		case 1: // 8n+1 base32 characters processed: impossible
-		case 3: //   +3
-		case 6: //   +6
-			*pfInvalid = true;
-			break;
-		case 2: // 8n+2 base32 characters processed: require '======'
-			if ( left || p[0] != '=' || p[1] != '=' || p[2] != '=' || p[3] != '=' || p[4] != '=' || p[5] != '=' || decode32_table[(unsigned char) p[6]] != -1 )
-				*pfInvalid = true;
-			break;
-		case 4: // 8n+4 base32 characters processed: require '===='
-			if ( left || p[0] != '=' || p[1] != '=' || p[2] != '=' || p[3] != '=' || decode32_table[(unsigned char) p[4]] != -1 )
-				*pfInvalid = true;
-			break;
-		case 5: // 8n+5 base32 characters processed: require '==='
-			if ( left || p[0] != '=' || p[1] != '=' || p[2] != '=' || decode32_table[(unsigned char) p[3]] != -1 )
-				*pfInvalid = true;
-			break;
-		case 7: // 8n+7 base32 characters processed: require '='
-			if ( left || p[0] != '=' || decode32_table[(unsigned char) p[1]] != -1 )
-				*pfInvalid = true;
-			break;
-		}
-	}
-
-	return vect;
-}
-
-
-
-std::string
-decode_base32(
-	const std::string& str
-)
-{
-	std::vector<unsigned char>	vect = decode_base32(str.c_str());
-
-	return std::string((const char*) &vect[0], vect.size());
-}
-
-
-
-std::vector<unsigned char>
-decode_base64(
-	const char* p,
-	bool* pfInvalid
-)
-{
-	unsigned char		mode = 0;
-	unsigned char		left = 0;
-	static const int	decode64_table[256] =
-	{
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1,
-		-1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-		15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28,
-		29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48,
-		49, 50, 51, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
-	};
-
-	if ( pfInvalid )
-	{
-		*pfInvalid = false;
-	}
-
-	std::vector<unsigned char>	vect;
-	vect.reserve(strlen(p) * 3 / 4);
-
-	while ( 1 )
-	{
-		unsigned char	dec = decode64_table[(unsigned char) *p];
-
-		if ( dec == -1 )
-			break;
-
-		p++;
-
-		switch ( mode )
-		{
-		case 0: // we have no bits and get 6
-			left = dec;
-			mode = 1;
-			break;
-		case 1: // we have 6 bits and keep 4
-			vect.push_back((left << 2) | (dec >> 4));
-			left = dec & 15;
-			mode = 2;
-			break;
-		case 2: // we have 4 bits and get 6, we keep 2
-			vect.push_back((left << 4) | (dec >> 2));
-			left = dec & 3;
-			mode = 3;
-			break;
-		case 3: // we have 2 bits and get 6
-			vect.push_back((left << 6) | dec);
-			mode = 0;
-			break;
-		}
-	}
-
-	if ( pfInvalid )
-	{
-		switch ( mode )
-		{
-		case 0: // 4n base64 characters processed: ok
-			break;
-		case 1: // 4n+1 base64 character processed: impossible
-			*pfInvalid = true;
-			break;
-		case 2: // 4n+2 base64 characters processed: require '=='
-			if ( left || p[0] != '=' || p[1] != '=' || decode64_table[(unsigned char) p[2]] != -1 )
-				*pfInvalid = true;
-			break;
-		case 3: // 4n+3 base64 characters processed: require '='
-			if ( left || p[0] != '=' || decode64_table[(unsigned char) p[1]] != -1 )
-				*pfInvalid = true;
-			break;
-		}
-	}
-
-	return vect;
-}
-
-
-
-std::string
-decode_base64(
-	const std::string& str
-)
-{
-	std::vector<unsigned char>	vect = decode_base64(str.c_str());
-
-	return std::string((const char*)&vect[0], vect.size());
-}
-
-
-
-std::string
-encode_base32(
-	const unsigned char* pch,
-	size_t len
-)
-{
-	static const char*	pbase32 = "abcdefghijklmnopqrstuvwxyz234567";
-	static const int32_t	padding[5] = { 0, 6, 4, 3, 1 };
-	std::string		ret = "";
-	unsigned char		mode = 0;
-	unsigned char		left = 0;
-	const unsigned char*	endp = pch + len;
-
-	ret.reserve((len + 4) / 5 * 8);
-
-	while ( pch < endp )
-	{
-		int32_t	enc = *(pch++);
-
-		switch ( mode )
-		{
-		case 0: // we have no bits
-			ret += pbase32[enc >> 3];
-			left = (enc & 7) << 2;
-			mode = 1;
-			break;
-		case 1: // we have three bits
-			ret += pbase32[left | (enc >> 6)];
-			ret += pbase32[(enc >> 1) & 31];
-			left = (enc & 1) << 4;
-			mode = 2;
-			break;
-		case 2: // we have one bit
-			ret += pbase32[left | (enc >> 4)];
-			left = (enc & 15) << 1;
-			mode = 3;
-			break;
-		case 3: // we have four bits
-			ret += pbase32[left | (enc >> 7)];
-			ret += pbase32[(enc >> 2) & 31];
-			left = (enc & 3) << 3;
-			mode = 4;
-			break;
-		case 4: // we have two bits
-			ret += pbase32[left | (enc >> 5)];
-			ret += pbase32[enc & 31];
-			mode = 0;
-		}
-	}
-
-	if ( mode )
-	{
-		ret += pbase32[left];
-
-		for ( int32_t n = 0; n < padding[mode]; n++ )
-			ret += '=';
-	}
-
-	return ret;
-}
-
-
-
-std::string
-encode_base32(
-	const std::string& str
-)
-{
-	return encode_base32((const unsigned char*) str.c_str(), str.size());
-}
-
-
-
-std::string
-encode_base64(
-	const unsigned char* pch, 
-	size_t len
-)
-{
-	static const char*	pbase64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-	std::string		ret = "";
-	int32_t			mode = 0;
-	int32_t			left = 0;
-	const unsigned char*	endp = pch + len;
-
-	ret.reserve((len + 2) / 3 * 4);
-
-	while ( pch < endp )
-	{
-		int32_t	enc = *(pch++);
-
-		switch ( mode )
-		{
-		case 0: // we have no bits
-			ret += pbase64[enc >> 2];
-			left = (enc & 3) << 4;
-			mode = 1;
-			break;
-		case 1: // we have two bits
-			ret += pbase64[left | (enc >> 4)];
-			left = (enc & 15) << 2;
-			mode = 2;
-			break;
-		case 2: // we have four bits
-			ret += pbase64[left | (enc >> 6)];
-			ret += pbase64[enc & 63];
-			mode = 0;
-			break;
-		}
-	}
-
-	if ( mode )
-	{
-		ret += pbase64[left];
-		ret += '=';
-
-		if ( mode == 1 )
-			ret += '=';
-	}
-
-	return ret;
-}
-
-
-
-std::string
-encode_base64(
-	const std::string& str
-)
-{
-	return encode_base64((const unsigned char*)str.c_str(), str.size());
 }
 
 
@@ -790,13 +427,176 @@ str_trim(
 
 
 
+const static char* b64="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+// maps A=>0,B=>1..
+const static unsigned char unb64[] = {
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //10
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //20
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //30
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //40
+	 0,  0,  0, 62,  0,  0,  0, 63, 52, 53, //50
+	54, 55, 56, 57, 58, 59, 60, 61,  0,  0, //60
+	 0,  0,  0,  0,  0,  0,  1,  2,  3,  4, //70
+	 5,  6,  7,  8,  9, 10, 11, 12, 13, 14, //80
+	15, 16, 17, 18, 19, 20, 21, 22, 23, 24, //90
+	25,  0,  0,  0,  0,  0,  0, 26, 27, 28, //100
+	29, 30, 31, 32, 33, 34, 35, 36, 37, 38, //110
+	39, 40, 41, 42, 43, 44, 45, 46, 47, 48, //120
+	49, 50, 51,  0,  0,  0,  0,  0,  0,  0, //130
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //140
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //150
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //160
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //170
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //180
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //190
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //200
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //210
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //220
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //230
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //240
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, //250
+	 0,  0,  0,  0,  0,  0,
+}; // This array has 255 elements
+
+
+
+char*
+base64(
+	const void* data,
+	int len,
+	int* flen
+)
+{
+	const unsigned char*	bin = (const unsigned char*)data;
+	uint32_t	alloc;
+	char*		res;
+	int	rc = 0 ; // result counter
+	int	byte_num; // needed after the loop
+	int	modulus_len = len % 3;
+	int	pad = ((modulus_len & 1) << 1) + ((modulus_len & 2) >> 1) ; // 2 gives 1 and 1 gives 2, but 0 gives 0.
+
+	*flen = 4 * (len + pad) / 3;
+	alloc = *flen + 1;
+	res = (char*)MALLOC(alloc); // and one for the nul
+
+	if ( !res )
+	{
+		std::cerr << fg_red << "Memory allocation failed (" << alloc << ") bytes\n";
+		return 0;
+	}
+
+	for ( byte_num = 0; byte_num <= len-3; byte_num += 3 )
+	{
+		unsigned char	byte0 = bin[byte_num    ];
+		unsigned char	byte1 = bin[byte_num + 1];
+		unsigned char	byte2 = bin[byte_num + 2];
+
+		res[rc++] = b64[ byte0 >> 2 ] ;
+		res[rc++] = b64[ ((0x3 & byte0) << 4) + (byte1 >> 4) ];
+		res[rc++] = b64[ ((0x0f & byte1) << 2) + (byte2 >> 6) ];
+		res[rc++] = b64[ 0x3f & byte2 ];
+	}
+
+	if ( pad == 2 )
+	{
+		res[rc++] = b64[ bin[byte_num] >> 2 ];
+		res[rc++] = b64[ (0x3 & bin[byte_num]) << 4 ];
+		res[rc++] = '=';
+		res[rc++] = '=';
+	}
+	else if ( pad == 1 )
+	{
+		res[rc++] = b64[ bin[byte_num] >> 2 ] ;
+		res[rc++] = b64[ ((0x3 & bin[byte_num]) << 4) + (bin[byte_num+1] >> 4) ];
+		res[rc++] = b64[ (0x0f & bin[byte_num+1]) << 2 ] ;
+		res[rc++] = '=';
+	}
+
+	res[rc] = 0; // nul terminator
+	return res;
+}
+
+
+
+unsigned char*
+unbase64(
+	const char* ascii,
+	int len,
+	int* flen
+)
+{
+	const unsigned char*	input = (const unsigned char*)ascii;
+	unsigned char*	bin;
+	uint32_t	alloc;
+	int		cb = 0;
+	int		char_num;
+	int		pad = 0 ;
+
+	if ( len < 2 )
+	{
+		// 2 accesses below would be OOB.
+		// catch empty string, return NULL as result.
+		std::cerr << fg_red << "Invalid base64 string (too short).\n";
+		*flen = 0;
+		return nullptr;
+	}
+
+	if ( input[len-1] == '=' )
+		++pad;
+	if ( input[len-2] == '=' )
+		++pad;
+
+	*flen = 3 * len/4 - pad;
+	alloc = *flen;
+
+	if (( bin = (unsigned char*)MALLOC(alloc)) == nullptr )
+	{
+		std::cerr << fg_red << "Memory allocation failed (" << alloc << ") bytes\n";
+		return nullptr;
+	}
+
+	for ( char_num = 0; char_num <= len - 4 - pad; char_num += 4 )
+	{
+		int	a = unb64[input[char_num    ]];
+		int	b = unb64[input[char_num + 1]];
+		int	c = unb64[input[char_num + 2]];
+		int	d = unb64[input[char_num + 3]];
+
+		bin[cb++] = (a << 2) | (b >> 4);
+		bin[cb++] = (b << 4) | (c >> 2);
+		bin[cb++] = (c << 6) | (d);
+	}
+
+	if ( pad == 1 )
+	{
+		int	a = unb64[input[char_num    ]];
+		int	b = unb64[input[char_num + 1]];
+		int	c = unb64[input[char_num + 2]];
+
+		bin[cb++] = (a << 2) | (b >> 4);
+		bin[cb++] = (b << 4) | (c >> 2);
+	}
+	else if ( pad == 2 )
+	{
+		int	a = unb64[input[char_num    ]];
+		int	b = unb64[input[char_num + 1]];
+
+		bin[cb++] = (a << 2) | (b >> 4) ;
+	}
+
+	return bin;
+}
+
+
+
 bool
 wildcard_match(
 	const char* psz,
 	const char* mask
 )
 {
-	while ( 1 )
+	for ( ;; )
 	{
 		switch ( *mask )
 		{

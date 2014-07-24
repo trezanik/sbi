@@ -4,6 +4,11 @@
  * @file        utils.h
  * @author      James Warren
  * @brief       Consistent secure string & utility functionality, multi-platform
+ *
+ * @note
+ * base64 encode/decode functionality from the bitcoin source has been replaced
+ * with a cleaner one, acquired from: https://github.com/superwills/NibbleAndAHalf
+ * Documentation and code style is amended to fit in with project standards.
  */
 
 
@@ -60,19 +65,38 @@ extern "C" {
 
 
 
+// Converts binary data of length=len to base64 characters.
+// Length of the resultant string is stored in flen
+// (you must pass pointer flen).
+/**
+ * @brief base64
+ * @param data
+ * @param len
+ * @param flen A pointer
+ * @return
+ */
+char*
+base64(
+	const void* data,
+	int len,
+	int* flen
+);
+
+
+
 /**
  * Generates a random string, with a minimum/maximum length as supplied. If the
- * @a seed is not supplied, @a rand() will not be seeded, using any existing
- * value assigned to it.
+ * seed is not supplied, rand() will not be seeded, using any existing value
+ * assigned to it.
  *
  * The random string will only contain a-z and A-Z characters.
  *
- * The memory returned by the function must be freed with @a MemFree.
+ * The memory returned by the function must be freed with the FREE macro.
  *
  * @param min_chars The minimum number of characters the string will be. Must
  * be greater than 0.
  * @param max_chars The maximum number of characters the string will be. Must
- * be equal to or more than @a min_chars, and less than 250.
+ * be equal to or more than min_chars, and less than 250.
  * @param seed The seed value to pass to the srand library function, or 0 for
  * no seed.
  * @return Returns NULL if the above criteria are not met, or memory allocation
@@ -248,6 +272,22 @@ str_trim(
 
 
 /**
+ * @brief unbase64
+ * @param ascii
+ * @param len
+ * @param flen
+ * @return
+ */
+unsigned char*
+unbase64(
+	const char* ascii,
+	int len,
+	int* flen
+);
+
+
+
+/**
  * Acquired from bitcoin_rpc.
  */
 SBI_API
@@ -286,92 +326,6 @@ std::string
 build_string(
 	int16_t num_args,
 	...
-);
-
-
-
-/**
- * Acquired from bitcoin_rpc.
- */
-SBI_API
-std::vector<unsigned char>
-decode_base32(
-	const char* p,
-	bool* pfInvalid = nullptr
-);
-
-
-
-/**
- * Acquired from bitcoin_rpc.
- */
-SBI_API
-std::string
-decode_base32(
-	const std::string& str
-);
-
-
-
-/**
- * Acquired from bitcoin_rpc.
- */
-std::vector<unsigned char>
-decode_base64(
-	const char* p,
-	bool* pfInvalid = nullptr
-);
-
-
-
-/**
- * Acquired from bitcoin_rpc.
- */
-std::string
-decode_base64(
-	const std::string& str
-);
-
-
-
-/**
- * Acquired from bitcoin_rpc.
- */
-std::string
-encode_base32(
-	const unsigned char* pch,
-	size_t len
-);
-
-
-
-/**
- * Acquired from bitcoin_rpc.
- */
-std::string
-encode_base32(
-	const std::string& str
-);
-
-
-
-/**
- * Acquired from bitcoin_rpc.
- */
-std::string
-encode_base64(
-	const unsigned char* pch,
-	size_t len
-);
-
-
-
-/**
- * Acquired from bitcoin_rpc.
- */
-std::string
-encode_base64(
-	const std::string& str
 );
 
 

@@ -40,6 +40,7 @@
 #	include <pthread.h>
 #endif
 
+#include "Allocator.h"
 #include "RpcServer.h"
 #include "Runtime.h"
 #include "Log.h"
@@ -302,11 +303,7 @@ RPCAcceptHandler(
 	}
 	
 	ResumeThread((HANDLE)params.thread_handle);
-	
-	/* wait for the thread to reset this member; we don't want to exit scope
-	 * before the thread has a chance to acquire the params contents */
-	while ( params.thisptr != nullptr )
-		SLEEP_MILLISECONDS(21);	
+
 #else
 	int32_t		err;
 	pthread_attr_t	attr;
@@ -327,6 +324,10 @@ RPCAcceptHandler(
 	}
 #endif	// _WIN32
 
+	/* wait for the thread to reset this member; we don't want to exit scope
+	 * before the thread has a chance to acquire the params contents */
+	while ( params.thisptr != nullptr )
+		SLEEP_MILLISECONDS(9);
 }
 
 
@@ -567,7 +568,10 @@ RpcServer::ReadHTTPStatus(
 		proto = std::stoi(ver + 7);
 	}
 
-	return std::stoi(words[1].c_str());
+	// "POST / HTTP/1.1" will have no status (should be server only anyway..)
+	// naturally causes exception here:
+	//return std::stoi(words[1].c_str());
+	return 200;
 }
 
 
@@ -653,18 +657,26 @@ RpcServer::ReadHTTP(
 
 bool
 RpcServer::HTTPAuthorized(
-	std::map<std::string, std::string>& headers
+	std::map<std::string,
+	std::string>& headers
 )
 {
+	bool		ret = false;
+	int		i;
 	std::string	auth = headers["authorization"];
 
 	if ( auth.substr(0, 6) != "Basic " )
-		return false;
+		return ret;
 
 	std::string	user_pass64 = auth.substr(6); boost::trim(user_pass64);
-	std::string	user_pass = decode_base64(user_pass64);
+	char*		user_pass = base64(user_pass64.c_str(), user_pass64.length()+1, &i);
 
-	return timing_resistant_equal(user_pass, _rpc_pass);
+	ret = timing_resistant_equal(std::string(user_pass), _rpc_pass);
+
+	// all done with the encoded value; release the memory
+	FREE(user_pass);
+
+	return ret;
 }
 
 
@@ -698,6 +710,10 @@ RpcServer::RpcHandlerThread(
 		
 		// let the caller know we're done
 		tparam->thisptr = nullptr;
+
+		assert(thisptr != nullptr);
+		assert(ti != nullptr);
+		assert(conn != nullptr);
 	}
 
 	bool	stop = false;
@@ -974,13 +990,6 @@ RpcServer::Startup()
 
 	ResumeThread((HANDLE)_server_params.thread_handle);
 
-	/* while _server_params lifetime is with the class and there's no need 
-	 * to wait for the thread, the thread will make a log entry that we want
-	 * to report before the app_exec startup log goes through. End result is
-	 * that looks just like all the other thread startups. */
-	while ( _server_params.thisptr != nullptr )
-		SLEEP_MILLISECONDS(4);
-
 #else
 	int32_t		err;
 	pthread_attr_t	attr;
@@ -1000,6 +1009,13 @@ RpcServer::Startup()
 		return ERpcStatus::ThreadCreateFailed;
 	}
 #endif
+
+	/* while _server_params lifetime is with the class and there's no need
+	 * to wait for the thread, the thread will make a log entry that we want
+	 * to report before the app_exec startup log goes through. End result is
+	 * that looks just like all the other thread startups. */
+	while ( _server_params.thisptr != nullptr )
+		SLEEP_MILLISECONDS(4);
 
 	return ERpcStatus::Ok;
 }
