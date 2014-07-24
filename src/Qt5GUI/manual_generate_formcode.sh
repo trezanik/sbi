@@ -10,7 +10,7 @@ QT_PATH=../../../Qt/5.3/gcc_64/bin
 FORMS_PATH=./forms
 GEN_PATH=./generated
 
-if [ ! -d "$GEN_PATH" ]
+if [ ! -d "$GEN_PATH" ]; then
 	mkdir "$GEN_PATH"
 fi
 
