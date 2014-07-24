@@ -107,6 +107,24 @@ if USING_LIBCONFIG
 end
 if USING_JSON_CONFIG
 end
+if USING_JSON_SPIRIT_RPC
+	# There's no need to build this library, is header-only
+	json_spirit_include_path = "../third-party/json_spirit"
+	# json_spirit requires boost
+	boost_rpc_libraries = [ "boost_system" ]
+	boost_rpc_library_path = "../third-party/boost/lib"
+	boost_rpc_include_path = "../third-party/boost"
+	# boost requires openssl
+	openssl_rpc_libraries = [ "dl", "ssl", "crypto" ]
+	openssl_rpc_library_path = "../third-party/openssl/lib"
+	openssl_rpc_include_path = "../third-party/openssl"
+end
+if USING_DEFAULT_QT5_GUI
+	# note: this is different from the qt5gui task!
+	qt_libraries = [ "Qt5Core", "Qt5Gui", "Qt5Widgets" ]
+	qt_library_path = "../../Qt/5.3/gcc_64/lib"
+	qt_include_path = "../../Qt/5.3/gcc_64/include"
+end
 
 
 # End options
@@ -137,13 +155,21 @@ sbi.set_target_path(target_path)
 sbi.add_compiler_flags(compiler_flags)
 sbi.add_linker_flags(linker_flags)
 sbi.add_link_library(api_lib)
-# api deps - thought api.so would cover this?? (not cbuild related)
-sbi.add_link_library("dl")
-sbi.add_link_library_path(libconfig_library_path)
-sbi.add_link_libraries(libconfig_libraries)
-# /api deps
 sbi.add_source_path("../src/sbi")
 sbi.add_forced_include(BUILDCONFIG_FILE)
+# api deps - thought api.so would cover this?? (not cbuild related)
+sbi.add_link_libraries(["dl", "pthread"])
+if USING_LIBCONFIG
+	sbi.add_link_library_path(libconfig_library_path)
+	sbi.add_link_libraries(libconfig_libraries)
+end
+if USING_JSON_SPIRIT_RPC
+	sbi.add_include_path(json_spirit_include_path)
+	sbi.add_link_library_path(boost_rpc_library_path)
+	sbi.add_link_libraries(boost_rpc_libraries)
+end
+# /api deps
+
 
 
 
@@ -164,6 +190,13 @@ if USING_LIBCONFIG
 	api.add_include_path(libconfig_include_path)
 	api.add_link_library_path(libconfig_library_path)
 	api.add_link_library(libconfig_libraries)
+end
+if USING_JSON_SPIRIT_RPC
+	api.add_include_path(json_spirit_include_path)
+	api.add_include_path(boost_rpc_include_path)
+	api.add_include_path(openssl_rpc_include_path)
+	api.add_link_library_path(openssl_rpc_library_path)
+	api.add_link_library(openssl_rpc_libraries)
 end
 
 
@@ -195,6 +228,14 @@ if USING_OPENSSL_NET
 	irc.add_link_library_path(openssl_net_library_path)
 	irc.add_link_libraries(openssl_net_libraries)
 end
+if USING_JSON_SPIRIT_RPC
+	irc.add_include_path(json_spirit_include_path)
+end
+if USING_DEFAULT_QT5_GUI
+	irc.add_include_path(qt_include_path)
+	irc.add_link_library_path(qt_library_path)
+	irc.add_link_libraries(qt_libraries)
+end
 
 
 qt5gui = ProjectTask.new(qt5gui_task_name)
@@ -220,6 +261,9 @@ if USING_LIBCONFIG
 	qt5gui.add_include_path(libconfig_include_path)
 	qt5gui.add_link_library_path(libconfig_library_path)
 	qt5gui.add_link_library(libconfig_libraries)
+end
+if USING_JSON_SPIRIT_RPC
+	qt5gui.add_include_path(json_spirit_include_path)
 end
 
 
