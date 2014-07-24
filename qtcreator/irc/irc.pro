@@ -59,7 +59,8 @@ SOURCES += ../../src/irc/interface.cc \
     ../../src/irc/IrcPool.cc \
     ../../src/irc/IrcUser.cc \
     ../../src/irc/nethelper.cc \
-    ../../src/irc/win32.cc
+    ../../src/irc/win32.cc \
+    ../../src/irc/IrcGui.cc
 
 HEADERS += ../../src/irc/config_structs.h \
     ../../src/irc/irc_channel_modes.h \
@@ -81,4 +82,5 @@ HEADERS += ../../src/irc/config_structs.h \
     ../../src/irc/live_structs.h \
     ../../src/irc/nethelper.h \
     ../../src/irc/rfc1459.h \
-    ../../src/irc/rfc2812.h
+    ../../src/irc/rfc2812.h \
+    ../../src/irc/IrcGui.h
