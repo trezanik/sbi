@@ -13,7 +13,6 @@
 
 // mandatory inclusion so spawn_interface() can be a friend
 #include <api/interface.h>
-#include <api/IpcListener.h>
 
 /* screw forward declaring the enum - it causes more build problems than it's
  * worth, and IrcListener isn't that bloated anyway. */
@@ -95,7 +94,7 @@ enum E_CONNECTION_STATE
  *
  * @class IrcEngine
  */
-class SBI_IRC_API IrcEngine : public IpcListener
+class SBI_IRC_API IrcEngine
 {
 	// only spawn_interface() is allowed to create this class
 	friend int ::spawn_interface();
@@ -131,10 +130,6 @@ private:
 	/** IrcObject creation factory */
 	std::unique_ptr<IrcFactory>	_ircobject_factory;
 
-#if 0	// Code Removed: Inherits this functionality (may move to IrcConnection)
-	/** IPC method */
-	std::shared_ptr<IpcListener>	_ipc_listener;
-#endif
 
 
 	// private constructor; we want one instance that is controlled
@@ -158,16 +153,6 @@ private:
 	 */
 	IrcFactory*
 	Factory() const;
-
-
-	/**
-	 * Called within the Interprocess notification handler (API). Notified
-	 * whenever something has been written to the shared memory that we are
-	 * listening to. This can be a command from another library that should
-	 * be interpreted and executed (like, Connect to X server).
-	 */
-	void
-	Notify() override;
 
 
 	/**

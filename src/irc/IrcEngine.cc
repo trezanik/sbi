@@ -12,7 +12,6 @@
 #include <cassert>
 
 #include <api/Terminal.h>
-#include <api/Interprocess.h>
 #include "IrcEngine.h"			// prototypes
 #include "IrcGui.h"
 #include "IrcListener.h"
@@ -128,14 +127,6 @@ IrcFactory*
 IrcEngine::Factory() const
 {
 	return _ircobject_factory.get();
-}
-
-
-
-void
-IrcEngine::Notify()
-{
-	// IPC command sent to us
 }
 
 
