@@ -25,6 +25,7 @@ enum class ERpcStatus
 	NameInUse,		// RpcCommand name is already used
 	ThreadCreateFailed,	// Could not create the server thread
 	NotListening,		// Could not listen on requested port
+	IsShutdown,		// Server is shutdown
 	// json-rpc
 	InvalidRequest,
 	MethodNotFound,

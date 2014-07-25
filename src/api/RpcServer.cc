@@ -356,14 +356,12 @@ rfc1123_time()
 
 RpcServer::RpcServer()
 {
-
 }
 
 
 
 RpcServer::~RpcServer()
 {
-
 }
 
 
@@ -494,6 +492,7 @@ RpcServer::GetEnvironmentCoreCount(
 
 	uint64_t	core_count;
 
+	// use C++11 function, fallback to operating system independent
 	if (( core_count = std::thread::hardware_concurrency()) == 0 )
 	{
 #if defined(_WIN32)
@@ -668,10 +667,15 @@ RpcServer::HTTPAuthorized(
 	if ( auth.substr(0, 6) != "Basic " )
 		return ret;
 
-	std::string	user_pass64 = auth.substr(6); boost::trim(user_pass64);
+	std::string	user_pass64 = auth.substr(6);
+
+	boost::trim(user_pass64);
+
 	char*		user_pass = base64(user_pass64.c_str(), user_pass64.length()+1, &i);
 
-	ret = timing_resistant_equal(std::string(user_pass), _rpc_pass);
+	// temporary until we actually add assigning rpc auth in the config
+	_rpc_auth = user_pass;
+	ret = timing_resistant_equal(std::string(user_pass), _rpc_auth);
 
 	// all done with the encoded value; release the memory
 	FREE(user_pass);
@@ -936,6 +940,12 @@ RpcServer::RpcServerThread(
 ERpcStatus
 RpcServer::Shutdown()
 {
+	if ( _shutdown )
+	{
+		// is already shutdown, can't repeat (_io_service is a nullptr!)
+		return ERpcStatus::IsShutdown;
+	}
+
 	_shutdown = true;
 	_io_service->stop();
 

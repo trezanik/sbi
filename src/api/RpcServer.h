@@ -139,8 +139,9 @@ private:
 	std::unique_ptr<boost::asio::io_service>	_io_service;
 #endif
 
-	/** @todo relocate _rpc_pass to proper settings storage */
-	std::string _rpc_pass;
+	/** @todo relocate _rpc_auth to proper settings storage */
+	std::string _rpc_auth;
+
 
 
 	/**
@@ -345,6 +346,9 @@ public:
 	 * Should only normally be needed when closing the application.
 	 *
 	 * @sa Startup
+	 * @retval ERpcStatus::Ok if the server was running, and this call then
+	 * stopped the server.
+	 * @retval ERpcStatus::IsShutdown if the server was already shutdown
 	 */
 	ERpcStatus
 	Shutdown();
