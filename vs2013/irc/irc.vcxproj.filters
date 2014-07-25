@@ -119,9 +119,6 @@
     <ClInclude Include="..\..\src\irc\irc_status.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\irc\IpcListener.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\irc\IrcGui.h">
       <Filter>Header Files</Filter>
     </ClInclude>

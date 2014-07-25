@@ -104,7 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\irc\config_structs.h" />
-    <ClInclude Include="..\..\src\irc\IpcListener.h" />
     <ClInclude Include="..\..\src\irc\IrcFactory.h" />
     <ClInclude Include="..\..\src\irc\IrcChannel.h" />
     <ClInclude Include="..\..\src\irc\IrcConnection.h" />
