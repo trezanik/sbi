@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	RpcServer.h
+ * @file	src/api/RpcServer.h
  * @author	James Warren
  * @brief	API RPC Server
  * @note	If this looks similar to Bitcoin et-al's RPC implementation, it

@@ -1,6 +1,6 @@
 #if defined(_WIN32)
 /**
- * @file	utils_win.cc
+ * @file	src/api/utils_win.cc
  * @author	James Warren
  * @copyright	James Warren, 2013-2014
  * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)

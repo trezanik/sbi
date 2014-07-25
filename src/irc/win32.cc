@@ -3,7 +3,7 @@
 
 #if defined(_WIN32)	// file valid only in Win32 builds
 /**
- * @file	win32.cc
+ * @file	src/irc/win32.cc
  * @author	James Warren
  * @copyright	James Warren, 2013
  * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)

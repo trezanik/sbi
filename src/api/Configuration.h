@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	Configuration.h
+ * @file	src/api/Configuration.h
  * @author	James Warren
  * @brief	The application configuration
  */

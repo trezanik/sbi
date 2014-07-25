@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	IrcEngine.h
+ * @file	src/irc/IrcEngine.h
  * @author	James Warren
  * @brief	The class powering the IRC functionality for the application
  */

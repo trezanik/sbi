@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	InterfacesUnloadDialog.h
+ * @file	src/Qt5GUI/InterfacesUnloadDialog.h
  * @author	James Warren
  * @brief	Qt5GUI 'Unload Interface' dialog
  */

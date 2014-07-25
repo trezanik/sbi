@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	rpc_status.h
+ * @file	src/api/rpc_status.h
  * @author	James Warren
  * @brief	RPC status codes
  */

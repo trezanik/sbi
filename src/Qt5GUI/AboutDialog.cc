@@ -1,6 +1,6 @@
 
 /**
- * @file	AboutDialog.cc
+ * @file	src/Qt5GUI/AboutDialog.cc
  * @author	James Warren
  * @copyright	James Warren, 2014
  * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)

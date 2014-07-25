@@ -1,6 +1,6 @@
 #if defined(_WIN32)
 /**
- * @file	getopt.cc
+ * @file	src/sbi/getopt.cc
  * @author	James Warren
  * @copyright	James Warren, 2013-2014
  * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)

@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	config_structs.h
+ * @file	src/irc/config_structs.h
  * @author	James Warren
  * @brief	IRC structs holding configuration
  */

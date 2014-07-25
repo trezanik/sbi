@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	irc_status.h
+ * @file	src/irc/irc_status.h
  * @author	James Warren
  * @brief	IRC-specific status codes returned from functions
  */

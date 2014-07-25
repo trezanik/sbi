@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	definitions.h
+ * @file	src/api/definitions.h
  * @author	James Warren
  * @brief	Common definitions and helper macros
  */

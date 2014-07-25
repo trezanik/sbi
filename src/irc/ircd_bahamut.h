@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	ircd_bahamut.h
+ * @file	src/irc/ircd_bahamut.h
  * @author	James Warren
  * @brief	Definitions and customization details for the bahamut IRC daemon
  */

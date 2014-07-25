@@ -1,7 +1,7 @@
 #pragma once
 
 /**
-* @file        char_helper.h
+* @file        src/api/char_helper.h
 * @author      James Warren
 * @brief       Cross-platform string conversion helper (mostly for Windows)
 */

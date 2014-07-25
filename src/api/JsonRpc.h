@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	JsonRpc.h
+ * @file	src/api/JsonRpc.h
  * @author	James Warren
  * @brief	Refactored bitcoin_rpc JSON RPC implementation
  */

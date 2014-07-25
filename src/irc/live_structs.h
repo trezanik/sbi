@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	live_structs.h
+ * @file	src/irc/live_structs.h
  * @author	James Warren
  * @brief	IRC structs holding live data, or data used for processing
  */

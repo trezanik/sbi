@@ -1,6 +1,6 @@
 ﻿
 /**
- * @file	IrcConnection.cc
+ * @file	src/irc/IrcConnection.cc
  * @author	James Warren
  * @copyright	James Warren, 2013-2014
  * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)

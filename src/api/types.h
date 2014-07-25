@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file        types.h
+ * @file        src/api/types.h
  * @author      James Warren
  * @brief       Defines the platform data types for the application
  */

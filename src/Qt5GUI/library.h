@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	library.h
+ * @file	src/Qt5GUI/library.h
  * @author	James Warren
  * @brief	Qt5GUI library core components for execution
  */

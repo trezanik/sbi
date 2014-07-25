@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	nethelper.h
+ * @file	src/irc/nethelper.h
  * @author	James Warren
  * @brief	Helper functions for IPv4 and IPv6 connections
  */

@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	IrcPool.h
+ * @file	src/irc/IrcPool.h
  * @author	James Warren
  * @brief	Memory pools for the IRC objects
  */
@@ -125,26 +125,26 @@ private:
 			FILE*	out_file;
 			bool	close_file = true;
 #if defined(_WIN32)
-            if (( out_file = _fsopen(out_filename, "wb", _SH_DENYWR)) == nullptr )
-            {
-                out_file = stdout;
-                close_file = false;
-            }
+	    if (( out_file = _fsopen(out_filename, "wb", _SH_DENYWR)) == nullptr )
+	    {
+		out_file = stdout;
+		close_file = false;
+	    }
 #else
-            int	fd;
-            if ( (fd = open(out_filename, O_WRONLY | O_CREAT, O_NOATIME | S_IRWXU | S_IRGRP | S_IROTH)) == -1 )
-            {
-                out_file = stdout;
-                close_file = false;
-            }
-            else
-            {
-                if ( (out_file = fdopen(fd, "w")) == nullptr )
-                {
-                    out_file = stdout;
-                    close_file = false;
-                }
-            }
+	    int	fd;
+	    if ( (fd = open(out_filename, O_WRONLY | O_CREAT, O_NOATIME | S_IRWXU | S_IRGRP | S_IROTH)) == -1 )
+	    {
+		out_file = stdout;
+		close_file = false;
+	    }
+	    else
+	    {
+		if ( (out_file = fdopen(fd, "w")) == nullptr )
+		{
+		    out_file = stdout;
+		    close_file = false;
+		}
+	    }
 #endif
 
 			_mutex.lock();

@@ -1,6 +1,6 @@
 #if defined(__linux__)
 /**
- * @file	utils_linux.cc
+ * @file	src/api/utils_linux.cc
  * @author	James Warren
  * @copyright	James Warren, 2013-2014
  * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)

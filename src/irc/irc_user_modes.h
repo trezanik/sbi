@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	irc_user_modes.h
+ * @file	src/irc/irc_user_modes.h
  * @author	James Warren
  * @brief	Defines the user modes known for IrcUsers
  */

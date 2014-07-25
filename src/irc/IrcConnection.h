@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	IrcConnection.h
+ * @file	src/irc/IrcConnection.h
  * @author	James Warren
  * @brief	The class for an individual IRC connection to a server
  */

@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	IrcNetwork.h
+ * @file	src/irc/IrcNetwork.h
  * @author	James Warren
  * @brief	The class for an entire IRC Network
  */

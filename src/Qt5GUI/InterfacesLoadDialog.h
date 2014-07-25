@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	InterfacesLoadDialog.h
+ * @file	src/Qt5GUI/InterfacesLoadDialog.h
  * @author	James Warren
  * @brief	Qt5GUI 'Load Interface' dialog
  */

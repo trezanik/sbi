@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	interface.h
+ * @file	src/api/interface.h
  * @author	James Warren
  * @brief	Exported functions for interfaces
  * @note

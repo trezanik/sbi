@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	modules.h
+ * @file	src/api/modules.h
  * @author	James Warren
  * @brief	Plugins/modules components
  */

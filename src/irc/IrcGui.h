@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	IrcGui.h
+ * @file	src/irc/IrcGui.h
  * @author	James Warren
  * @brief	IRC-specific GUI functionality
  */

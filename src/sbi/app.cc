@@ -1,6 +1,6 @@
 
 /**
- * @file	app.cc
+ * @file	src/sbi/app.cc
  * @author	James Warren
  * @copyright	James Warren, 2014
  * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)

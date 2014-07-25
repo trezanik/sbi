@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	ircd_ngircd.h
+ * @file	src/irc/ircd_ngircd.h
  * @author	James Warren
  * @brief	Definitions and customization details for the ngIRCd
  */

@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	RpcCommand.h
+ * @file	src/api/RpcCommand.h
  * @author	James Warren
  * @brief	A RPC command stored in a RpcTable within RpcServer
  */

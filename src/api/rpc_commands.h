@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	rpc_commands.h
+ * @file	src/api/rpc_commands.h
  * @author	James Warren
  * @brief	API RPC functions, as they cannot be class members
  */

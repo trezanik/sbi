@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	Factory.h
+ * @file	src/irc/IrcFactory.h
  * @author	James Warren
  * @brief	IRC Object Factory
  */

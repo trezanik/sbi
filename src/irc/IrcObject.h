@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	IrcObject.h
+ * @file	src/irc/IrcObject.h
  * @author	James Warren
  * @brief	The base class for all application objects
 */

@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	interface_status.h
+ * @file	src/api/interface_status.h
  * @author	James Warren
  * @brief	Interface library status codes
  */

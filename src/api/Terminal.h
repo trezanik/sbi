@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	Terminal.h
+ * @file	src/api/Terminal.h
  * @author	James Warren
  * @brief	Win32 console and Linux/Unix terminal colour output formatting
  * @todo	Win32 code complete, unix/linux needs doing

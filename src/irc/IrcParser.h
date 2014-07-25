@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	IrcParser.h
+ * @file	src/irc/IrcParser.h
  * @author	James Warren
  * @brief	The class that parses all input from an IrcConnection
  */

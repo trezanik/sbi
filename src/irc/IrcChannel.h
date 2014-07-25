@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	IrcChannel.h
+ * @file	src/irc/IrcChannel.h
  * @author	James Warren
  * @brief	Functionality for creating and maintaining an IRC channel
  */

@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	UI.h
+ * @file	src/Qt5GUI/UI.h
  * @author	James Warren
  * @brief	Qt5GUI root
  */

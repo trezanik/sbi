@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	app.h
+ * @file	src/sbi/app.h
  * @author	James Warren
  * @brief	Application initialization, execution, and cleanup routines
  */

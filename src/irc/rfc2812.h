@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	rfc2812.h
+ * @file	src/irc/rfc2812.h
  * @author	James Warren
  * @brief	Definitions for the IRC RFC 2812
  */

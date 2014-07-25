@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	AboutDialog.h
+ * @file	src/Qt5GUI/AboutDialog.h
  * @author	James Warren
  * @brief	Qt5GUI 'About' dialog
  */

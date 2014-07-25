@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	getopt.h
+ * @file	src/sbi/getopt.h
  * @author	James Warren
  * @brief	Win32 version of *nix getopt for parsing command line options
  */

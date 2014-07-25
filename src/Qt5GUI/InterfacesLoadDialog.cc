@@ -1,6 +1,6 @@
 
 /**
- * @file	InterfacesLoadDialog.cc
+ * @file	src/Qt5GUI/InterfacesLoadDialog.cc
  * @author	James Warren
  * @copyright	James Warren, 2014
  * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)

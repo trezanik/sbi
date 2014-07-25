@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	IrcListener.h
+ * @file	src/irc/IrcListener.h
  * @author	James Warren
  * @brief	Observer design pattern for IRC events
  */

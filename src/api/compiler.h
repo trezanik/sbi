@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file        compiler.h
+ * @file        src/api/compiler.h
  * @author      James Warren
  * @brief       Supported compiler macros, definitions and functionality
  */

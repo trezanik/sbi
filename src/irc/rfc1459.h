@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	rfc1459.h
+ * @file	src/irc/rfc1459.h
  * @author	James Warren
  * @brief	Definitions for the IRC RFC 1459
  */

@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	irc_structs.h
+ * @file	src/irc/irc_structs.h
  * @author	James Warren
  * @brief	IRC structs holding extracted, or in process, data
  */

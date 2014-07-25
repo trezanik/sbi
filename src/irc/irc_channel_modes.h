@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	irc_channel_modes.h
+ * @file	src/irc/irc_channel_modes.h
  * @author	James Warren
  * @brief	Defines the available flags for an IrcChannel
  */

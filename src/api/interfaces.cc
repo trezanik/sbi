@@ -1,6 +1,6 @@
 
 /**
- * @file	interfaces.cc
+ * @file	src/api/interfaces.cc
  * @author	James Warren
  * @copyright	James Warren, 2014
  * @license	Zlib (see LICENCE or http://opensource.org/licenses/Zlib)

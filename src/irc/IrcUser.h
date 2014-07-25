@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	IrcUser.h
+ * @file	src/irc/IrcUser.h
  * @author	James Warren
  * @brief	Functionality for creating and working with IrcUser objects
  */
