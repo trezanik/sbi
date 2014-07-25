@@ -48,7 +48,7 @@
 #	define SLEEP_MILLISECONDS(ms)	Sleep(ms)
 #else
 #	define SLEEP_SECONDS(secs)	sleep(secs)
-#	define SLEEP_MILLISECONDS(ms)	sleep(ms * 1000)
+#	define SLEEP_MILLISECONDS(ms)	sleep(ms / 1000)
 #endif
 
 
