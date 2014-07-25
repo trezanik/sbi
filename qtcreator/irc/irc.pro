@@ -32,6 +32,12 @@ contains(DEFINES,USING_BOOST_NET) {
 	QMAKE_CXXFLAGS += -Wno-unused-local-typedefs
 }
 #<<<
+#>>> Qt5 GUI
+contains(DEFINES,USING_DEFAULT_QT5_GUI){
+	INCLUDEPATH += ../../../Qt/5.3/gcc_64/include
+	LIBS += -L../../../Qt/5.3/gcc_64/lib -lQt5Core -lQt5Gui -lQt5Widgets
+}
+#<<<
 
 # Warning: assumes build directory sbi-all = '$project/qtcreator'
 # library -> '$project/lib/linux_x86-64/debug/libirc.so'
