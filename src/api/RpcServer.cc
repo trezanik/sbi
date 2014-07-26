@@ -41,6 +41,7 @@
 #endif
 
 #include "Allocator.h"
+#include "Configuration.h"
 #include "RpcServer.h"
 #include "Runtime.h"
 #include "Log.h"
@@ -213,43 +214,7 @@ RPCListen(
 	);
 }
 
-bool
-ClientAllowed(
-	boost_ip::address client_addr
-)
-{
-	/* ensure that IPv4-compatible and IPv4-mapped IPv6 addresses are 
-	 * treated as IPv4 addresses */
-	if ( client_addr.is_v6()
-	    && ( client_addr.to_v6().is_v4_compatible()
-	    || client_addr.to_v6().is_v4_mapped())
-	)
-	{
-		return ClientAllowed(client_addr.to_v6().to_v4());
-	}
 
-	if ( client_addr == boost_ip::address_v4::loopback()
-	    || client_addr == boost_ip::address_v6::loopback()
-	    // Check whether IPv4client_addres match 127.0.0.0/8 (loopback subnet)
-	    || (client_addr.is_v4() && (client_addr.to_v4().to_ulong() & 0xff000000) == 0x7f000000) )
-	{
-		return true;
-	}
-
-	const std::string	address_str = client_addr.to_string();
-	/* to implement:
-	const std::vector<std::string>& allow_vect = mapMultiArgs["-rpcallowip"];
-	
-	BOOST_FOREACH(std::string allow_str, allow_vect)
-	{
-		if ( WildcardMatch(address_str, allow_str) )
-			return true;
-	}
-
-	return false;
-	*/
-	return true;
-}
 
 /**
  * Accept and handle an incoming connection.
@@ -269,12 +234,18 @@ RPCAcceptHandler(
 	
 	rpch_params	params;
 
+	
+	LOG(ELogLevel::Info) << "Connection attempt received from " 
+		<< conn->peer_address_to_string().c_str() 
+		<< "\n";
+
+
 	/** @todo Actually handle errors in RpcAcceptHandler */
 	if ( error )
 	{
 		
 	}
-	else if ( conn && !ClientAllowed(conn->peer.address()) )
+	else if ( conn && !runtime.RPC()->IsClientAllowed(&conn->peer.address()) )
 	{
 		if ( !use_ssl )
 		{
@@ -282,7 +253,6 @@ RPCAcceptHandler(
 			conn->stream() << runtime.RPC()->HTTPReply(HTTP_FORBIDDEN, "", false) << std::flush;
 		}
 
-		LOG(ELogLevel::Info) << "Client was denied access.\n";
 		return;
 	}
 
@@ -356,6 +326,58 @@ rfc1123_time()
 
 RpcServer::RpcServer()
 {
+	std::string	auth;
+	std::string	user = runtime.Config()->rpc.auth.username;
+	std::string	pass = runtime.Config()->rpc.auth.password;
+	std::string	sha1 = runtime.Config()->rpc.auth.sha1;
+	bool		using_hash = false;
+	char*		encoded = nullptr;
+	int32_t		dlen;
+	
+	/* as noted in http://en.wikipedia.org/wiki/Basic_access_authentication, 
+	 * HTTP basic authentication is merged into 'username:password' and
+	 * base64 encoded - this is what we store in _rpc_auth, and directly 
+	 * compare in HTTPAuthorized() */
+	if ( !user.empty() )
+	{
+		/* recommend sha-1 over plaintext, so the hash overrides the
+		 * password if both are supplied. */
+		if ( !sha1.empty() )
+		{
+			auth = user + ":" + sha1;
+		}
+		else
+		{
+			if ( !pass.empty() )
+			{
+				auth = user + ":" + pass;
+			}
+		}
+	}
+
+	if ( !auth.empty() )
+	{
+		encoded = base64(auth.c_str(), auth.length(), &dlen);
+
+		if ( dlen < 0 )
+		{
+			char*	typemsg = using_hash ? "hash" : "password";
+
+			LOG(ELogLevel::Error) << "Failed to base64 encode the "
+				<< typemsg << "\n";
+		}
+		else
+		{
+			_rpc_auth = encoded;
+		}
+	}
+
+	if ( _rpc_auth.empty() )
+	{
+		LOG(ELogLevel::Warn) << "No RPC authentication is setup; the RPC Server will be non-functional\n";
+	}
+
+	FREE(encoded);
 }
 
 
@@ -407,71 +429,6 @@ RpcServer::ExecRpcServerThread(
 	tp->thisptr->RpcServerThread(tp);
 	return nullptr;
 #endif
-}
-
-
-
-std::string
-RpcServer::HTTPReply(
-	int status_code,
-	const std::string& msg,
-	bool keepalive
-)
-{
-	std::stringstream	ss;
-	std::string		retstr;
-	std::string		version = APPLICATION_VERSION_STR;
-
-	if ( status_code == HTTP_UNAUTHORIZED )
-	{
-		std::string	resp_401 =
-			"<!DOCTYPE html>\r\n"
-			"<html>\r\n"
-			"<head>\r\n"
-			"<title>Error</title>\r\n"
-			"<meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1'>\r\n"
-			"</head>\r\n"
-			"<body><h1>401 Unauthorized.</h1></body>\r\n"
-			"</html>\r\n"
-			;
-		ss << "HTTP/1.0 401 Authorization Required\r\n"
-			<< "Date: " << rfc1123_time().c_str() << "\r\n"
-			<< "Server: sbi-json-rpc/" << version.c_str() << "\r\n"
-			<< "WWW-Authenticate: Basic realm=\"jsonrpc\"\r\n"
-			<< "Content-Type: text/html\r\n"
-			<< "Content-Length: " << resp_401.size() << "\r\n"
-			<< "\r\n"
-			<< resp_401.c_str();
-	}
-	else
-	{
-		char*		status_str;
-		const char*	conn_type = keepalive ? "keep-alive" : "close";
-
-		switch ( status_code )
-		{
-		case HTTP_OK:			status_str = "OK"; break;
-		case HTTP_BAD_REQUEST:		status_str = "Bad Request"; break;
-		case HTTP_FORBIDDEN:		status_str = "Forbidden"; break;
-		case HTTP_NOT_FOUND:		status_str = "Not Found"; break;
-		case HTTP_INTERNAL_SERVER_ERROR:status_str = "Internal Server Error"; break;
-		default:
-			status_str = "";
-			break;
-		}
-
-		ss << "HTTP/1.1 " << status_code << " " << status_str << "\r\n"
-			<< "Date: " << rfc1123_time().c_str() << "\r\n"
-			<< "Connection: " << conn_type << "\r\n"
-			<< "Content-Length: " << msg.size() << "\r\n"
-			<< "Content-Type: application/json\r\n"
-			<< "Server: sbi-json-rpc/" << version.c_str() << "\r\n"
-			<< "\r\n"
-			<< msg.c_str();
-	}
-
-	retstr = ss.str();
-	return retstr;
 }
 
 
@@ -539,6 +496,71 @@ RpcServer::GetInterfaceInfo(
 	/** @todo implement RPC interface info acquisition */
 
 	return 0;
+}
+
+
+
+std::string
+RpcServer::HTTPReply(
+	int status_code,
+	const std::string& msg,
+	bool keepalive
+)
+{
+	std::stringstream	ss;
+	std::string		retstr;
+	std::string		version = APPLICATION_VERSION_STR;
+
+	if ( status_code == HTTP_UNAUTHORIZED )
+	{
+		std::string	resp_401 =
+			"<!DOCTYPE html>\r\n"
+			"<html>\r\n"
+			"<head>\r\n"
+			"<title>Error</title>\r\n"
+			"<meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1'>\r\n"
+			"</head>\r\n"
+			"<body><h1>401 Unauthorized.</h1></body>\r\n"
+			"</html>\r\n"
+			;
+		ss << "HTTP/1.0 401 Authorization Required\r\n"
+			<< "Date: " << rfc1123_time().c_str() << "\r\n"
+			<< "Server: sbi-json-rpc/" << version.c_str() << "\r\n"
+			<< "WWW-Authenticate: Basic realm=\"jsonrpc\"\r\n"
+			<< "Content-Type: text/html\r\n"
+			<< "Content-Length: " << resp_401.size() << "\r\n"
+			<< "\r\n"
+			<< resp_401.c_str();
+	}
+	else
+	{
+		char*		status_str;
+		const char*	conn_type = keepalive ? "keep-alive" : "close";
+
+		switch ( status_code )
+		{
+		case HTTP_OK:			status_str = "OK"; break;
+		case HTTP_BAD_REQUEST:		status_str = "Bad Request"; break;
+		case HTTP_FORBIDDEN:		status_str = "Forbidden"; break;
+		case HTTP_NOT_FOUND:		status_str = "Not Found"; break;
+		case HTTP_INTERNAL_SERVER_ERROR:status_str = "Internal Server Error"; break;
+		default:
+			status_str = "";
+			break;
+		}
+
+		ss << "HTTP/1.1 " << status_code << " " << status_str << "\r\n"
+			<< "Date: " << rfc1123_time().c_str() << "\r\n"
+			<< "Connection: " << conn_type << "\r\n"
+			<< "Content-Length: " << msg.size() << "\r\n"
+			<< "Content-Type: application/json\r\n"
+			<< "Server: sbi-json-rpc/" << version.c_str() << "\r\n"
+			<< "\r\n"
+			<< msg.c_str();
+	}
+
+	retstr = ss.str();
+	return retstr;
 }
 
 
@@ -655,7 +677,7 @@ RpcServer::ReadHTTP(
 
 
 bool
-RpcServer::HTTPAuthorized(
+RpcServer::IsAuthorizedHTTP(
 	std::map<std::string,
 	std::string>& headers
 )
@@ -667,20 +689,66 @@ RpcServer::HTTPAuthorized(
 	if ( auth.substr(0, 6) != "Basic " )
 		return ret;
 
-	std::string	user_pass64 = auth.substr(6);
+	std::string	credentials = auth.substr(6);
 
-	boost::trim(user_pass64);
+	// strip trailing whitespace just in case, not part of authentication
+	boost::trim(credentials);
 
-	char*		user_pass = base64(user_pass64.c_str(), user_pass64.length()+1, &i);
+	// authorization naturally comes in encoded; just do the comparison
+	return timing_resistant_equal(credentials, _rpc_auth);
+}
 
-	// temporary until we actually add assigning rpc auth in the config
-	_rpc_auth = user_pass;
-	ret = timing_resistant_equal(std::string(user_pass), _rpc_auth);
 
-	// all done with the encoded value; release the memory
-	FREE(user_pass);
 
-	return ret;
+bool
+RpcServer::IsClientAllowed(
+	boost_ip::address* client_addr
+)
+{
+	/* ensure that IPv4-compatible and IPv4-mapped IPv6 addresses are
+	 * treated as IPv4 addresses */
+	if ( client_addr->is_v6()
+	    && (client_addr->to_v6().is_v4_compatible()
+	    || client_addr->to_v6().is_v4_mapped())
+	)
+	{
+		boost_ip::address	mapped_addr = client_addr->to_v6().to_v4();
+
+		return IsClientAllowed(&mapped_addr);
+	}
+
+	if ( *client_addr == boost_ip::address_v4::loopback()
+	    || *client_addr == boost_ip::address_v6::loopback()
+	    // Check whether IPv4client_addres match 127.0.0.0/8 (loopback subnet)
+	    || (client_addr->is_v4() && (client_addr->to_v4().to_ulong() & 0xff000000) == 0x7f000000) )
+	{
+		LOG(ELogLevel::Info) << "Client is allowed (loopback address)\n";
+		return true;
+	}
+
+	/* if server config is local only and we're here, then it's a remote
+	 * connection attempt and is to be denied automatically. */
+	if ( runtime.Config()->rpc.local_only )
+	{
+		return false;
+	}
+
+	const std::string	address_str = client_addr->to_string();
+	const keyval_str	allowed_ips = runtime.Config()->rpc.allowed_ips;
+
+	for ( auto allow : allowed_ips )
+	{
+		if ( wildcard_match(address_str, allow.second) )
+		{
+			LOG(ELogLevel::Info) << "Client is allowed: '"
+				<< allow.first.c_str() << "' ("
+				<< allow.second.c_str() << ")\n";
+			return true;
+		}
+	}
+
+	LOG(ELogLevel::Info) << "Client was denied access.\n";
+	return false;
 }
 
 
@@ -720,7 +788,8 @@ RpcServer::RpcHandlerThread(
 		assert(conn != nullptr);
 	}
 
-	bool	stop = false;
+	bool		stop = false;
+	JsonRpc		jrpc;
 
 	// loop until we're shutting down or processing is complete
 	for ( ;; )
@@ -740,9 +809,10 @@ RpcServer::RpcHandlerThread(
 		{
 			conn->stream() << HTTPReply(HTTP_UNAUTHORIZED, "", false) << std::flush;
 		}
-		if ( !HTTPAuthorized(headers) )
+		if ( !IsAuthorizedHTTP(headers) )
 		{
-			std::cerr << "Incorrect password attempt from %s\n" << conn->peer_address_to_string().c_str();
+			std::cerr << "Invalid credentials received from " << conn->peer_address_to_string().c_str() << "\n";
+			LOG(ELogLevel::Error) << "Invalid credentials received from " << conn->peer_address_to_string().c_str() << "\n";
 			SLEEP_MILLISECONDS(250);
 
 			conn->stream() << HTTPReply(HTTP_UNAUTHORIZED, "", false) << std::flush;
@@ -750,8 +820,6 @@ RpcServer::RpcHandlerThread(
 		}
 		if ( headers["connection"] == "close" )
 			stop = true;
-
-		JsonRpc		jrpc;
 
 		try
 		{
@@ -835,6 +903,9 @@ RpcServer::RpcServerThread(
 
 		// caller can proceed, we've done our log
 		tparam->thisptr = nullptr;
+
+		assert(thisptr != nullptr);
+		assert(ti != nullptr);
 	}
 
 
@@ -847,8 +918,8 @@ RpcServer::RpcServerThread(
 	boost::asio::io_service&	io_service = *thisptr->_io_service.get();
 	std::string			errstr;
 	bool				is_listening = false;
-	const bool			loopback = true;
-	const bool			use_ssl = false;
+	const bool			loopback = runtime.Config()->rpc.local_only;
+	const bool			use_ssl = runtime.Config()->rpc.use_ssl;
 	boost_ip::address		bind_addr = loopback ?
 		boost_ip::address_v6::loopback() :
 		boost_ip::address_v6::any();
@@ -880,6 +951,7 @@ RpcServer::RpcServerThread(
 			" for listening on IPv6; falling back to IPv4: ",
 			e.what()
 		);
+		std::cerr << errstr.c_str() << "\n";
 		LOG(ELogLevel::Error) << errstr.c_str() << "\n";
 	}
 
@@ -909,6 +981,7 @@ RpcServer::RpcServerThread(
 				" for listening on IPv4: ",
 				e.what()
 			);
+			std::cerr << errstr.c_str() << "\n";
 			LOG(ELogLevel::Error) << errstr.c_str() << "\n";
 		}
 	}
@@ -1032,6 +1105,9 @@ RpcServer::Startup()
 
 
 
+/* +++ NOTE:: these two functions are not actually used yet; delete if possible +++ */
+
+
 void 
 RpcServer::TypeCheck(
 	const json_spirit::Array& params,
@@ -1046,6 +1122,7 @@ RpcServer::TypeCheck(
 			break;
 
 		const json_spirit::Value& v = params[i];
+
 		if ( !((v.type() == t) || (allow_null && (v.type() == json_spirit::null_type))) )
 		{
 			std::string	err = BUILD_STRING(
@@ -1057,6 +1134,7 @@ RpcServer::TypeCheck(
 			
 			throw JsonRpcError(ERpcStatus::UnknownType, err);
 		}
+
 		i++;
 	}
 }
@@ -1075,6 +1153,7 @@ RpcServer::TypeCheck(
 	BOOST_FOREACH(const PAIRTYPE(std::string, json_spirit::Value_type)& t, expected_types)
 	{
 		const json_spirit::Value& v = find_value(o, t.first);
+
 		if ( !allow_null && v.type() == json_spirit::null_type )
 		{
 			err = BUILD_STRING("Missing ", t.first.c_str());

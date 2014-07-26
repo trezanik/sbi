@@ -19,9 +19,24 @@
 
 #if defined(USING_JSON_SPIRIT_RPC)
 #	include <json_spirit/json_spirit_utils.h>
-	/* anything using API will need to link to boost if using the 'normal'
-	 * headers and not this forward declaration */
-	namespace boost { namespace asio { class io_service; }}
+	/* anything using API will need to link to boost if using the normal
+	 * header (boost/asio/io_service.hpp) and not the forward declaration */
+	namespace boost { 
+		namespace asio { 
+			class io_service; 
+		}
+	}
+#endif
+#if defined(USING_BOOST_NET)
+	/* anything using API will need to link to boost if using the normal
+	 * header (boost/asio/ip/address.hpp) and not the forward declaration */
+	namespace boost {
+		namespace asio {
+			namespace ip {
+				class address;
+			}
+		}
+	}
 #endif
 
 #include "definitions.h"
@@ -46,7 +61,10 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 // our maximum content-length in HTTP
 #define HTTP_MAX_CONTENT_LENGTH		8000
 
-// the port the server listens on, and the clients must connect to
+/** the port the server listens on, and the clients must connect to
+ * @note If modifying, be sure to update the three entries in Configuration.cc 
+ * with this changed value, as they do not utilize this definition!
+ */
 #define RPC_PORT		50451
 
 // This is needed because the foreach macro can't get over the comma in pair<t1, t2>
@@ -117,8 +135,9 @@ private:
 
 	RpcTable		_table;
 
-	/** flag to trigger the shutdown of the RPC server. Will continue
-	 * running (assuming it started up ok) until this is set via Shutdown().
+	/**
+	 * Flag to trigger the shutdown of the RPC server. Will continue running
+	 * (assuming it started up ok) until this is set via Shutdown().
 	 */
 	bool			_shutdown;
 
@@ -139,8 +158,27 @@ private:
 	std::unique_ptr<boost::asio::io_service>	_io_service;
 #endif
 
-	/** @todo relocate _rpc_auth to proper settings storage */
-	std::string _rpc_auth;
+	/**
+	 * Stores the base64 encoded 'username:password' credentials used to
+	 * authenticate with the server, as read by the configuration file.102
+	 */
+	std::string		_rpc_auth;
+
+
+
+	/**
+	 * Returns if the client is authorized, comparing the supplied
+	 * credentials with those set in the configuration.
+	 *
+	 * Uses basic authentication; for reference:
+	 * http://en.wikipedia.org/wiki/Basic_access_authentication
+	 *
+	 * @param[in] headers HTTP headers, as received and mapped
+	 */
+	bool
+	IsAuthorizedHTTP(
+		std::map<std::string, std::string>& headers
+	);
 
 
 
@@ -179,20 +217,12 @@ private:
 	);
 
 
-	/**
-	 * Returns if the client is authorized
-	 *
-	 * @param[in] headers
-	 */
-	bool
-	HTTPAuthorized(
-		std::map<std::string, std::string>& headers
-	);
-
-
 
 	/**
-	 *
+	 * The thread function created for every RPC client. Performs the tasks
+	 * as required, and exits as soon as the work is done. Only created when
+	 * the client address is allowed access, but before HTTP authorization;
+	 * which this function performs.
 	 */
 	ERpcStatus
 	RpcHandlerThread(
@@ -241,6 +271,7 @@ public:
 	~RpcServer();
 
 
+
 	/**
 	 * Executes the RpcHandlerThread function.
 	 *
@@ -285,21 +316,6 @@ public:
 
 
 	/**
-	 * Generates a HTTP response based on the input parameters.
-	 *
-	 * @param[in] status_code The HTTP status code (200, 403, 404, etc.)
-	 * @param[in] msg The body of the reply (everything after content-length)
-	 * @param[in] keepalive Enable/disable connection keep-alive
-	 */
-	std::string
-	HTTPReply(
-		int status_code,
-		const std::string& msg,
-		bool keepalive
-	);
-
-
-	/**
 	 * Gets the number of CPU execution cores available to the environment.
 	 * 
 	 * Attempts to use C++11 hardware_concurrency by default; if this does
@@ -333,6 +349,41 @@ public:
 	{
 		return &_table;
 	}
+
+
+	/**
+	 * Generates a HTTP response based on the input parameters.
+	 *
+	 * @param[in] status_code The HTTP status code (200, 403, 404, etc.)
+	 * @param[in] msg The body of the reply (everything after content-length)
+	 * @param[in] keepalive Enable/disable connection keep-alive
+	 */
+	std::string
+	HTTPReply(
+		int status_code,
+		const std::string& msg,
+		bool keepalive
+	);
+
+
+	/**
+	 * Checks the supplied IP address against the configuration list of
+	 * allowed remote IPs.
+	 *
+	 * @note
+	 * If the configuration sets local_only, this always returns false,
+	 * regardless of if the IP is in the allow list.
+	 *
+	 * @params[in] client_addr A pointer to the address. Only a pointer to
+	 * get round needing to include the boost headers, meaning everything
+	 * using the API would also need to link to the boost library.
+	 * @retval true if the client is allowed or is the loopback address
+	 * @retval false if the client is not allowed
+	 */
+	bool
+	IsClientAllowed(
+		boost::asio::ip::address* client_addr
+	);
 
 
 	/**
