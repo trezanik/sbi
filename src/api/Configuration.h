@@ -98,7 +98,8 @@ public:
 
 
 	/**
-	 * 
+	 * @todo relocate the LoadUI() function - it is not applicable in the
+	 * Configuration class and should be handled somewhere in app funcs
 	 */
 	void
 	LoadUI();
@@ -173,9 +174,40 @@ public:
 		/* If set, all RPC communication will be done using SSL. Any
 		 * interface not supporting SSL will not be able to use RPC. */
 		proxy<bool>			use_ssl;
-		/* If set, only connections from the local machine will be
-		 * allowed; all remote connections will be denied. */
+		/* If set, the server will only listen on the localhost; remote
+		 * connection attempts will always fail. 
+		 * When unset, the server will listen on all addresses.
+		 * In either situation, a valid username and password are 
+		 * mandatory in order to login to the server. */
 		proxy<bool>			local_only;
+		/* Key-Value mapping of allowed IPs that can connect to the RPC
+		 * server, assuming it's not listening in local_only mode.
+		 * Connections from IPs not in the values will be automatically
+		 * denied; those that are, must then get past the credential 
+		 * authentication (username + password). */
+		proxy<keyval_str>		allowed_ips;
+		keyval_str			get_allowed_ips() { return allowed_ips.data; }
+		/* The port the server listens on; will be the RPC_DEFAULT_PORT
+		 * definition if not supplied in the configuration */
+		proxy<uint16_t>			port;
+
+		struct {
+			// Username credential
+			proxy<std::string>		username;
+			/* Password credential (plaintext); do not set sha1 if 
+			 * using this! Instant password<->hash conversion 
+			 * without effort.. */
+			proxy<std::string>		password;
+			/* Password credential (SHA-1); do not set password if 
+			 * using this! Instant password<->hash conversion 
+			 * without effort..
+			 * This is present to cater for people who don't want 
+			 * their pass visible to passers by. Brute-forcing the 
+			 * unsalted hash is still trivial, so password strength 
+			 * should be very high to make this worthwhile. */
+			proxy<std::string>		sha1;
+			// To add: certificate credential (low-priority feature)
+		} auth;
 	} rpc;
 
 	struct {

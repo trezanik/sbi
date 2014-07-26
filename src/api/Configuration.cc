@@ -120,14 +120,35 @@ Configuration::CreateDefault()
 #if defined(USING_LIBCONFIG)
 		"app =",
 		"{",
-		"	first_run = 0;",
+		"	first_run = 1;",
 		"	clean_shutdown = 1;",
 		"};",
 		"log =",
 		"{",
-		"	path = \"app.log\";"
+#	if defined(_WIN32)
+		"	path = \"app.log\";",
+#	else
+		"	path = \"/var/log/sbi.log\";",
+#	endif
 		"	// 1=Error,2=Warn,3=Info,4=Debug",
 		"	level = 4;",
+		"};",
+		"rpc =",
+		"	use_ssl = 0;",
+		"	// accept only connections from localhost by default",
+		"	local_only = 1;",
+		"	port = 50451;",
+		"	allowed_ips = {",
+		"		all = \"*.*.*.*\";",
+		"	",
+		"	};",
+		"	auth = {",
+		"		username = \"sbiu\";",
+		"		// choose between password (plaintext) or sha1 hash; defaults here set both",
+		"		// if both are supplied, the hash always takes precedence.",
+		"		password = \"sbip\";",
+		"		sha1 = \"d66f4e839ed98f17c8bbcb207397a290f205405d\";",
+		"	};",
 		"};",
 		"ui =",
 		"{",
@@ -173,15 +194,22 @@ Configuration::Dump() const
 	std::stringstream	log_str;
 	std::stringstream	interface_search_paths;
 	std::stringstream	module_search_paths;
+	std::stringstream	rpc_allowed_ips;
+	char*			rpc_pass_msg;
+	char*			rpc_hash_msg;
 	uint32_t		i;
 
 	/* since we want to append to the log_str just once en masse, prepare
-	 * any arrays/vectors/lists in advance */
+	 * any arrays/vectors/lists in advance.
+	 *
+	 * 2 spaces puts the setting member aligned with the open square bracket
+	 * for each child item, which looks good for clarity.
+	 */
 	i = 0;
 	for ( auto x : interfaces.search_paths.data )
 	{
 		interface_search_paths << "\n"
-			<< "\t* [" << i << "]\t"
+			<< "\t  [" << i << "]\t"
 			<< std::get<0>(x) << " = " << std::get<1>(x);
 		i++;
 	}
@@ -189,10 +217,22 @@ Configuration::Dump() const
 	for ( auto x : modules.search_paths.data )
 	{
 		module_search_paths << "\n"
-			<< "\t* [" << i << "]\t"
+			<< "\t  [" << i << "]\t"
 			<< std::get<0>(x) << " = " << std::get<1>(x);
 		i++;
 	}
+	i = 0;
+	for ( auto x : rpc.allowed_ips.data )
+	{
+		rpc_allowed_ips << "\n"
+			<< "\t  [" << i << "]\t"
+			<< std::get<0>(x) << " = " << std::get<1>(x);
+		i++;
+	}
+	/* we don't want to log passwords/hashes, as logs can be public (for
+	 * example, posting a log for troubleshooting). */
+	rpc_pass_msg = rpc.auth.password.data.empty() ? "(not set)" : "(present, omitted)";
+	rpc_hash_msg = rpc.auth.sha1.data.empty() ? "(not set)" : "(present, omitted)";
 
 
 	// we want to start on a newline, logging will have the prefix data
@@ -206,6 +246,14 @@ Configuration::Dump() const
 		<< "\t---- Module Settings ----\n"
 		<< "\t* modules.search_current_directory = " << modules.search_curdir << "\n"
 		<< "\t* modules.search_paths = " << module_search_paths.str() << "\n"
+		<< "\t---- RPC Settings ----\n"
+		<< "\t* rpc.use_ssl = " << rpc.use_ssl << "\n"
+		<< "\t* rpc.local_only = " << rpc.local_only << "\n"
+		<< "\t* rpc.port = " << rpc.port << "\n"
+		<< "\t* rpc.allowed_ips = " << rpc_allowed_ips.str() << "\n"
+		<< "\t* rpc.auth.username = " << rpc.auth.username.data << "\n"
+		<< "\t* rpc.auth.password = " << rpc_pass_msg << "\n"
+		<< "\t* rpc.auth.hash = " << rpc_hash_msg << "\n"
 		<< "\t---- UI Settings ----\n"
 		<< "\t* ui.command_prefix = " << ui.command_prefix.data << "\n"
 		<< "\t* ui.library = " << ui.library.file_name.data << "\n"
@@ -323,8 +371,6 @@ Configuration::Load(
 			std::string	identifier;
 			std::string	value;
 
-			//LOG(ELogLevel::Debug) << "interfaces.search_paths supplied\n";
-
 			for ( int32_t i = 0; i < count; i++ )
 			{
 				const libconfig::Setting&	path = set[i];
@@ -375,36 +421,73 @@ Configuration::Load(
 		}
 	}
 	/*---------------------------------------------------------------------
+	 * rpc
+	 *--------------------------------------------------------------------*/
+	{
+		if ( !cfg.lookupValue("rpc.use_ssl", (int32_t&)rpc.use_ssl.data) )
+		{
+		}
+		if ( !cfg.lookupValue("rpc.local_only", (int32_t&)rpc.local_only.data) )
+		{
+		}
+		if ( !cfg.lookupValue("rpc.port", (int32_t&)rpc.port.data) )
+		{
+			LOG(ELogLevel::Warn) << "No RPC port specified; the default port "
+				<< 50451 << " will be used\n";
+			rpc.port = 50451;
+		}
+		if ( !cfg.lookupValue("rpc.auth.username", rpc.auth.username.data) )
+		{
+			LOG(ELogLevel::Warn) << "No RPC username; all RPC connections will be denied\n";
+		}
+		if ( !cfg.lookupValue("rpc.auth.password", rpc.auth.password.data) )
+		{
+		}
+		if ( !cfg.lookupValue("rpc.auth.sha1", rpc.auth.sha1.data) )
+		{
+		}
+		if ( cfg.exists("rpc.allowed_ips") )
+		{
+			const libconfig::Setting&	set = cfg.lookup("rpc.allowed_ips");
+			int32_t		count = set.getLength();
+			std::string	identifier;
+			std::string	value;
+
+			for ( int32_t i = 0; i < count; i++ )
+			{
+				const libconfig::Setting&	path = set[i];
+
+				identifier = path.getName();
+
+				if ( !set.lookupValue(identifier, value) )
+				{
+					LOG(ELogLevel::Error) << "Failed to lookup value for " << identifier.c_str() << "\n";
+				}
+				else
+				{
+					rpc.allowed_ips.data.insert(std::make_pair(identifier, value));
+				}
+			}
+
+		}
+	}
+	/*---------------------------------------------------------------------
 	 * ui
 	 *--------------------------------------------------------------------*/
 	{
-	if ( !cfg.lookupValue("ui.library.name", ui.library.file_name.data) )
-	{
-		// this can still be set on the command line, so is not critical
-		LOG(ELogLevel::Warn) << "No library name specified; no GUI library will be loaded!\n";
-	}
-	
-	if ( !cfg.lookupValue("ui.enable_terminal", (int32_t&)ui.enable_terminal.data) )
-	{
-	}
-	if ( !cfg.lookupValue("ui.command_prefix", ui.command_prefix.data) )
-	{
-		LOG(ELogLevel::Warn) << "No command prefix specified; using '/'\n";
-		ui.command_prefix = "/";
-	}
-#if 0	// I was getting crashes with cmd_prefix on destruction (but not filename...)
-	// It no longer appears to be an issue after I used this tmpstr 'method'
-	// If it happens again, possibly last lookupValue=string issue?
-	if ( !cfg.lookupValue("ui.command_prefix", tmp) )
-	{
-		LOG(ELogLevel::Warn) << "No command prefix specified; using '/'\n";
-		ui.command_prefix = "/";
-	}
-	else
-	{
-		ui.command_prefix = tmp;
-	}
-#endif
+		if ( !cfg.lookupValue("ui.library.name", ui.library.file_name.data) )
+		{
+			// this can still be set on the command line, so is not critical
+			LOG(ELogLevel::Warn) << "No library name specified; no GUI library will be loaded!\n";
+		}
+		if ( !cfg.lookupValue("ui.enable_terminal", (int32_t&)ui.enable_terminal.data) )
+		{
+		}
+		if ( !cfg.lookupValue("ui.command_prefix", ui.command_prefix.data) )
+		{
+			LOG(ELogLevel::Warn) << "No command prefix specified; using '/'\n";
+			ui.command_prefix = "/";
+		}
 	}
 
 
