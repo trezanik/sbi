@@ -27,6 +27,7 @@ static const RpcCommand ApiRpcCommands[] =
 	//  ----------------  -------------------  --------------------------->>
 	{ "help", &api_Help, RPCF_ALLOW_IN_TEST_MODE | RPCF_UNLOCKED },
 	{ "stop", &api_Stop, RPCF_ALLOW_IN_TEST_MODE | RPCF_UNLOCKED },
+	{ "cpu_core_count", &api_GetEnvironmentCoreCount, RPCF_ALLOW_IN_TEST_MODE | RPCF_UNLOCKED },
 };
 
 
