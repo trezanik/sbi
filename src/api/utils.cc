@@ -483,7 +483,7 @@ base64(
 	if ( !res )
 	{
 		std::cerr << fg_red << "Memory allocation failed (" << alloc << ") bytes\n";
-		return 0;
+		return nullptr;
 	}
 
 	for ( byte_num = 0; byte_num <= len-3; byte_num += 3 )
