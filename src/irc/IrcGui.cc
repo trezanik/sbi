@@ -44,6 +44,7 @@ using namespace GUI_NAMESPACE;
 
 IrcGui::IrcGui()
 {
+#if 0
 	/* @important 
 	 * From this constructor (i.e. the first call to the GUI, which is done
 	 * the second IrcEngine is constructed), we are accessing the GUI in the
@@ -56,6 +57,7 @@ IrcGui::IrcGui()
 
 	if ( _stack_widget == nullptr )
 		throw std::runtime_error("The stack widget to utilize is a nullptr");
+#endif
 }
 
 
