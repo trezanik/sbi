@@ -45,7 +45,7 @@
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(Qt5-x86)/lib;$(libconfig)/lib/$(Configuration);$(ProjectRoot)/lib/$(Platform)/$(Configuration);$(Qt5)/lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
     <SourcePath>$(ProjectRoot)/src;$(VC_SourcePath);</SourcePath>
-    <IncludePath>$(ProjectRoot)/src;$(libconfig);$(Qt5-x86)/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(ProjectRoot)/src;$(json_spirit);$(libconfig);$(Qt5-x86)/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <OutDir>$(ProjectRoot)/bin/$(Platform)/$(Configuration)/</OutDir>
     <IntDir>$(Configuration)/</IntDir>
     <TargetName>libui-qt5</TargetName>
@@ -94,7 +94,10 @@
     <ClInclude Include="..\..\src\Qt5GUI\library.h" />
     <ClInclude Include="..\..\src\Qt5GUI\ModulesLoadDialog.h" />
     <ClInclude Include="..\..\src\Qt5GUI\ModulesUnloadDialog.h" />
+    <ClInclude Include="..\..\src\Qt5GUI\rpc_commands.h" />
     <ClInclude Include="..\..\src\Qt5GUI\UI.h" />
+    <ClInclude Include="..\..\src\Qt5GUI\ui_status.h" />
+    <ClInclude Include="..\..\src\Qt5GUI\ui_windowtype.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\resources\generated\qrc_sbi.cc" />
@@ -109,6 +112,7 @@
     <ClCompile Include="..\..\src\Qt5GUI\InterfacesUnloadDialog.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\ModulesLoadDialog.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\ModulesUnloadDialog.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\rpc_commands.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\UI.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\library.cc" />
   </ItemGroup>
