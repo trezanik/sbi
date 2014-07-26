@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file	ui_status.h
+ * @file	src/Qt5/ui_status.h
  * @author	James Warren
  * @brief	GUI-specific status codes returned from functions
  */
