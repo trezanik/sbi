@@ -15,6 +15,7 @@
 #include "JsonRpc.h"
 #include "RpcServer.h"		// HTTP status codes, HTTPReply
 #include "Runtime.h"		// access RPC
+#include "Log.h"
 
 
 
@@ -30,7 +31,7 @@ JsonRpcError(
 {
 	json_spirit::Object	error;
 
-	error.push_back(json_spirit::Pair("code", (int64_t) err_code));
+	error.push_back(json_spirit::Pair("code", (int64_t)err_code));
 	error.push_back(json_spirit::Pair("message", message));
 
 	return error;
@@ -116,12 +117,15 @@ JsonRpc::Parse(
 
 	const json_spirit::Object&	request = request_val.get_obj();
 
+
 	// Parse id now so errors from here on will have the id
 	id = find_value(request, "id");
+
 
 	// Parse method
 	json_spirit::Value	methodv = find_value(request, "method");
 
+	// validate and log method
 	if ( methodv.type() == json_spirit::null_type )
 	{
 		throw JsonRpcError(ERpcStatus::InvalidRequest, "Missing method");
@@ -133,10 +137,8 @@ JsonRpc::Parse(
 
 	method = methodv.get_str();
 
-	if ( method != "getwork" && method != "getblocktemplate" )
-	{
-		std::cout << "JsonRPCServer method=%s\n" << method.c_str();
-	}
+	LOG(ELogLevel::Debug) << "Client executing method: " << method.c_str() << "\n";
+
 
 	// Parse params
 	json_spirit::Value	paramsv = find_value(request, "params");
