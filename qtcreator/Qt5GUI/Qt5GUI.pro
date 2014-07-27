@@ -75,7 +75,8 @@ SOURCES += ../../src/Qt5GUI/AboutDialog.cc \
     ../../src/Qt5GUI/library.cc \
     ../../src/Qt5GUI/ModulesLoadDialog.cc \
     ../../src/Qt5GUI/ModulesUnloadDialog.cc \
-    ../../src/Qt5GUI/UI.cc
+    ../../src/Qt5GUI/UI.cc \
+    ../../src/Qt5GUI/rpc_commands.cc
 
 HEADERS += ../../src/Qt5GUI/AboutDialog.h \
     ../../src/Qt5GUI/InterfacesLoadDialog.h \
@@ -84,7 +85,11 @@ HEADERS += ../../src/Qt5GUI/AboutDialog.h \
     ../../src/Qt5GUI/ModulesLoadDialog.h \
     ../../src/Qt5GUI/ModulesUnloadDialog.h \
     ../../src/Qt5GUI/UI.h \
-    ../../src/Qt5GUI/ui_status.h
+    ../../src/Qt5GUI/ui_status.h \
+    ../../src/Qt5GUI/ui_windowtype.h \
+    ../../src/Qt5GUI/UiThreadExec.h \
+    ../../src/Qt5GUI/RpcWidget.h \
+    ../../src/Qt5GUI/rpc_commands.h
 
 FORMS += ../../src/Qt5GUI/forms/AboutDialog.ui \
     ../../src/Qt5GUI/forms/InterfacesLoadDialog.ui \

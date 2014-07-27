@@ -232,8 +232,8 @@ RPCAcceptHandler(
 	if ( error != boost::asio::error::operation_aborted && acceptor->is_open() )
 		RPCListen(acceptor, context, use_ssl);
 	
-	rpch_params	params;
-
+	rpch_params		params;
+	boost_ip::address	address = conn->peer.address();
 	
 	LOG(ELogLevel::Info) << "Connection attempt received from " 
 		<< conn->peer_address_to_string().c_str() 
@@ -245,7 +245,7 @@ RPCAcceptHandler(
 	{
 		
 	}
-	else if ( conn && !runtime.RPC()->IsClientAllowed(&conn->peer.address()) )
+	else if ( conn && !runtime.RPC()->IsClientAllowed(&address) )
 	{
 		if ( !use_ssl )
 		{
@@ -361,7 +361,7 @@ RpcServer::RpcServer()
 
 		if ( dlen < 0 )
 		{
-			char*	typemsg = using_hash ? "hash" : "password";
+			const char*	typemsg = using_hash ? "hash" : "password";
 
 			LOG(ELogLevel::Error) << "Failed to base64 encode the "
 				<< typemsg << "\n";

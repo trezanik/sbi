@@ -195,8 +195,8 @@ Configuration::Dump() const
 	std::stringstream	interface_search_paths;
 	std::stringstream	module_search_paths;
 	std::stringstream	rpc_allowed_ips;
-	char*			rpc_pass_msg;
-	char*			rpc_hash_msg;
+	const char*		rpc_pass_msg;
+	const char*		rpc_hash_msg;
 	uint32_t		i;
 
 	/* since we want to append to the log_str just once en masse, prepare
