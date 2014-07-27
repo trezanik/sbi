@@ -11,6 +11,7 @@
 #include <QtWidgets/qapplication.h>
 #include <QtWidgets/qmainwindow.h>
 #include <QtWidgets/qstackedwidget.h>
+#include <QtWidgets/qlabel.h>
 #include <QtCore/qstring.h>
 
 #if defined(USING_LIBCONFIG)
@@ -37,9 +38,12 @@
 #include <api/Configuration.h>
 #include <api/utils.h>
 #include <api/Log.h>
+#include <api/Terminal.h>
+#include <api/Runtime.h>
+#include <api/RpcServer.h>
+
 #include "library.h"			// prototypes and GUI library
 #include "UI.h"				// library GUI class
-
 // our dialogs/widgets/windows
 #include "generated/ui_UI.h"		// Ui_MainWindow
 #include "AboutDialog.h"
@@ -47,6 +51,10 @@
 #include "InterfacesUnloadDialog.h"
 #include "ModulesLoadDialog.h"
 #include "ModulesUnloadDialog.h"
+// rpc exposure
+#include "rpc_commands.h"
+#include "RpcWidget.h"
+#include "UiThreadExec.h"
 
 
 
@@ -60,6 +68,11 @@ BEGIN_NAMESPACE(GUI_NAMESPACE)
  * need to be careful regarding this. */
 std::unique_ptr<UI>	g_ui;
 
+/* Unique ID value used for widgets created by RPC functions. The ID is used so
+ * the window can be utilized later, rather than searching for it via some more
+ * complex methods. */
+std::atomic_uint	g_rpc_widget_id;
+
 END_NAMESPACE
 END_NAMESPACE
 
@@ -72,6 +85,8 @@ using namespace GUI_NAMESPACE;
 
 UI::UI()
 {
+	// start ids at 1, reserve 0
+	g_rpc_widget_id = 1;
 }
 
 
@@ -212,7 +227,53 @@ UI::CreateDefaultWindows()
 
 	// link menu options (and others) into their correct function calls
 	SetupSignals();
+	// allow RPC clients to call the functions we expose (like CreateWindow)
+	PopulateRpcTable();
 
+
+	return EGuiStatus::OK;
+}
+
+
+
+EGuiStatus
+UI::CreateWindow(
+	window_params* wnd_params
+)
+{
+	switch ( wnd_params->window_type )
+	{
+	case EGuiWindowType::Page: {
+		QWidget*	page = new QWidget;
+		_base->stacked_widget->addWidget(page);
+		_base->stacked_widget->setCurrentWidget(page);
+		break;
+	}
+	case EGuiWindowType::Tree: {
+		break;
+	}
+	case EGuiWindowType::List: {
+		break;
+	}
+	case EGuiWindowType::Table: {
+		break;
+	}
+	case EGuiWindowType::Label: {
+		RpcQLabel*	label = new RpcQLabel;
+		QWidget*	parent = reinterpret_cast<QWidget*>(wnd_params->parent);
+
+		if ( !wnd_params->text.empty() )
+			label->setText(wnd_params->text.c_str());
+		if ( wnd_params->parent )
+			label->setParent(parent);
+			//label->setParent((QWidget*)wnd_params->parent);
+		label->move(5, 5); 
+		label->show();
+		break;
+	}
+	default:
+		break;
+	}
 
 	return EGuiStatus::OK;
 }
@@ -270,11 +331,13 @@ UI::LoadConfig(
 	catch ( libconfig::FileIOException& e )
 	{
 		// error reading the file.
+		std::cerr << fg_red << "Error attempting to read the configuration file '" << path << "'; " << e.what() << "\n";
 		return EGuiStatus::ConfigIOError;
 	}
 	catch ( libconfig::ParseException& e )
 	{
 		// error parsing the file.
+		std::cerr << fg_red << e.getError() << " parsing " << e.getFile() << ":" << e.getLine() << "\n";
 		return EGuiStatus::ConfigParseError;
 	}
 
@@ -366,6 +429,27 @@ UI::OpenModulesUnloadDialog() const
 
 
 void
+UI::PopulateRpcTable()
+{
+	/* must be static, as the RpcCommand pointers must remain valid in order
+	 * to be called and accessed from the RpcTable */
+	/** @todo Make RpcCommand additions safer from clients error setups? */
+	static const RpcCommand RpcCommands[] =
+	{
+		{ "gui_create_window", &gui_CreateWindow, RPCF_UNLOCKED },
+	};
+
+	for ( uint32_t i = 0; i < (sizeof(RpcCommands) / sizeof(RpcCommands[0])); i++ )
+	{
+		const RpcCommand*	pcmd = &RpcCommands[i];
+
+		runtime.RPC()->GetRpcTable()->AddRpcCommand(pcmd);
+	}
+}
+
+
+
+void
 UI::Run() const
 {
 	if ( _app != nullptr )
@@ -379,6 +463,7 @@ UI::Run() const
 EGuiStatus
 UI::SetupSignals()
 {
+	// initial interface
 	QObject::connect(_base->action_About, SIGNAL(triggered()), this, SLOT(About()));
 	QObject::connect(_base->actionAbout_Qt, SIGNAL(triggered()), this, SLOT(AboutQt()));
 	QObject::connect(_base->action_InterfaceLoad, SIGNAL(triggered()), this, SLOT(OpenInterfacesLoadDialog()));

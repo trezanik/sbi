@@ -16,6 +16,7 @@
 #include <api/types.h>
 #include "library.h"
 #include "ui_status.h"
+#include "ui_windowtype.h"
 
 
 
@@ -23,6 +24,13 @@ class QApplication;
 class QMainWindow;
 class QStackedWidget;
 class Ui_MainWindow;
+struct window_params;
+
+
+// fix Windows namespace pollution
+#if defined(CreateWindow)
+#	undef CreateWindow
+#endif
 
 
 BEGIN_NAMESPACE(APP_NAMESPACE)
@@ -60,6 +68,15 @@ private:
 
 	Ui_MainWindow*		_base;		/**< The 'interfaceable' main window */
 
+
+	/**
+	 * Adds the RPC functions this class utilizes to the available list
+	 * within the runtime.
+	 */
+	void
+	PopulateRpcTable();
+
+
 public:
 	UI();
 	~UI();
@@ -78,11 +95,29 @@ public:
 	 * Creates the windows show for the initial user interface, containing the
 	 * application window, menu and status bars.
 	 *
-     * @return Returns EGuiStatus::Ok if everything is created without fault,
-     * otherwise the applicable status is returned
+	 * @return Returns EGuiStatus::Ok if everything is created without fault,
+	 * otherwise the applicable status is returned
 	 */
 	APP_NAMESPACE::GUI_NAMESPACE::EGuiStatus
 	CreateDefaultWindows();
+
+
+	/**
+	 * Creates a window with the specified parameters. Designed for use via
+	 * RPC calls and should not be used internally - members are accessible
+	 * directly and will be quicker + easier to work with.
+	 *
+	 * @warning
+	 * Qt will generate an assertion failure if the thread calling this
+	 * function is not the GUI thread. We supply and use the UiThreadExec
+	 * class in order to work with this.
+	 *
+	 * @sa UiThreadExec
+	 */
+	APP_NAMESPACE::GUI_NAMESPACE::EGuiStatus
+	CreateWindow(
+		window_params* wnd_params
+	);
 
 
 	/**
@@ -173,7 +208,6 @@ public:
 			uint32_t		users_size;
 		} tree_layout;
 	} ui;
-
 
 
 private slots:

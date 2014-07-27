@@ -51,6 +51,9 @@
     <ClInclude Include="..\..\src\Qt5GUI\UiThreadExec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Qt5GUI\RpcWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Qt5GUI\library.cc">

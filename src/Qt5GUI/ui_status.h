@@ -8,7 +8,6 @@
 
 
 
-
 #include <api/definitions.h>
 
 
@@ -30,6 +29,7 @@ enum class EGuiStatus
 	ConfigNotFound,		// configuration file not found
 	ConfigIOError,		// failed to open/read/write/close the configuration file
 	ConfigParseError,	// failed to parse the configuration file
+	NotGuiThread,		// tried to create a window in a thread that's not the GUI one
 	Unknown			// Placeholder/default; should never see this reported
 };
 

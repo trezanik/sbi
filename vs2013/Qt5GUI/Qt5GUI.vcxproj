@@ -95,6 +95,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Qt5GUI\AboutDialog.h" />
+    <ClInclude Include="..\..\src\Qt5GUI\RpcWidget.h" />
     <ClInclude Include="..\..\src\Qt5GUI\UiThreadExec.h" />
     <ClInclude Include="..\..\src\Qt5GUI\InterfacesLoadDialog.h" />
     <ClInclude Include="..\..\src\Qt5GUI\InterfacesUnloadDialog.h" />
