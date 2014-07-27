@@ -160,7 +160,7 @@ private:
 
 	/**
 	 * Stores the base64 encoded 'username:password' credentials used to
-	 * authenticate with the server, as read by the configuration file.102
+	 * authenticate with the server, as read by the configuration file.
 	 */
 	std::string		_rpc_auth;
 
