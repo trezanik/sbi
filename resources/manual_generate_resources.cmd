@@ -11,6 +11,7 @@ set GEN_PATH=.\generated
 
 if not exist "%GEN_PATH%" mkdir "%GEN_PATH%"
 
+echo Generating source via Resource Compiler..
 %QT_PATH%\rcc.exe -name core .\sbi.qrc -o %GEN_PATH%\qrc_sbi.cc
 
 
@@ -18,4 +19,3 @@ popd
 echo.
 echo ### Finished
 echo.
-pause > nul

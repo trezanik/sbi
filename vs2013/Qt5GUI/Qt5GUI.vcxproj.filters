@@ -48,6 +48,9 @@
     <ClInclude Include="..\..\src\Qt5GUI\ui_windowtype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Qt5GUI\UiThreadExec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Qt5GUI\library.cc">
@@ -94,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Qt5GUI\rpc_commands.cc">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Qt5GUI\generated\moc_UiThreadExec.cc">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

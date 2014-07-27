@@ -45,7 +45,7 @@
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(Qt5-x86)/lib;$(libconfig)/lib/$(Configuration);$(ProjectRoot)/lib/$(Platform)/$(Configuration);$(Qt5)/lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
     <SourcePath>$(ProjectRoot)/src;$(VC_SourcePath);</SourcePath>
-    <IncludePath>$(ProjectRoot)/src;$(json_spirit);$(libconfig);$(Qt5-x86)/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(ProjectRoot)/src;$(boost);$(json_spirit);$(libconfig);$(Qt5-x86)/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <OutDir>$(ProjectRoot)/bin/$(Platform)/$(Configuration)/</OutDir>
     <IntDir>$(Configuration)/</IntDir>
     <TargetName>libui-qt5</TargetName>
@@ -68,6 +68,12 @@
       <AdditionalDependencies>libapi.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>$(ProjectRoot)/lib/$(Platform)/$(Configuration)/$(TargetName).lib</ImportLibrary>
     </Link>
+    <PreBuildEvent>
+      <Command>pre_build_event.cmd</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Generating uic and moc files..</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -89,6 +95,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Qt5GUI\AboutDialog.h" />
+    <ClInclude Include="..\..\src\Qt5GUI\UiThreadExec.h" />
     <ClInclude Include="..\..\src\Qt5GUI\InterfacesLoadDialog.h" />
     <ClInclude Include="..\..\src\Qt5GUI\InterfacesUnloadDialog.h" />
     <ClInclude Include="..\..\src\Qt5GUI\library.h" />
@@ -108,6 +115,7 @@
     <ClCompile Include="..\..\src\Qt5GUI\generated\moc_ModulesLoadDialog.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\generated\moc_ModulesUnloadDialog.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\generated\moc_UI.cc" />
+    <ClCompile Include="..\..\src\Qt5GUI\generated\moc_UiThreadExec.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\InterfacesLoadDialog.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\InterfacesUnloadDialog.cc" />
     <ClCompile Include="..\..\src\Qt5GUI\ModulesLoadDialog.cc" />
