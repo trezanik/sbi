@@ -72,7 +72,7 @@ void
 IrcGui::CreateMainPage()
 {
 	_main_page = new QWidget;
-
+	
 	_stack_widget->addWidget(_main_page);
 }
 

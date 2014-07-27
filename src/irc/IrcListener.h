@@ -34,10 +34,12 @@ struct user_modes_change;
  * class below, and add a call to IrcEngine::NotifyListeners, so it can actually
  * be received by classes deriving from IrcListener.
  *
+ * Non C++11 enum due to the integer nature of the values.
+ *
  * @sa IrcEngine::NotifyListeners
- * @enum E_IRC_LISTENER_NOTIFICATION
+ * @enum EIrcListenerNotification
  */
-enum E_IRC_LISTENER_NOTIFICATION
+enum EIrcListenerNotification
 {
 	LN_NewData = 0,			/**< Data received, not yet parsed */
 	// real IRC codes (0-999) : add more as we enable features
@@ -550,7 +552,7 @@ public:
 	 */
 	void
 	Notify(
-		E_IRC_LISTENER_NOTIFICATION event_type,
+		EIrcListenerNotification event_type,
 		std::shared_ptr<IrcConnection> connection
 	);
 };

@@ -172,7 +172,7 @@ private:
 	 */
 	void
 	NotifyListeners(
-		E_IRC_LISTENER_NOTIFICATION event_type,
+		EIrcListenerNotification event_type,
 		std::shared_ptr<IrcConnection> connection
 	) const;
 
@@ -338,7 +338,7 @@ public:
 	 * Gets the IrcObject pool allocator. Never fails - created on the stack
 	 * as a static variable.
 	 *
-	 * @return A pointer to the IrcPool
+	 * @retval A pointer to the IrcPool
 	 */
 	IrcPool*
 	Pools() const;
@@ -349,7 +349,7 @@ public:
 	 *
 	 * Never fails - created on the stack as a static variable.
 	 *
-	 * @return A pointer to the IrcGui
+	 * @retval A pointer to the IrcGui
 	 */
 	IrcGui*
 	UI() const;

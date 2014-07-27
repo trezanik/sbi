@@ -133,7 +133,7 @@ IrcEngine::Factory() const
 
 void
 IrcEngine::NotifyListeners(
-	E_IRC_LISTENER_NOTIFICATION event_type,
+	EIrcListenerNotification event_type,
 	std::shared_ptr<IrcConnection> connection
 ) const
 {
