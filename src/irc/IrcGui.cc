@@ -26,6 +26,9 @@
 #	endif
 #	include <Qt5GUI/UI.h>
 #endif
+#if defined(USING_JSON_SPIRIT_RPC)
+#	include <json_spirit/json_spirit_utils.h>
+#endif
 
 #include "IrcGui.h"
 
@@ -42,22 +45,9 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
 using namespace GUI_NAMESPACE;
 
 
+
 IrcGui::IrcGui()
 {
-#if 0
-	/* @important 
-	 * From this constructor (i.e. the first call to the GUI, which is done
-	 * the second IrcEngine is constructed), we are accessing the GUI in the
-	 * external library directly; it MUST exist prior to this.
-	 * At time of writing, we currently can only load the libirc through the
-	 * GUI, so we can guarantee that it exists, and will always exist as 
-	 * long as the Irc objects do. 
-	 */
-	_stack_widget = g_ui->StackWidget();
-
-	if ( _stack_widget == nullptr )
-		throw std::runtime_error("The stack widget to utilize is a nullptr");
-#endif
 }
 
 
@@ -69,41 +59,39 @@ IrcGui::~IrcGui()
 
 
 void
-IrcGui::CreateMainPage()
+IrcGui::CreateMain()
 {
-	_main_page = new QWidget;
+	// rpcexec -> get stack widget
+	// rpcexec -> createwindow(page)
+	// rpcexec -> createwindow(output, page)
+	// rpcexec -> createwindow(tree, page)
+
+
+
+}
+
+
+
+void
+IrcGui::CreateChannel()
+{
 	
-	_stack_widget->addWidget(_main_page);
 }
 
 
 
 void
-IrcGui::CreateChannelPage()
+IrcGui::CreateNetwork()
 {
-	QWidget*	channel_widget = new QWidget;
-
-	_stack_widget->addWidget(channel_widget);
+	
 }
 
 
 
 void
-IrcGui::CreateNetworkPage()
+IrcGui::CreateQuery()
 {
-	QWidget*	network_widget = new QWidget;
-
-	_stack_widget->addWidget(network_widget);
-}
-
-
-
-void
-IrcGui::CreateQueryPage()
-{
-	QWidget*	query_widget = new QWidget;
-
-	_stack_widget->addWidget(query_widget);
+	
 }
 
 

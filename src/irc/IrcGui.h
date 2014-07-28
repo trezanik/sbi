@@ -18,14 +18,12 @@
 
 
 #if defined(USING_DEFAULT_QT5_GUI)
-// forward declare Qt objects, save including big headers where possible
-class QStackedWidget;
-class QWidget;
+#	include <Qt5GUI/RpcWidget.h>
 #endif
 
 
 #include <api/definitions.h>		// namespace
-
+#include <api/RpcClient.h>
 
 
 BEGIN_NAMESPACE(APP_NAMESPACE)
@@ -47,7 +45,7 @@ class IrcEngine;
  *
  * @class IrcGui
  */
-class IrcGui
+class IrcGui : public RpcClient
 {
 	// we are created on the stack in IrcEngine's UI() method
 	friend class IrcEngine;
@@ -56,8 +54,15 @@ private:
 	NO_CLASS_COPY(IrcGui);
 
 
-	QStackedWidget*		_stack_widget;
-	QWidget*		_main_page;
+	// IRC page, the widget added to the QStackedWidget
+	GUI_NAMESPACE::RpcQWidget*	_irc_page;
+
+	// output window for all IRC input/output
+	GUI_NAMESPACE::RpcQWidget*	_output;
+
+	// Server/channel/query treeview
+	GUI_NAMESPACE::RpcQWidget*	_tree;
+
 
 
 	// private constructor; we want one instance that is controlled
@@ -70,20 +75,21 @@ public:
 
 	/**
 	 * Creates the default IRC output page, contained within the UI's 
-	 * QStackedWidget.
+	 * QStackedWidget. Alongside this, the output and treeview windows are
+	 * also created within this page.
 	 */
 	void
-	CreateMainPage();
+	CreateMain();
 
 
 	void
-	CreateChannelPage();
+	CreateChannel();
 
 	void
-	CreateNetworkPage();
+	CreateNetwork();
 
 	void
-	CreateQueryPage();
+	CreateQuery();
 };
 
 
