@@ -51,6 +51,18 @@ gui_DestroyWindow(
  */
 SBI_QT5GUI_API
 json_spirit::Value
+gui_GetStackWidget(
+	const json_spirit::Array& params,
+	bool help
+);
+
+
+
+/**
+ *
+ */
+SBI_QT5GUI_API
+json_spirit::Value
 gui_Help(
 	const json_spirit::Array& params,
 	bool help

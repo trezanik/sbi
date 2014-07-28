@@ -76,6 +76,22 @@ gui_DestroyWindow(
 
 
 json_spirit::Value
+gui_GetStackWidget(
+	const json_spirit::Array& params,
+	bool help
+)
+{
+	if ( params.size() != 0 )
+	{
+		throw std::runtime_error("Invalid parameter count");
+	}
+
+	return (uint64_t)g_ui->StackWidget();
+}
+
+
+
+json_spirit::Value
 gui_Help(
 	const json_spirit::Array& params,
 	bool help
