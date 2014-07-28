@@ -18,7 +18,7 @@
  * so just use 'using xxx' in each function. */
 
 
-enum class EUIFlags
+enum class EUiFlags
 {
 	Reset,
 	SaveLastPosition,
@@ -44,39 +44,9 @@ destroy_interface()
 	 * main loop itself. Assume we're here only when the window has been, or
 	 * is about to be destroyed. */
 
-	/* as g_ui still exists, we still have access to the config document to
-	 * make any last-second changes. When reset below, that's it no more! */
-#if defined(USING_TCONF)
-	tconf::Document*		pdoc = g_ui->ConfigDocument();
-	tconf::ConfigurationItem*	ci = pdoc->GetConfigItem("Qt5");
-	tconf::ConfigurationItem*	ci_child;
 
-	if ( ci == nullptr )
-		goto cleanup;
+	// do things like saving last size/position, etc.
 
-	ci = ci->Find("main_window");
-
-	if ( g_ui->GetWindowParameters(x, y, w, h) )
-	{
-		if ( g_ui->ui.flags & EUIFlags::SaveLastPosition )
-		{
-			ci_child = pdoc->CreateOrGetChildItem(ci, "height");
-			ci_child->SetData(std::to_string(h).c_str());
-			ci_child = pdoc->CreateOrGetChildItem(ci, "width");
-			ci_child->SetData(std::to_string(w).c_str());
-		}
-		if ( g_ui->ui.flags & EUIFlags::SaveLastSize )
-		{
-			ci_child = pdoc->CreateOrGetChildItem(ci, "x");
-			ci_child->SetData(std::to_string(x).c_str());
-			ci_child = pdoc->CreateOrGetChildItem(ci, "y");
-			ci_child->SetData(std::to_string(y).c_str());
-		}
-
-		// ignore *reporting* any errors saving; the user wants to close
-		pdoc->Save();
-	}
-#endif	// USING_TCONF
 
 	retval = 0;
 

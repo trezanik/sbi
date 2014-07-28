@@ -34,7 +34,7 @@ extern "C" {
  * One of the three exported functions from the library, which are mandatory in
  * order to be loaded by the executable dynamically.
  *
- * @retval 0 This function always returns 0
+ * @return 0 This function always returns 0
  */
 SBI_QT5GUI_API
 int32_t
@@ -48,7 +48,7 @@ destroy_interface();
  * One of the three exported functions from the library, which are mandatory in
  * order to be loaded by the executable dynamically.
  *
- * @retval 0 This function always returns 0
+ * @return 0 This function always returns 0
  */
 SBI_QT5GUI_API
 int32_t
