@@ -12,8 +12,10 @@
 
 #include <QtCore/qstring.h>
 #include <QtCore/qobject.h>
+
 #include <api/definitions.h>
 #include <api/types.h>
+
 #include "library.h"
 #include "ui_status.h"
 #include "ui_windowtype.h"
@@ -133,7 +135,7 @@ public:
 	 * this function returns true
 	 */
 	APP_NAMESPACE::GUI_NAMESPACE::EGuiStatus
-	GetWindowParameters(
+	GetMainWindowParameters(
 		int& x,
 		int& y,
 		int& w,
