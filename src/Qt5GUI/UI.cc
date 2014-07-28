@@ -241,39 +241,151 @@ UI::CreateWindow(
 	window_params* wnd_params
 )
 {
+	QWidget*	parent = reinterpret_cast<QWidget*>(wnd_params->parent);
+	QWidget*	new_wnd = nullptr;
+
+	/* with the exception of the first and special entry, each window type
+	 * is organized alphabetically, just like in ui_windowtype.h.
+	 *
+	 * While this is nasty, I can't think of any better way to do it right
+	 * now, as each type may require special handling; otherwise it'd be
+	 * trivial. */
+
 	switch ( wnd_params->window_type )
 	{
-	case EGuiWindowType::Page: {
-		QWidget*	page = new QWidget;
+	case EGuiWindowType::Page:
+	{
+		RpcQWidget*		page = new RpcQWidget;
 		_base->stacked_widget->addWidget(page);
 		_base->stacked_widget->setCurrentWidget(page);
 		break;
 	}
-	case EGuiWindowType::Tree: {
+	case EGuiWindowType::ComboBox:
+	{
+		RpcQComboBox*		combo = new RpcQComboBox;
+
+		new_wnd = combo;
 		break;
 	}
-	case EGuiWindowType::List: {
+	case EGuiWindowType::DoubleSpinBox:
+	{
+		RpcQDoubleSpinBox*	spin = new RpcQDoubleSpinBox;
+
+		new_wnd = spin;
 		break;
 	}
-	case EGuiWindowType::Table: {
+	case EGuiWindowType::GroupBox:
+	{
+		RpcQGroupBox*		group = new RpcQGroupBox;
+
+		new_wnd = group;
 		break;
 	}
-	case EGuiWindowType::Label: {
-		RpcQLabel*	label = new RpcQLabel;
-		QWidget*	parent = reinterpret_cast<QWidget*>(wnd_params->parent);
+	case EGuiWindowType::Label:
+	{
+		RpcQLabel*		label = new RpcQLabel;
 
 		if ( !wnd_params->text.empty() )
 			label->setText(wnd_params->text.c_str());
-		if ( wnd_params->parent )
-			label->setParent(parent);
-			//label->setParent((QWidget*)wnd_params->parent);
-		label->move(5, 5); 
-		label->show();
+					    
+		label->move(5, 5);
+
+		new_wnd = label;
+		break;
+	}
+	case EGuiWindowType::LineEdit:
+	{
+		RpcQLineEdit*		line = new RpcQLineEdit;
+
+		new_wnd = line;
+		break;
+	}
+	case EGuiWindowType::ListWidget:
+	{
+		RpcQListWidget*		list = new RpcQListWidget;
+
+		new_wnd = list;
+		break;
+	}
+	case EGuiWindowType::PushButton:
+	{
+		RpcQPushButton*		button = new RpcQPushButton;
+
+		new_wnd = button;
+		break;
+	}
+	case EGuiWindowType::RadioButton:
+	{
+		RpcQRadioButton*	radio = new RpcQRadioButton;
+
+		new_wnd = radio;
+		break;
+	}
+	case EGuiWindowType::SpinBox:
+	{
+		RpcQSpinBox*		spin = new RpcQSpinBox;
+
+		new_wnd = spin;
+		break;
+	}
+	case EGuiWindowType::StackedWidget:
+	{
+		RpcQStackedWidget*	stack = new RpcQStackedWidget;
+
+		new_wnd = stack;
+		break;
+	}
+	case EGuiWindowType::TableWidget:
+	{
+		RpcQTableWidget*	table = new RpcQTableWidget;
+
+		new_wnd = table;
+		break;
+	}
+	case EGuiWindowType::TextBrowser:
+	{
+		RpcQTextBrowser*	text = new RpcQTextBrowser;
+
+		new_wnd = text;
+		break;
+	}
+	case EGuiWindowType::ToolButton:
+	{
+		RpcQToolButton*		tool = new RpcQToolButton;
+
+		new_wnd = tool;
+		break;
+	}
+	case EGuiWindowType::TreeWidget:
+	{
+		RpcQTreeWidget*		tree = new RpcQTreeWidget;
+		
+		
+		new_wnd = tree;
+		break;
+	}
+	case EGuiWindowType::Widget:
+	{
+		RpcQWidget*		widget = new RpcQWidget;
+
+
+		new_wnd = widget;
 		break;
 	}
 	default:
 		break;
 	}
+
+
+	// prevent code duplication, set common attributes here
+	if ( new_wnd != nullptr )
+	{
+		if ( parent != nullptr )
+			new_wnd->setParent(parent);
+
+		new_wnd->show();
+	}
+
 
 	return EGuiStatus::OK;
 }
@@ -281,7 +393,7 @@ UI::CreateWindow(
 
 
 EGuiStatus
-UI::GetWindowParameters(
+UI::GetMainWindowParameters(
 	int& x,
 	int& y,
 	int& w,
@@ -437,6 +549,9 @@ UI::PopulateRpcTable()
 	static const RpcCommand RpcCommands[] =
 	{
 		{ "gui_create_window", &gui_CreateWindow, RPCF_UNLOCKED },
+		{ "gui_destroy_window", &gui_DestroyWindow, RPCF_UNLOCKED },
+		{ "gui_get_stack_widget", &gui_GetStackWidget, RPCF_UNLOCKED },
+		{ "gui_help", &gui_Help, RPCF_UNLOCKED },
 	};
 
 	for ( uint32_t i = 0; i < (sizeof(RpcCommands) / sizeof(RpcCommands[0])); i++ )

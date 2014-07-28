@@ -10,10 +10,20 @@
 
 #include <atomic>
 
+#include <QtWidgets/qcheckbox.h>
+#include <QtWidgets/qcombobox.h>
+#include <QtWidgets/qgroupbox.h>
 #include <QtWidgets/qlabel.h>
 #include <QtWidgets/qlineedit.h>
+#include <QtWidgets/qlistwidget.h>
 #include <QtWidgets/qpushbutton.h>
+#include <QtWidgets/qspinbox.h>
 #include <QtWidgets/qstackedwidget.h>
+#include <QtWidgets/qradiobutton.h>
+#include <QtWidgets/qtablewidget.h>
+#include <QtWidgets/qtextbrowser.h>
+#include <QtWidgets/qtoolbutton.h>
+#include <QtWidgets/qtreewidget.h>
 #include <QtWidgets/qwidget.h>
 
 #include <api/definitions.h>
@@ -78,10 +88,22 @@ public:
 
 
 
+// supported Qt Widgets
+typedef RpcWidget<QCheckBox>		RpcQCheckBox;
+typedef RpcWidget<QComboBox>		RpcQComboBox;
+typedef RpcWidget<QDoubleSpinBox>	RpcQDoubleSpinBox;
+typedef RpcWidget<QGroupBox>		RpcQGroupBox;
 typedef RpcWidget<QLabel>		RpcQLabel;
 typedef RpcWidget<QLineEdit>		RpcQLineEdit;
+typedef RpcWidget<QListWidget>		RpcQListWidget;
 typedef RpcWidget<QPushButton>		RpcQPushButton;
+typedef RpcWidget<QRadioButton>		RpcQRadioButton;
+typedef RpcWidget<QSpinBox>		RpcQSpinBox;
 typedef RpcWidget<QStackedWidget>	RpcQStackedWidget;
+typedef RpcWidget<QTableWidget>		RpcQTableWidget;
+typedef RpcWidget<QTextBrowser>		RpcQTextBrowser;
+typedef RpcWidget<QToolButton>		RpcQToolButton;
+typedef RpcWidget<QTreeWidget>		RpcQTreeWidget;
 typedef RpcWidget<QWidget>		RpcQWidget;
 
 
