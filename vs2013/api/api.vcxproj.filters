@@ -87,6 +87,9 @@
     <ClInclude Include="..\..\src\api\JsonRpc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\api\RpcClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\api\utils.cc">
@@ -126,6 +129,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\api\JsonRpc.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\api\RpcClient.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

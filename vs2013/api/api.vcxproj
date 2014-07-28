@@ -101,6 +101,7 @@
     <ClInclude Include="..\..\src\api\JsonRpc.h" />
     <ClInclude Include="..\..\src\api\Log.h" />
     <ClInclude Include="..\..\src\api\modules.h" />
+    <ClInclude Include="..\..\src\api\RpcClient.h" />
     <ClInclude Include="..\..\src\api\RpcCommand.h" />
     <ClInclude Include="..\..\src\api\RpcServer.h" />
     <ClInclude Include="..\..\src\api\RpcTable.h" />
@@ -121,6 +122,7 @@
     <ClCompile Include="..\..\src\api\interfaces.cc" />
     <ClCompile Include="..\..\src\api\JsonRpc.cc" />
     <ClCompile Include="..\..\src\api\Log.cc" />
+    <ClCompile Include="..\..\src\api\RpcClient.cc" />
     <ClCompile Include="..\..\src\api\RpcServer.cc" />
     <ClCompile Include="..\..\src\api\RpcTable.cc" />
     <ClCompile Include="..\..\src\api\rpc_commands.cc" />

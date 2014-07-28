@@ -43,7 +43,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectRoot)/src;$(Qt5-x86)/include;$(Boost);$(OpenSSL)/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(ProjectRoot)/src;$(Qt5-x86)/include;$(json_spirit);$(Boost);$(OpenSSL)/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <SourcePath>$(ProjectRoot)/src;$(VC_SourcePath);</SourcePath>
     <OutDir>$(ProjectRoot)/bin/$(Platform)/$(Configuration)/</OutDir>
     <IntDir>$(Configuration)/</IntDir>
