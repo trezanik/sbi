@@ -345,6 +345,7 @@ RpcServer::RpcServer()
 		if ( !sha1.empty() )
 		{
 			auth = user + ":" + sha1;
+			using_hash = true;
 		}
 		else
 		{
