@@ -32,7 +32,7 @@ IrcEngine::IrcEngine()
 	// create the object factory
 	_ircobject_factory.reset(new IrcFactory(this));
 	// and the UI
-	UI()->CreateMainPage();
+	UI()->CreateMain();
 }
 
 
