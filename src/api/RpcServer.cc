@@ -610,9 +610,12 @@ RpcServer::ReadHTTPHeader(
 	{
 		std::string	str;
 		std::getline(stream, str);
+
 		if ( str.empty() || str == "\r" )
 			break;
+
 		std::string::size_type	colon = str.find(":");
+
 		if ( colon != std::string::npos )
 		{
 			std::string	header = str.substr(0, colon);
@@ -995,7 +998,7 @@ RpcServer::RpcServerThread(
 		return ERpcStatus::NotListening;
 	}
 
-	// otherwise, enter the server loop
+	// otherwise, enter the server loop and loop until server shutdown
 	while ( !thisptr->_shutdown )
 	{
 		// blocks until signalled
