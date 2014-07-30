@@ -30,7 +30,7 @@ BEGIN_NAMESPACE(APP_NAMESPACE)
  * @param[in] err_code ERpcStatus error code (will never be a success value..)
  * @param[in] message Associated error message
  */
-json_spirit::Object
+SBI_API json_spirit::Object
 JsonRpcError(
 	ERpcStatus err_code,
 	const std::string& message
@@ -43,7 +43,7 @@ JsonRpcError(
  *
  * @class JsonRpc
  */
-class JsonRpc
+class SBI_API JsonRpc
 {
 public:
 	json_spirit::Value	id;
