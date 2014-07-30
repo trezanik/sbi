@@ -29,6 +29,7 @@ enum class ERpcStatus
 	// json-rpc
 	InvalidRequest,
 	MethodNotFound,
+	MethodLocked,
 	InvalidParams,
 	InternalError,
 	ParseError,
