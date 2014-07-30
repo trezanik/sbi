@@ -124,9 +124,7 @@ RpcTable::Execute(
 			}
 			else
 			{
-				// purpose?
-				//LOCK2(cs_main, pwalletMain->cs_wallet);
-				result = pcmd->actor(params, false);
+				throw JsonRpcError(ERpcStatus::MethodLocked, "The method is locked and cannot be used");
 			}
 		}
 		return result;
